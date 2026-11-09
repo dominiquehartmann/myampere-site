@@ -1,0 +1,158 @@
+<!doctype html>
+<!-- SPDX-FileCopyrightText: Copyright the OpenAmpere contributors -->
+<!-- SPDX-License-Identifier: MIT -->
+<!-- A page of the device knowledge (#512) or of the interface for other apps (#588), filled with a Markdown file by
+     scripts/build-site-pages.mjs -->
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>M-TEC Energy-Butler GEN3 | Gerätewissen | OpenAmpere</title>
+  <meta name="description" content="Was OpenAmpere über Wechselrichter, Wallboxen und weitere Geräte weiß: Register, Verhalten und wie sicher jede Angabe ist." />
+  <meta name="theme-color" content="#f4f4f4" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#21262b" media="(prefers-color-scheme: dark)" />
+  <link rel="alternate" hreflang="de" href="https://dominiquehartmann.github.io/myampere/docs/devices/mtec/energy-butler.html" />
+  <link rel="alternate" hreflang="en" href="https://dominiquehartmann.github.io/myampere/en/docs/devices/mtec/energy-butler.html" />
+  <link rel="alternate" hreflang="x-default" href="https://dominiquehartmann.github.io/myampere/docs/devices/mtec/energy-butler.html" />
+  <link rel="icon" href="../../../icon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="../../../style.css" />
+</head>
+<body>
+  <header class="top">
+    <div class="wrap top-inner">
+      <a class="brand" href="../../../"><img src="../../../icon.svg" alt="" width="32" height="32" />OpenAmpere</a>
+      <nav aria-label="Seitenbereiche">
+        <a href="../../../#funktionen">Funktionen</a>
+        <a href="../../../#installation">Installation</a>
+        <a href="../../../geraete.html">Geräte</a>
+        <a href="../../../faq.html">Fragen</a>
+        <a href="../../../changelog.html">Changelog</a>
+        <a href="../../../demo/?lang=de">Demo</a>
+        <a href="https://github.com/Gr33ndev/OpenAmpere">GitHub</a>
+        <span class="lang-switch" role="group" aria-label="Sprache"><a href="energy-butler.html" hreflang="de" lang="de" title="Deutsch" aria-label="Deutsch" aria-current="page">DE</a><a href="../../../en/docs/devices/mtec/energy-butler.html" hreflang="en" lang="en" title="English" aria-label="English">EN</a></span>
+      </nav>
+    </div>
+  </header>
+
+  <main class="wrap doc-page">
+    <p class="eyebrow doc-crumb"><a href="../../../docs/devices/">Gerätewissen</a></p>
+    <p class="doc-note">Diese Seiten sind technisch und auf Englisch. Sie sammeln, was die Mitwirkenden von OpenAmpere über die Geräte herausgefunden haben, jeweils mit Quelle und wie sicher die Angabe ist. Sie zeigen den neuesten Stand der Entwicklung, der manchmal schon über deine installierte Version hinausgeht. Es sind keine offiziellen Angaben der Hersteller. Für die Einrichtung brauchst du sie nicht, die App erklärt dir alles Nötige.</p>
+    <article class="doc" lang="en">
+<h1 id="m-tec-energy-butler-gen3">M-TEC Energy-Butler GEN3</h1>
+<blockquote>
+<p>Not official manufacturer information: compiled by the OpenAmpere contributors, can be incomplete or wrong. No
+affiliation with M-TEC, Solinteg or EKD; not legal advice. See the <a href="../index.html">device knowledge README</a>.</p>
+</blockquote>
+<p><strong>Applies to:</strong> M-TEC Energy-Butler GEN3 hybrid inverters (a Solinteg inverter, also sold as Wattsonic, Sunways,
+A-Tronix, SunEnergyBox) · <strong>Sold as:</strong> M-TEC Energy-Butler (EKD from late 2022) · <strong>OpenAmpere:</strong> driver <code>mtec</code>
+(<code>src/openampere/drivers/mtec/</code>), register map <code>mtec_gen3</code> · <strong>Support:</strong> display only · <strong>Confirmed on a real
+device:</strong> no (built from M-TEC's register document, open projects and the simulator)</p>
+<h2 id="summary">Summary</h2>
+<ul>
+<li>Read through the Wi-Fi/LAN module: <strong>port 502</strong> on newer module firmware (V27.52.4.0 and later), <strong>5743</strong> before.</li>
+<li>Unit id and framing differ between the sources: OpenAmpere tries <strong>plain Modbus TCP, then RTU frames over TCP</strong>, on
+units <strong>252, 255 and 247</strong>, and shows the one that answered in the register map (<code>mtec_gen3 (socket)</code> or <code>(rtu)</code>).</li>
+<li>Holding registers (FC03), 32-bit values with the high word first; energy counters in 0.1 kWh, so OpenAmpere has an
+energy history for this device.</li>
+<li><strong>Signs:</strong> grid power is + for export (turned around), battery power + for discharging (as OpenAmpere).</li>
+<li>M-TEC still serves owners (app and portal); OpenAmpere only reads.</li>
+<li>GEN2 uses other addresses (4xxxx) and is not covered; the GEN3 registers need inverter firmware 3.04.01 or later.</li>
+</ul>
+<h2 id="identification">Identification</h2>
+<ul>
+<li>Type plate: &quot;Energy-Butler 10kW-3P-3G25&quot; (three-phase, GEN3); from 2023-07 the 10 kW model is &quot;3G40&quot;, so EKD's units
+from 2022/23 are most likely 3G25 (derived: M-TEC datasheet 2025, owners' posts).</li>
+<li>GEN2 has RS485 only and the 4xxxx registers (documented: M-TEC document).</li>
+<li>Firmware on the display, in the app or in 10011–10014.</li>
+</ul>
+<h2 id="registers">Registers</h2>
+<p>All holding registers (FC03).</p>
+<div class="table"><table>
+<thead><tr><th>Register</th><th>Meaning</th><th>Type, scale, sign</th><th>R/W</th><th>Status</th><th>Source</th></tr></thead>
+<tbody>
+<tr><td>10000–10007</td><td>Serial number</td><td>ASCII</td><td>R</td><td>documented</td><td>M-TEC document; MTECmqtt</td></tr>
+<tr><td>10008</td><td>Equipment info (model code, high byte = series)</td><td>U16</td><td>R</td><td>derived</td><td>MTECmqtt</td></tr>
+<tr><td>10011–10014</td><td>Firmware, two versions of four bytes</td><td>bytes</td><td>R</td><td>derived</td><td>MTECmqtt</td></tr>
+<tr><td>10105</td><td>Running state: 0 wait, 1 check, 2 on-grid, 3 fault, 4 flash, 5 off-grid</td><td>U16</td><td>R</td><td>documented</td><td>M-TEC document</td></tr>
+<tr><td>10112–10115</td><td>Fault flags 1 and 2</td><td>U32 each</td><td>R</td><td>derived</td><td>MTECmqtt</td></tr>
+<tr><td>10994–10999</td><td>Grid meter power L1–L3</td><td>I32 each, W</td><td>R</td><td>derived</td><td>MTECmqtt</td></tr>
+<tr><td>11000–11001</td><td>Grid meter power, total, <strong>+ = export</strong></td><td>I32, W</td><td>R</td><td>documented (register), derived (sign)</td><td>M-TEC document; MTECmqtt; evcc (scale −1)</td></tr>
+<tr><td>11016–11017</td><td>Inverter AC power</td><td>I32, W</td><td>R</td><td>documented</td><td>M-TEC document; MTECmqtt</td></tr>
+<tr><td>11028–11029</td><td>PV power, total</td><td>U32, W</td><td>R</td><td>documented</td><td>M-TEC document; MTECmqtt</td></tr>
+<tr><td>11038–11041</td><td>PV1, PV2 voltage and current</td><td>U16, 0.1 V, 0.1 A</td><td>R</td><td>derived</td><td>MTECmqtt</td></tr>
+<tr><td>11062–11065</td><td>PV1, PV2 power</td><td>U32 each, W</td><td>R</td><td>derived</td><td>MTECmqtt</td></tr>
+<tr><td>30230–30231</td><td>Backup (EPS) output power</td><td>I32, W</td><td>R</td><td>documented</td><td>M-TEC document; MTECmqtt</td></tr>
+<tr><td>30254</td><td>Battery voltage</td><td>U16, 0.1 V</td><td>R</td><td>documented</td><td>M-TEC document</td></tr>
+<tr><td>30255</td><td>Battery current</td><td>I16, 0.1 A</td><td>R</td><td>documented</td><td>M-TEC document</td></tr>
+<tr><td>30256</td><td>Battery mode</td><td>U16</td><td>R</td><td>derived; not used</td><td>MTECmqtt</td></tr>
+<tr><td>30258–30259</td><td>Battery power, <strong>+ = discharging</strong></td><td>I32, W</td><td>R</td><td>documented (register), derived (sign)</td><td>M-TEC document; evcc</td></tr>
+<tr><td>31000–31006</td><td>Today: export, import, backup output (31002), battery charge and discharge, PV, load</td><td>U16, 0.1 kWh</td><td>R</td><td>derived</td><td>MTECmqtt</td></tr>
+<tr><td>31102–31113</td><td>Lifetime: export, import, backup output (31106), battery charge, battery discharge, PV</td><td>U32, 0.1 kWh</td><td>R</td><td>derived</td><td>MTECmqtt</td></tr>
+<tr><td>33000</td><td>State of charge</td><td>U16, 0.01 %</td><td>R</td><td>documented</td><td>M-TEC document; MTECmqtt</td></tr>
+<tr><td>33001</td><td>State of health</td><td>U16, 0.01 %</td><td>R</td><td>derived</td><td>MTECmqtt</td></tr>
+</tbody>
+</table></div>
+<p>&quot;M-TEC document&quot; is &quot;M-TEC Energy Butler RTU Protocol GEN2 + GEN3 V1.0&quot; (2022-11-19), which an owner posted publicly
+in the ioBroker forum; facts only, in own words. It describes RS485 (9600 8N1, address 247) and the function codes
+03, 06 and 16, but lists every register as read-only.</p>
+<h2 id="behaviour">Behaviour</h2>
+<div class="table"><table>
+<thead><tr><th>Fact</th><th>Status</th><th>Source</th></tr></thead>
+<tbody>
+<tr><td>The Wi-Fi/LAN module listens on port 5743 before module firmware V27.52.4.0 and on 502 from then on.</td><td>derived</td><td>croedel/MTECmqtt; owners' reports (2025–2026)</td></tr>
+<tr><td>Unit 252 with RTU frames over TCP (MTECmqtt, port 5743), 247 (RS485 default, also shown on the display), 255 with plain Modbus TCP (evcc); on 502 owners report both framings working.</td><td>open</td><td>MTECmqtt; evcc <code>solinteg-gen3</code>; owners' reports</td></tr>
+<tr><td>The house load is the inverter's AC power minus the grid power (11016 − 11000).</td><td>derived</td><td>MTECmqtt (32cdf27)</td></tr>
+<tr><td>The Energy-Butler GEN3 is a Solinteg inverter; evcc's <code>solinteg-gen3</code> and the Solinteg plugin of homeassistant-solax-modbus cover it.</td><td>derived</td><td>evcc-io/evcc (MIT); wills106/homeassistant-solax-modbus (Apache-2.0)</td></tr>
+<tr><td>The module shows up in the router as &quot;espressif&quot;; the data also goes to M-TEC's cloud at least once a minute.</td><td>derived</td><td>owners' reports; croedel/M-TEC-API README</td></tr>
+<tr><td>Writing (operating mode 50000, export limit 25100/25103, SoC floors 52502–52505, EMS setpoints 50202–50210) is used by projects without a documented watchdog: the values are probably stored.</td><td>derived, open</td><td>MTECmqtt (LGPL, facts only), evcc, Solinteg plugin</td></tr>
+<tr><td>M-TEC is still in business; owners use the &quot;M-TEC Energy Butler&quot; app and the portal energybutler.mtec-portal.com. In 2023 M-TEC removed the grid export settings from the portal for owners; installers still have them.</td><td>documented (store listings), derived (forum)</td><td>App Store and Google Play listings; forum.iobroker.net topic 64236</td></tr>
+</tbody>
+</table></div>
+<h2 id="decisions-in-openampere">Decisions in OpenAmpere</h2>
+<div class="table"><table>
+<thead><tr><th>Decision</th><th>Why</th><th>Issue/PR</th></tr></thead>
+<tbody>
+<tr><td>Display only: every write method refuses, <code>supports_control</code> is off.</td><td>Nothing confirmed on a device; the writes known have no watchdog.</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/520">#520</a></td></tr>
+<tr><td>Detected after FoxESS, SAJ and Solarmax on units 252, 255 and 247; plain Modbus TCP first, then RTU frames over TCP, one try each. In the automatic detection (setup scan), if the first unit answers in neither framing, the others are asked in plain Modbus TCP only for 10 minutes; when the owner chooses M-TEC in the setup, every unit gets both framings. A device counts as an M-TEC only with a readable serial number, a known running state and a state of charge within 0–100 %.</td><td>The sources disagree on unit id and framing; detection must not claim another device, and a silent Modbus device in the network must not hold up the setup scan. An RTU gateway at 247 is found when M-TEC is chosen.</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/520">#520</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/pull/534">#534</a></td></tr>
+<tr><td>The port is not probed: with older module firmware the owner enters 5743 (the setup says so next to the port).</td><td>Detection stops when nothing listens on the port; a second port would need a second address in the settings.</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/520">#520</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/pull/534">#534</a></td></tr>
+<tr><td>Blocks only over the addresses the sources list.</td><td>A block across an undocumented gap might be refused.</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/520">#520</a></td></tr>
+<tr><td>Running state 3 (fault) reports the fault flags as a fault; 5 means off-grid.</td><td>M-TEC document.</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/520">#520</a></td></tr>
+</tbody>
+</table></div>
+<h2 id="open-questions">Open questions</h2>
+<ul>
+<li>On port 502: which framing and unit id answer on an EKD unit; does 5743 still answer after an update?</li>
+<li>The signs of 11000 and 30258, and whether 11016 − 11000 matches the house load in the M-TEC app.</li>
+<li>Whether loads on the backup (EPS) output are part of 11016: if not, the house load needs 30230 too (and during an
+outage it is all of it). The diagnostics show 30230 so a report can tell.</li>
+<li>Whether the module takes OpenAmpere next to the M-TEC app and cloud without trouble.</li>
+<li>Type plate text (&quot;Energy-Butler 10kW-3P-3G25&quot; is expected) and register 10008 of an EKD unit; whether any is a GEN2.</li>
+</ul>
+<h2 id="sources">Sources</h2>
+<ul>
+<li>M-TEC, &quot;Energy Butler RTU Protocol GEN2 + GEN3 V1.0&quot; (2022-11-19).</li>
+<li>croedel/MTECmqtt up to commit 32cdf27 (MIT; LGPL-3.0 after it): register table and the house load.</li>
+<li>evcc-io/evcc, template <code>solinteg-gen3</code> (MIT): signs, unit id 255.</li>
+<li>wills106/homeassistant-solax-modbus, <code>plugin_solinteg.py</code> (Apache-2.0): cross-check.</li>
+<li>Research comment in <a href="https://github.com/Gr33ndev/OpenAmpere/issues/520">#520</a>.</li>
+</ul>
+    </article>
+    <p class="doc-source"><a href="https://github.com/dominiquehartmann/myampere/blob/main/docs/devices/mtec/energy-butler.md">Diese Seite auf GitHub ansehen und verbessern</a></p>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      <p><a href="../../../impressum.html">Impressum und Datenschutz</a> ·
+        <a href="../../../changelog.html">Changelog</a> ·
+        <a href="../../../docs/devices/">Gerätewissen</a> ·
+        <a href="../../../docs/external-api.html">Für Entwickler</a> ·
+        <a href="https://github.com/Gr33ndev/OpenAmpere">Quellcode</a> ·
+        <a href="https://github.com/Gr33ndev/OpenAmpere/blob/main/LICENSE">MIT-Lizenz</a> ·
+        <a href="https://github.com/Gr33ndev/OpenAmpere/blob/main/SECURITY.md">Sicherheit</a></p>
+      <p class="small">Die meisten Wallboxen steuert <a href="https://evcc.io">evcc</a>, ein eigenständiges Open-Source-Projekt. Danke an die evcc-Community!</p>
+      <p class="small">Diese Seite setzt keine Cookies und nutzt kein Tracking.
+        Schrift: DM Sans (<a href="../../../fonts/OFL.txt">SIL Open Font License</a>).</p>
+    </div>
+  </footer>
+</body>
+</html>

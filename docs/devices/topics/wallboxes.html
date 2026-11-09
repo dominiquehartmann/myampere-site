@@ -1,0 +1,145 @@
+<!doctype html>
+<!-- SPDX-FileCopyrightText: Copyright the OpenAmpere contributors -->
+<!-- SPDX-License-Identifier: MIT -->
+<!-- A page of the device knowledge (#512) or of the interface for other apps (#588), filled with a Markdown file by
+     scripts/build-site-pages.mjs -->
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Wallboxes through evcc, OCPP and directly | Gerätewissen | OpenAmpere</title>
+  <meta name="description" content="Was OpenAmpere über Wechselrichter, Wallboxen und weitere Geräte weiß: Register, Verhalten und wie sicher jede Angabe ist." />
+  <meta name="theme-color" content="#f4f4f4" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#21262b" media="(prefers-color-scheme: dark)" />
+  <link rel="alternate" hreflang="de" href="https://dominiquehartmann.github.io/myampere/docs/devices/topics/wallboxes.html" />
+  <link rel="alternate" hreflang="en" href="https://dominiquehartmann.github.io/myampere/en/docs/devices/topics/wallboxes.html" />
+  <link rel="alternate" hreflang="x-default" href="https://dominiquehartmann.github.io/myampere/docs/devices/topics/wallboxes.html" />
+  <link rel="icon" href="../../../icon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="../../../style.css" />
+</head>
+<body>
+  <header class="top">
+    <div class="wrap top-inner">
+      <a class="brand" href="../../../"><img src="../../../icon.svg" alt="" width="32" height="32" />OpenAmpere</a>
+      <nav aria-label="Seitenbereiche">
+        <a href="../../../#funktionen">Funktionen</a>
+        <a href="../../../#installation">Installation</a>
+        <a href="../../../geraete.html">Geräte</a>
+        <a href="../../../faq.html">Fragen</a>
+        <a href="../../../changelog.html">Changelog</a>
+        <a href="../../../demo/?lang=de">Demo</a>
+        <a href="https://github.com/Gr33ndev/OpenAmpere">GitHub</a>
+        <span class="lang-switch" role="group" aria-label="Sprache"><a href="wallboxes.html" hreflang="de" lang="de" title="Deutsch" aria-label="Deutsch" aria-current="page">DE</a><a href="../../../en/docs/devices/topics/wallboxes.html" hreflang="en" lang="en" title="English" aria-label="English">EN</a></span>
+      </nav>
+    </div>
+  </header>
+
+  <main class="wrap doc-page">
+    <p class="eyebrow doc-crumb"><a href="../../../docs/devices/">Gerätewissen</a></p>
+    <p class="doc-note">Diese Seiten sind technisch und auf Englisch. Sie sammeln, was die Mitwirkenden von OpenAmpere über die Geräte herausgefunden haben, jeweils mit Quelle und wie sicher die Angabe ist. Sie zeigen den neuesten Stand der Entwicklung, der manchmal schon über deine installierte Version hinausgeht. Es sind keine offiziellen Angaben der Hersteller. Für die Einrichtung brauchst du sie nicht, die App erklärt dir alles Nötige.</p>
+    <article class="doc" lang="en">
+<h1 id="wallboxes-through-evcc-ocpp-and-directly">Wallboxes through evcc, OCPP and directly</h1>
+<blockquote>
+<p><strong>Not official manufacturer information.</strong> Compiled by the OpenAmpere contributors; can be incomplete or wrong. No
+affiliation with evcc or the manufacturers named here, not legal advice. See <a href="../index.html">Device knowledge</a>.</p>
+</blockquote>
+<p><strong>Applies to:</strong> wallboxes and vehicles supported by evcc; wallboxes that speak OCPP 1.6J (read-only check) · <strong>Sold
+as:</strong> – · <strong>OpenAmpere:</strong> <code>src/openampere/evcc.py</code> (evcc's REST API), <code>src/openampere/ocpp.py</code> (OCPP listener for the
+diagnostics) · <strong>Support:</strong> control through evcc; OCPP read-only · <strong>Confirmed on a real device:</strong> no</p>
+<h2 id="summary">Summary</h2>
+<ul>
+<li>Most wallboxes are controlled through evcc. OpenAmpere gives evcc the site meters (grid, PV, battery), so evcc needs
+no Modbus connection of its own to the inverter.</li>
+<li>A few wallboxes OpenAmpere reads itself, without evcc: it controls the portable dé wallbox over Tuya LAN, see
+<a href="../tuya/de-portable.html">tuya/de-portable.md</a>, and only shows the FoxESS AC EV Charger over Modbus TCP, never writing
+to it (<a href="../foxess/ac-charger.html">foxess/ac-charger.md</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/439">#439</a>); its charging modes
+only simulate the control and log what OpenAmpere would set (<a href="https://github.com/Gr33ndev/OpenAmpere/issues/440">#440</a>).
+It also only shows the Weidmüller AC SMART (&quot;AMPERE.Charge&quot;) over Modbus TCP (<a href="../weidmueller/ac-smart.html">weidmueller/ac-smart.md</a>,
+<a href="https://github.com/Gr33ndev/OpenAmpere/issues/523">#523</a>), and the go-e Charger over its local HTTP API
+(<a href="../goe/charger.html">goe/charger.md</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/597">#597</a>).
+Several of them, and an evcc wallbox next to them, share the place &quot;wallbox&quot; in the order of the solar surplus; one
+OpenAmpere only shows counts in the house load but is never acted on.</li>
+<li>Which wallboxes work is decided by evcc. Many need a paid evcc sponsor token; the public trial token runs out after
+some days, and evcc then no longer starts the wallbox.</li>
+<li>In evcc a loadpoint with the heating feature is a heat pump or heating rod; its &quot;SoC&quot; values are temperatures.</li>
+<li>For a quick check, a wallbox can be pointed at OpenAmpere as an OCPP 1.6J central system for at most 15 minutes.
+OpenAmpere only asks questions and never starts, stops or limits charging.</li>
+<li>The FoxESS AC EV Charger has its own page: <a href="../foxess/ac-charger.html">foxess/ac-charger.md</a>.</li>
+</ul>
+<h2 id="behaviour">Behaviour</h2>
+<div class="table"><table>
+<thead><tr><th>Fact</th><th>Status</th><th>Source</th></tr></thead>
+<tbody>
+<tr><td>evcc requires a paid sponsor token for many wallboxes, among them the FoxESS AC EV Charger. With an expired or missing token evcc refuses to start the wallbox.</td><td>derived</td><td>evcc documentation; <a href="https://github.com/Gr33ndev/OpenAmpere/issues/317">#317</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/318">#318</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/319">#319</a></td></tr>
+<tr><td>The public test token (&quot;trial&quot;) is valid only for a limited time: &quot;a few days&quot; in the code, about ten days in <a href="https://github.com/Gr33ndev/OpenAmpere/issues/317">#317</a>.</td><td>derived</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/317">#317</a>; <code>evcc.py</code></td></tr>
+<tr><td>evcc reports the token in <code>/api/state</code> under <code>sponsor</code> (<code>status.name</code>, <code>expiresAt</code>, <code>expiresSoon</code>; name <code>trial</code> for the test token).</td><td>derived</td><td>evcc documentation; <a href="https://github.com/Gr33ndev/OpenAmpere/issues/319">#319</a></td></tr>
+<tr><td>EKD sold the Weidmüller AC Smart Value (11 kW) as &quot;AMPERE.Charge&quot; (2023–2024). It speaks Modbus TCP (port 502), Modbus RTU and OCPP 1.6J. OpenAmpere shows it itself, read only (<a href="../weidmueller/ac-smart.html">weidmueller/ac-smart.md</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/523">#523</a>); control only through evcc.</td><td>documented (product, interfaces, start), derived (end of the period)</td><td>EKD datasheets &quot;AMPERE.Charge&quot;, 2023-04 and 2024-01; <a href="https://www.photovoltaikforum.com/thread/227016-ampere-charge-weidm%C3%BCller-wallbox-energiekonzepte-deutschland-ampere-storage-pro/">Photovoltaikforum on the Ampere.Charge</a>; <a href="names.html">names.md</a></td></tr>
+<tr><td>evcc controls the Weidmüller AC Smart with its <code>weidmüller</code> template (Modbus TCP, port 502); the template needs a sponsor token.</td><td>derived</td><td>evcc-io/evcc template <code>templates/definition/charger/weidmüller.yaml</code> (requirement <code>sponsorship</code>)</td></tr>
+<tr><td>evcc keeps reporting an expired test token: <code>status.name</code> stays <code>trial</code> with <code>expiresAt</code> in the past, so only the date shows that it has run out.</td><td>confirmed (owner report)</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/462">#462</a></td></tr>
+<tr><td>evcc's <code>sessionEnergy</code> and <code>sessionSolarPercentage</code> of a loadpoint count from connecting the car, and keep the last session's values after unplugging until the next connect. The charge notifications rely on this: the end message reports these values as the energy since plugging in, and a value lower than at the last end message counts as a new session.</td><td>open (not checked against evcc's code or a device)</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/451">#451</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/pull/453">#453</a></td></tr>
+<tr><td>An evcc loadpoint with the charger feature &quot;heating&quot; is a heat pump or heating rod: its &quot;SoC&quot; and limit values are temperatures.</td><td>derived</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/245">#245</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/249">#249</a></td></tr>
+<tr><td>A wallbox can be given an OCPP 1.6J central system (WebSocket, subprotocol <code>ocpp1.6</code>) in the manufacturer's app. In its BootNotification it reports vendor, model and firmware version; it sends StatusNotification and MeterValues.</td><td>documented</td><td>OCPP 1.6 specification (Open Charge Alliance); <a href="https://github.com/Gr33ndev/OpenAmpere/issues/328">#328</a></td></tr>
+<tr><td>While a BootNotification is answered with &quot;Pending&quot;, the central system may only retrieve information.</td><td>documented</td><td>OCPP 1.6 specification; <code>ocpp.py</code></td></tr>
+<tr><td>Without a charging profile, a wallbox in OCPP mode charges without a limit.</td><td>open (not checked on a real wallbox)</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/328">#328</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/333">#333</a></td></tr>
+</tbody>
+</table></div>
+<h2 id="decisions-in-openampere">Decisions in OpenAmpere</h2>
+<div class="table"><table>
+<thead><tr><th>Decision</th><th>Why</th><th>Issue/PR</th></tr></thead>
+<tbody>
+<tr><td>Wallboxes OpenAmpere does not know itself are controlled through evcc's REST API (until <a href="https://github.com/Gr33ndev/OpenAmpere/issues/386">#386</a> the only way); OpenAmpere serves evcc the site meters at <code>/api/evcc/site</code>.</td><td>evcc supports many wallboxes; the inverter keeps a free connection slot.</td><td><a href="https://github.com/dominiquehartmann/myampere/blob/main/docs/devices.md">docs/devices.md</a>, <a href="https://github.com/dominiquehartmann/myampere/blob/main/docs/evcc.md">evcc.md</a></td></tr>
+<tr><td>Wallboxes OpenAmpere knows itself are controlled without evcc (<code>wallbox/native.py</code>), so far the portable dé wallbox; evcc stays the way for all others.</td><td>No sponsor token, no second program for a single wallbox.</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/318">#318</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/386">#386</a>, <a href="../tuya/de-portable.html">tuya/de-portable.md</a></td></tr>
+<tr><td><code>wallbox/native.py</code> has one model per wallbox with the same reading for all (<code>base.Reading</code>); a model can be read only (no write path at all): so far the FoxESS AC EV Charger. Its power is shown and counted in the house load, but the surplus control never acts on it; its modes other than &quot;manual&quot; only simulate the control, logged as not sent and never taking surplus from other devices (#440).</td><td>Show a wallbox and how its control would behave before its write registers and watchdog are confirmed, without any risk.</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/439">#439</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/440">#440</a>, <a href="../foxess/ac-charger.html">foxess/ac-charger.md</a></td></tr>
+<tr><td>The sponsor token's state is shown in the app; a missing or expired token gets its own message; a date in the past counts as expired.</td><td>An expired token stops the wallbox.</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/317">#317</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/319">#319</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/462">#462</a></td></tr>
+<tr><td>The limit of a heating loadpoint is a temperature capped at 20–90 °C; a car loadpoint uses 20–100 %.</td><td>evcc uses the same field for both.</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/245">#245</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/249">#249</a></td></tr>
+<tr><td>evcc's battery priority (<code>priority_soc</code>) is sent only with control switched on and outside test mode, and it is logged.</td><td>Same rules as every other control.</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/219">#219</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/226">#226</a></td></tr>
+<tr><td>OCPP listener for the diagnostics only: OCPP 1.6J, security profile 0, open for at most 15 minutes, at most 500 messages of 64 KiB per connection. BootNotification is answered with &quot;Pending&quot; (heartbeat 60 s), Heartbeat with the time; StatusNotification and MeterValues are recorded for the diagnostics report; everything else (Authorize, StartTransaction, …) gets CALLERROR NotSupported. OpenAmpere sends only GetConfiguration and GetCompositeSchedule; never start or stop, charging profiles or configuration changes.</td><td>A read-only check of the wallbox without taking over its control.</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/328">#328</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/333">#333</a></td></tr>
+<tr><td>The OCPP listener refuses a WebSocket that carries an <code>Origin</code> header or a Host that is not allowed (as the rest of the app); it takes its single connection before the first check that waits, and the texts a wallbox sends (vendor, model, firmware, status, …) appear in the report as inline code.</td><td>A wallbox sends no <code>Origin</code>, a browser always does: otherwise any web page opened in the home network could take the connection and write into the report. Applies to the Home Assistant app as well, where the wallbox connects directly, not through the sidebar.</td><td>security fix (<a href="https://github.com/Gr33ndev/OpenAmpere/security/advisories/GHSA-q2mp-55hm-346m">GHSA-q2mp-55hm-346m</a>)</td></tr>
+<tr><td>The app warns before the OCPP check that the wallbox may charge without a limit while it points at OpenAmpere.</td><td>No charging profile is sent.</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/328">#328</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/333">#333</a></td></tr>
+</tbody>
+</table></div>
+<h2 id="open-questions">Open questions</h2>
+<ul>
+<li>No wallbox has been confirmed with OpenAmpere on a real system
+(<a href="https://github.com/Gr33ndev/OpenAmpere/issues/111">#111</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/173">#173</a>,
+<a href="https://github.com/Gr33ndev/OpenAmpere/issues/185">#185</a>).</li>
+<li>The OCPP listener is tested with a fake client only, not with a real wallbox
+(<a href="https://github.com/Gr33ndev/OpenAmpere/issues/333">#333</a>).</li>
+<li>How long the evcc trial token lasts: &quot;a few days&quot; in the code against about ten days in
+<a href="https://github.com/Gr33ndev/OpenAmpere/issues/317">#317</a>; evcc may change it.</li>
+</ul>
+<h2 id="sources">Sources</h2>
+<ul>
+<li>evcc (evcc-io/evcc, MIT for the core, some device modules proprietary): documentation and REST API; no evcc code in
+OpenAmpere, see <a href="https://github.com/dominiquehartmann/myampere/blob/main/NOTICE">NOTICE</a>.</li>
+<li>OCPP 1.6 specification of the Open Charge Alliance.</li>
+<li>Issues and pull requests: <a href="https://github.com/Gr33ndev/OpenAmpere/issues/111">#111</a>,
+<a href="https://github.com/Gr33ndev/OpenAmpere/issues/173">#173</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/185">#185</a>,
+<a href="https://github.com/Gr33ndev/OpenAmpere/issues/219">#219</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/226">#226</a>,
+<a href="https://github.com/Gr33ndev/OpenAmpere/issues/245">#245</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/249">#249</a>,
+<a href="https://github.com/Gr33ndev/OpenAmpere/issues/317">#317</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/318">#318</a>,
+<a href="https://github.com/Gr33ndev/OpenAmpere/issues/319">#319</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/328">#328</a>,
+<a href="https://github.com/Gr33ndev/OpenAmpere/issues/333">#333</a>.</li>
+<li>Code: <code>src/openampere/evcc.py</code>, <code>src/openampere/ocpp.py</code>; <a href="https://github.com/dominiquehartmann/myampere/blob/main/docs/devices.md">docs/devices.md</a>,
+<a href="https://github.com/dominiquehartmann/myampere/blob/main/docs/evcc.md">docs/evcc.md</a>.</li>
+</ul>
+    </article>
+    <p class="doc-source"><a href="https://github.com/dominiquehartmann/myampere/blob/main/docs/devices/topics/wallboxes.md">Diese Seite auf GitHub ansehen und verbessern</a></p>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      <p><a href="../../../impressum.html">Impressum und Datenschutz</a> ·
+        <a href="../../../changelog.html">Changelog</a> ·
+        <a href="../../../docs/devices/">Gerätewissen</a> ·
+        <a href="../../../docs/external-api.html">Für Entwickler</a> ·
+        <a href="https://github.com/Gr33ndev/OpenAmpere">Quellcode</a> ·
+        <a href="https://github.com/Gr33ndev/OpenAmpere/blob/main/LICENSE">MIT-Lizenz</a> ·
+        <a href="https://github.com/Gr33ndev/OpenAmpere/blob/main/SECURITY.md">Sicherheit</a></p>
+      <p class="small">Die meisten Wallboxen steuert <a href="https://evcc.io">evcc</a>, ein eigenständiges Open-Source-Projekt. Danke an die evcc-Community!</p>
+      <p class="small">Diese Seite setzt keine Cookies und nutzt kein Tracking.
+        Schrift: DM Sans (<a href="../../../fonts/OFL.txt">SIL Open Font License</a>).</p>
+    </div>
+  </footer>
+</body>
+</html>

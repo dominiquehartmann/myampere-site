@@ -1,0 +1,336 @@
+<!doctype html>
+<!-- SPDX-FileCopyrightText: Copyright the OpenAmpere contributors -->
+<!-- SPDX-License-Identifier: MIT -->
+<!-- A page of the device knowledge (#512) or of the interface for other apps (#588), filled with a Markdown file by
+     scripts/build-site-pages.mjs -->
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>SAJ H2, HS2, AS2 (family range of type codes) | Gerätewissen | OpenAmpere</title>
+  <meta name="description" content="Was OpenAmpere über Wechselrichter, Wallboxen und weitere Geräte weiß: Register, Verhalten und wie sicher jede Angabe ist." />
+  <meta name="theme-color" content="#f4f4f4" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#21262b" media="(prefers-color-scheme: dark)" />
+  <link rel="alternate" hreflang="de" href="https://dominiquehartmann.github.io/myampere/docs/devices/saj/h2-family.html" />
+  <link rel="alternate" hreflang="en" href="https://dominiquehartmann.github.io/myampere/en/docs/devices/saj/h2-family.html" />
+  <link rel="alternate" hreflang="x-default" href="https://dominiquehartmann.github.io/myampere/docs/devices/saj/h2-family.html" />
+  <link rel="icon" href="../../../icon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="../../../style.css" />
+</head>
+<body>
+  <header class="top">
+    <div class="wrap top-inner">
+      <a class="brand" href="../../../"><img src="../../../icon.svg" alt="" width="32" height="32" />OpenAmpere</a>
+      <nav aria-label="Seitenbereiche">
+        <a href="../../../#funktionen">Funktionen</a>
+        <a href="../../../#installation">Installation</a>
+        <a href="../../../geraete.html">Geräte</a>
+        <a href="../../../faq.html">Fragen</a>
+        <a href="../../../changelog.html">Changelog</a>
+        <a href="../../../demo/?lang=de">Demo</a>
+        <a href="https://github.com/Gr33ndev/OpenAmpere">GitHub</a>
+        <span class="lang-switch" role="group" aria-label="Sprache"><a href="h2-family.html" hreflang="de" lang="de" title="Deutsch" aria-label="Deutsch" aria-current="page">DE</a><a href="../../../en/docs/devices/saj/h2-family.html" hreflang="en" lang="en" title="English" aria-label="English">EN</a></span>
+      </nav>
+    </div>
+  </header>
+
+  <main class="wrap doc-page">
+    <p class="eyebrow doc-crumb"><a href="../../../docs/devices/">Gerätewissen</a></p>
+    <p class="doc-note">Diese Seiten sind technisch und auf Englisch. Sie sammeln, was die Mitwirkenden von OpenAmpere über die Geräte herausgefunden haben, jeweils mit Quelle und wie sicher die Angabe ist. Sie zeigen den neuesten Stand der Entwicklung, der manchmal schon über deine installierte Version hinausgeht. Es sind keine offiziellen Angaben der Hersteller. Für die Einrichtung brauchst du sie nicht, die App erklärt dir alles Nötige.</p>
+    <article class="doc" lang="en">
+<h1 id="saj-h2-hs2-as2-family-range-of-type-codes">SAJ H2, HS2, AS2 (family range of type codes)</h1>
+<blockquote>
+<p>Not official manufacturer information: compiled by the OpenAmpere contributors, can be incomplete or wrong. Changing
+inverter settings can affect the warranty and grid rules; no affiliation with SAJ or EKD; not legal advice. See the
+<a href="../index.html">device knowledge README</a>.</p>
+</blockquote>
+<p><strong>Applies to:</strong> SAJ hybrid inverters H2, HS2 and AS2, every type code 0x0050–0x006F in register 0x8F00 · <strong>Sold as:</strong>
+&quot;Ampere.StoragePro&quot; (H2, HS2 and the three-phase 0x005E; for the AS2 not stated in the sources) · <strong>OpenAmpere:</strong>
+driver <code>saj</code> (<code>src/openampere/drivers/saj/</code>), register map <code>saj_h2</code> · <strong>Support:</strong> display for the whole family range;
+control (battery settings, export limit, grid charging) for 0x005A–0x005E since 0.29.0 · <strong>Confirmed on a real
+device:</strong> partly (identification, battery limits and battery temperature; in daily use on a 0x005E; the signs of battery and
+grid power not yet; of OpenAmpere's own writes only the on-grid depth 0x3644 on a 0x005E)</p>
+<p>Type-specific page: <a href="0x005e-3p-x-e2.html">0x005E, &quot;3P-X E2&quot;</a>.</p>
+<h2 id="summary">Summary</h2>
+<ul>
+<li>One register map for the whole family; the type code in 0x8F00 decides the name and whether control is enabled.
+Unknown codes in the family range are read like an H2.</li>
+<li>The live and counter registers come from community projects; the control registers from SAJ's
+&quot;H2-3~6K-S2 single phase communication protocol&quot; (2022-12-02). The battery limits 0x3644/0x3645 were matched with
+the manufacturer's app on a real device (<a href="https://github.com/Gr33ndev/OpenAmpere/issues/334">#334</a>).</li>
+<li>Three-phase types have summed grid counters (0x4167 ff.); some firmware lacks them, then the L1 counters are used.</li>
+<li>SAJ has <strong>no remote control with a watchdog</strong>. Passive mode stays on until it is changed, so OpenAmpere charges from
+the grid through a short charge slot of the time-of-use mode (slot 7) that it keeps extending; if OpenAmpere stops,
+charging ends with the slot, at most 10 minutes later.</li>
+<li>The work mode &quot;backup&quot; has its own reserve (0x3651); the reserve of normal operation (0x3644) does not apply there.</li>
+<li>Still open: the signs of battery and grid power, and whether the PV counter covers all MPPTs.</li>
+</ul>
+<h2 id="registers">Registers</h2>
+<p>All reads use FC03, all writes FC06 (one register at a time). Device address (unit id) 1 or 2, port 502.
+&quot;Community&quot; means the projects listed under <a href="#sources">Sources</a>.</p>
+<h3 id="identification">Identification</h3>
+<div class="table"><table>
+<thead><tr><th>Register</th><th>Meaning</th><th>Type, scale, sign</th><th>R/W</th><th>Status</th><th>Source</th></tr></thead>
+<tbody>
+<tr><td>0x8F00</td><td>Device type code. Names: 0x0055 &quot;AS2 3-6K&quot;, 0x0056 &quot;AS2 5-10K&quot;, 0x005A &quot;H2 3-6K S2&quot;, 0x005B &quot;H2 5-10K S3&quot;, 0x005C &quot;HS2 3-6K S2&quot;, 0x005D &quot;HS2 5-10K S3&quot;, 0x005E &quot;3P-X E2&quot; (not in the protocol, see <a href="0x005e-3p-x-e2.html">its page</a>)</td><td>U16</td><td>R</td><td>confirmed</td><td>H2 protocol (0x0055–0x005D); community; read on a real 0x005E (<a href="https://github.com/Gr33ndev/OpenAmpere/issues/334">#334</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/339">#339</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/379">#379</a>)</td></tr>
+<tr><td>0x8F01</td><td>Rated power; used for the export limit and the charging power in %</td><td>U16, W</td><td>R</td><td>open</td><td>OpenAmpere's reading since <a href="https://github.com/Gr33ndev/OpenAmpere/issues/379">#379</a>, without a source; stanus74 names it &quot;sub type&quot; (<a href="https://github.com/Gr33ndev/OpenAmpere/issues/492">#492</a>)</td></tr>
+<tr><td>0x8F02</td><td>Communication version (read with the block, not shown)</td><td>U16</td><td>R</td><td>derived</td><td>community</td></tr>
+<tr><td>0x8F03–0x8F0C</td><td>Serial number</td><td>10 registers ASCII</td><td>R</td><td>derived</td><td>community</td></tr>
+<tr><td>0x8F0D–0x8F16</td><td>Product code; shown as serial number if the serial is empty</td><td>10 registers ASCII</td><td>R</td><td>derived</td><td>community</td></tr>
+<tr><td>0x8F17–0x8F1C</td><td>Firmware versions; the first three are shown as value / 1000</td><td>6 × U16</td><td>R</td><td>derived</td><td>community</td></tr>
+</tbody>
+</table></div>
+<h3 id="status-clock-and-temperatures">Status, clock and temperatures</h3>
+<div class="table"><table>
+<thead><tr><th>Register</th><th>Meaning</th><th>Type, scale, sign</th><th>R/W</th><th>Status</th><th>Source</th></tr></thead>
+<tbody>
+<tr><td>0x4000–0x4003</td><td>Inverter clock: year; month &lt;&lt; 8 | day; hour &lt;&lt; 8 | minute; second &lt;&lt; 8. Charge slots follow this clock</td><td>4 × U16</td><td>R</td><td>documented</td><td>H2 protocol; <a href="https://github.com/Gr33ndev/OpenAmpere/issues/377">#377</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/378">#378</a></td></tr>
+<tr><td>0x4004</td><td>Running mode: 0 init, 1 wait, 2 run, 3 off-grid (power cut), 4 on-grid storage, 5 fault, 6 update, 7 test, 8 self-check, 9 reset. Also part of the detection check</td><td>U16</td><td>R</td><td>derived</td><td>community</td></tr>
+<tr><td>0x4005–0x4006</td><td>Fault word 1</td><td>U32</td><td>R</td><td>derived</td><td>community</td></tr>
+<tr><td>0x4007–0x4008</td><td>Fault word 2</td><td>U32</td><td>R</td><td>derived</td><td>community</td></tr>
+<tr><td>0x4009–0x400A</td><td>Fault word 3</td><td>U32</td><td>R</td><td>derived</td><td>community</td></tr>
+<tr><td>0x4010</td><td>Inverter (heat sink) temperature</td><td>I16, ×0.1 °C</td><td>R</td><td>derived</td><td>community</td></tr>
+<tr><td>0x4011</td><td>Ambient temperature</td><td>I16, ×0.1 °C</td><td>R</td><td>derived</td><td>community</td></tr>
+</tbody>
+</table></div>
+<h3 id="read-back-of-the-battery-settings">Read-back of the battery settings</h3>
+<div class="table"><table>
+<thead><tr><th>Register</th><th>Meaning</th><th>Type, scale, sign</th><th>R/W</th><th>Status</th><th>Source</th></tr></thead>
+<tbody>
+<tr><td>0x4022</td><td>Work mode (AppMode) read-back; used for the work mode only if 0x3644–0x3647 cannot be read</td><td>U16</td><td>R</td><td>derived</td><td>community</td></tr>
+<tr><td>0x4029</td><td>Charge limit read-back; used only if 0x3644–0x3647 cannot be read. Which setting it mirrors was not established by the report in <a href="https://github.com/Gr33ndev/OpenAmpere/issues/334">#334</a></td><td>U16, % SoC</td><td>R</td><td>open</td><td>community; <a href="https://github.com/Gr33ndev/OpenAmpere/issues/334">#334</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/337">#337</a></td></tr>
+<tr><td>0x402A</td><td>&quot;BatDisSocDowLimit&quot; / set SoC_L: on-grid limit (backup reserve) read-back; used only if 0x3644–0x3647 cannot be read. Equalled 0x3644 on a real device. Up to 0.25.0 it was wrongly read as the off-grid limit</td><td>U16, % SoC</td><td>R</td><td>confirmed</td><td>H1 protocol (applies to grid-connected operation); <a href="https://github.com/Gr33ndev/OpenAmpere/issues/334">#334</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/335">#335</a></td></tr>
+<tr><td>0x402B</td><td>Labelled &quot;dod&quot; in the diagnostics report; read only there, meaning unknown</td><td>U16, %</td><td>R (diagnostics)</td><td>open</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/337">#337</a></td></tr>
+<tr><td>0x402C</td><td>&quot;BatResSoc&quot;, reserved SoC: read with the block but not used. Up to 0.25.0 it was wrongly read as the backup reserve</td><td>U16, % SoC</td><td>R</td><td>open</td><td>community; <a href="https://github.com/Gr33ndev/OpenAmpere/issues/334">#334</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/335">#335</a></td></tr>
+</tbody>
+</table></div>
+<h3 id="battery-pv-and-power">Battery, PV and power</h3>
+<div class="table"><table>
+<thead><tr><th>Register</th><th>Meaning</th><th>Type, scale, sign</th><th>R/W</th><th>Status</th><th>Source</th></tr></thead>
+<tbody>
+<tr><td>0x4069</td><td>Battery voltage</td><td>U16, ×0.1 V</td><td>R</td><td>derived</td><td>community</td></tr>
+<tr><td>0x406A</td><td>Battery current</td><td>I16, ×0.01 A</td><td>R</td><td>derived</td><td>community</td></tr>
+<tr><td>0x406E</td><td>Battery temperature (fallback 0xA010)</td><td>I16, ×0.1 °C</td><td>R</td><td>confirmed</td><td>community; matched another integration on a real device (<a href="https://github.com/Gr33ndev/OpenAmpere/issues/372">#372</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/376">#376</a>)</td></tr>
+<tr><td>0x406F</td><td>State of charge; also part of the detection check (≤ 10000)</td><td>U16, ×0.01 %</td><td>R</td><td>derived</td><td>community</td></tr>
+<tr><td>0x4071 / 0x4072 / 0x4073</td><td>PV1 voltage / current / power</td><td>U16 ×0.1 V / U16 ×0.01 A / U16 W</td><td>R</td><td>derived</td><td>community</td></tr>
+<tr><td>0x4074 / 0x4075 / 0x4076</td><td>PV2 voltage / current / power</td><td>as PV1</td><td>R</td><td>derived</td><td>community</td></tr>
+<tr><td>0x4077 / 0x4078 / 0x4079</td><td>PV3 voltage / current / power</td><td>as PV1</td><td>R</td><td>derived</td><td>community</td></tr>
+<tr><td>0x407A / 0x407B / 0x407C</td><td>PV4 voltage / current / power</td><td>as PV1</td><td>R</td><td>derived</td><td>community</td></tr>
+<tr><td>0x40A0</td><td>House consumption as the inverter computes it. On one device it matched the balance (grid + PV + Meter B + battery, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/419">#419</a>); on a 0x005E with a second inverter at Meter B it was far off while the battery charged or discharged (about 0.5 kW too high while charging at about 1 kW, half the balance while discharging). OpenAmpere uses it only as a fallback</td><td>I16, W</td><td>R</td><td>derived</td><td>community; <a href="https://github.com/Gr33ndev/OpenAmpere/issues/576">#576</a></td></tr>
+<tr><td>0x40A3</td><td>Power measured by a second meter at the inverter (Meter B, &quot;CT PV power&quot;): an extra PV inverter without its own connection. Not part of 0x40A5; on one device the balance only closed with it. Negative values (standby at night, meter direction) are counted as 0.</td><td>I16, W</td><td>R</td><td>derived</td><td>stanus74/home-assistant-saj-h2-modbus (&quot;CT_PVPowerWatt&quot;); one owner's measurements, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/419">#419</a></td></tr>
+<tr><td>0x40A5</td><td>PV power of the inverter itself, total (if missing, the sum of PV1–4); without Meter B (0x40A3)</td><td>I16, W</td><td>R</td><td>derived</td><td>community</td></tr>
+<tr><td>0x40A6</td><td>Battery power. On a 0x005E the state of charge rose while it was negative</td><td>I16, W, + = discharging</td><td>R</td><td>derived</td><td>evcc-io/evcc saj-h2 template; an owner's app screenshots in <a href="https://github.com/Gr33ndev/OpenAmpere/issues/576">#576</a></td></tr>
+<tr><td>0x40AD</td><td>Grid power (system meter). On a 0x005E it was positive in the evening without PV and with the battery idle</td><td>I16, W, + = import</td><td>R</td><td>derived</td><td>evcc-io/evcc saj-h2 template; an owner's app screenshots in <a href="https://github.com/Gr33ndev/OpenAmpere/issues/576">#576</a></td></tr>
+</tbody>
+</table></div>
+<h3 id="energy-counters">Energy counters</h3>
+<p>All U32 (two registers), 0.01 kWh (OpenAmpere: ×10 → Wh, counter step 10 Wh).</p>
+<div class="table"><table>
+<thead><tr><th>Register</th><th>Meaning</th><th>Type, scale, sign</th><th>R/W</th><th>Status</th><th>Source</th></tr></thead>
+<tbody>
+<tr><td>0x40BF / 0x40C5</td><td>PV energy today / total. Whether it covers all MPPTs is open</td><td>U32, 0.01 kWh</td><td>R</td><td>derived</td><td>community</td></tr>
+<tr><td>0x40C7 / 0x40CD</td><td>Battery charge today / total</td><td>U32, 0.01 kWh</td><td>R</td><td>derived</td><td>community</td></tr>
+<tr><td>0x40CF / 0x40D5</td><td>Battery discharge today / total</td><td>U32, 0.01 kWh</td><td>R</td><td>derived</td><td>community</td></tr>
+<tr><td>0x40DF / 0x40E5</td><td>House consumption today / total</td><td>U32, 0.01 kWh</td><td>R</td><td>derived</td><td>community</td></tr>
+<tr><td>0x40EF / 0x40F5</td><td>Grid export today / total, phase L1 (SAJ calls it &quot;sell&quot;)</td><td>U32, 0.01 kWh</td><td>R</td><td>derived</td><td>community</td></tr>
+<tr><td>0x40F7 / 0x40FD</td><td>Grid import today / total, phase L1 (SAJ calls it &quot;feed-in&quot;)</td><td>U32, 0.01 kWh</td><td>R</td><td>derived</td><td>community</td></tr>
+<tr><td>0x4167 / 0x416D</td><td>Grid import today / total, all three phases; missing on some firmware</td><td>U32, 0.01 kWh</td><td>R</td><td>derived</td><td>community</td></tr>
+<tr><td>0x416F / 0x4175</td><td>Grid export today / total, all three phases; missing on some firmware</td><td>U32, 0.01 kWh</td><td>R</td><td>derived</td><td>community</td></tr>
+</tbody>
+</table></div>
+<h3 id="battery-modules-bms">Battery modules (BMS)</h3>
+<div class="table"><table>
+<thead><tr><th>Register</th><th>Meaning</th><th>Type, scale, sign</th><th>R/W</th><th>Status</th><th>Source</th></tr></thead>
+<tbody>
+<tr><td>0xA000</td><td>Number of battery modules (read with the block, not used)</td><td>U16</td><td>R</td><td>derived</td><td>community</td></tr>
+<tr><td>0xA00D</td><td>Battery state of health</td><td>U16, ×0.01 %</td><td>R</td><td>derived</td><td>community</td></tr>
+<tr><td>0xA010</td><td>Temperature of the first battery module; fallback for 0x406E</td><td>I16, ×0.1 °C</td><td>R</td><td>derived</td><td>community; <a href="https://github.com/Gr33ndev/OpenAmpere/issues/376">#376</a></td></tr>
+</tbody>
+</table></div>
+<h3 id="settings-and-control">Settings and control</h3>
+<div class="table"><table>
+<thead><tr><th>Register</th><th>Meaning</th><th>Type, scale, sign</th><th>R/W</th><th>Status</th><th>Source</th></tr></thead>
+<tbody>
+<tr><td>0x3604</td><td>Charge slot enable mask: bit n switches charge slot n+1 on. OpenAmpere uses bit 6 (slot 7)</td><td>U16, bit mask</td><td>R/W</td><td>documented</td><td>H2 protocol; stanus74 <code>charge_control.py</code>; evcc <code>saj-h2.yaml</code>; <a href="https://github.com/Gr33ndev/OpenAmpere/issues/377">#377</a></td></tr>
+<tr><td>0x3606–0x3617</td><td>Charge slots 1–6 (three registers each, layout as slot 7). Not read or written by OpenAmpere; stanus74 and evcc use slot 1 (0x3606–0x3608)</td><td>3 × U16 per slot</td><td>–</td><td>documented</td><td>H2 protocol; stanus74; evcc</td></tr>
+<tr><td>0x3618</td><td>Charge slot 7 start: hour &lt;&lt; 8 | minute</td><td>U16</td><td>R/W</td><td>documented</td><td>H2 protocol; <a href="https://github.com/Gr33ndev/OpenAmpere/issues/378">#378</a></td></tr>
+<tr><td>0x3619</td><td>Charge slot 7 end: hour &lt;&lt; 8 | minute</td><td>U16</td><td>R/W</td><td>documented</td><td>H2 protocol; <a href="https://github.com/Gr33ndev/OpenAmpere/issues/378">#378</a></td></tr>
+<tr><td>0x361A</td><td>Charge slot 7 days (high byte, bit 0 = Monday) and power in % of rated power (low byte)</td><td>U16</td><td>R/W</td><td>documented</td><td>H2 protocol; <a href="https://github.com/Gr33ndev/OpenAmpere/issues/378">#378</a></td></tr>
+<tr><td>0x3636–0x363A</td><td>Passive mode registers. Not read or written: no timeout (see Behaviour)</td><td>–</td><td>–</td><td>documented</td><td>H2 protocol; stanus74/home-assistant-saj-h2-modbus#157</td></tr>
+<tr><td>0x3644</td><td>On-grid discharge depth = backup reserve, lowest SoC in normal operation (self-use). In % SoC, not depth of discharge. Matched the manufacturer's app on a real device; the previous IQ box writes it as the reserve. OpenAmpere's write and read-back confirmed on a 0x005E; whether the battery keeps to the new value is open</td><td>U16, % SoC</td><td>R/W</td><td>confirmed</td><td>H2 protocol; stanus74 (name); <a href="https://github.com/Gr33ndev/OpenAmpere/issues/334">#334</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/335">#335</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/337">#337</a>; stanus74/home-assistant-saj-h2-modbus#18; <a href="https://github.com/Gr33ndev/OpenAmpere/issues/601">#601</a></td></tr>
+<tr><td>0x3645</td><td>Off-grid discharge depth: lowest SoC during a power cut. In % SoC. Matched the manufacturer's app on a real device; OpenAmpere's write not yet confirmed</td><td>U16, % SoC</td><td>R/W</td><td>confirmed</td><td>H2 protocol; stanus74 (name); <a href="https://github.com/Gr33ndev/OpenAmpere/issues/334">#334</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/335">#335</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/337">#337</a></td></tr>
+<tr><td>0x3646</td><td>Charge limit (highest SoC). Read on a real device as part of the block; OpenAmpere's write not yet confirmed</td><td>U16, % SoC</td><td>R/W</td><td>documented</td><td>H2 protocol; stanus74 <code>charge_control.py</code>; evcc <code>saj-h2.yaml</code>; <a href="https://github.com/Gr33ndev/OpenAmpere/issues/334">#334</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/378">#378</a></td></tr>
+<tr><td>0x3647</td><td>Work mode (AppMode): 0 self-use, 1 time-of-use, 2 backup, 3 passive, 10 peak shaving. Read on a real device as part of the block</td><td>U16</td><td>R/W</td><td>documented</td><td>H2 protocol; stanus74; evcc; <a href="https://github.com/Gr33ndev/OpenAmpere/issues/334">#334</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/377">#377</a></td></tr>
+<tr><td>0x3651</td><td>&quot;BatSocLimitkeep&quot;: reserve that applies in work mode backup (AppMode 2). On a real device it held a value of its own, different from 0x3644</td><td>U16, % SoC</td><td>R/W</td><td>documented</td><td>H2 protocol; evcc <code>saj-h2.yaml</code>; <a href="https://github.com/Gr33ndev/OpenAmpere/issues/334">#334</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/380">#380</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/381">#381</a></td></tr>
+<tr><td>0x365A</td><td>Export limit in per mille of the rated power; applies only while 0x365C is 1 or 3</td><td>U16, ‰ of 0x8F01</td><td>R/W</td><td>documented (register, mode); derived (unit: the per-mille formula is given for the neighbouring percentage registers, and its base 0x8F01 is open)</td><td>H2 protocol; stanus74; evcc; <a href="https://github.com/Gr33ndev/OpenAmpere/issues/377">#377</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/492">#492</a></td></tr>
+<tr><td>0x365B</td><td>Export limit by phase current, used with 0x365C = 2. Read with 0x365A–0x365C, never written</td><td>U16, A</td><td>R</td><td>documented</td><td>H2 protocol; <a href="https://github.com/Gr33ndev/OpenAmpere/issues/378">#378</a></td></tr>
+<tr><td>0x365C</td><td>Export limit (&quot;anti-reflux&quot;) mode: 0 off, 1 total power, 2 phase current, 3 power per phase</td><td>U16</td><td>R/W</td><td>documented</td><td>H2 protocol; <a href="https://github.com/Gr33ndev/OpenAmpere/issues/377">#377</a></td></tr>
+<tr><td>0x365F</td><td>Time-of-use behaviour outside the charge slots: 0 standby, 1 self-use</td><td>U16</td><td>R/W</td><td>documented</td><td>H2 protocol; <a href="https://github.com/Gr33ndev/OpenAmpere/issues/378">#378</a></td></tr>
+<tr><td>0x8300–0x8306</td><td>Undocumented block; answers reads; the previous IQ box writes it every 1–3 s while charging. Not read or written by OpenAmpere</td><td>–</td><td>–</td><td>open</td><td>stanus74/home-assistant-saj-h2-modbus#18; research in <a href="https://github.com/Gr33ndev/OpenAmpere/issues/377">#377</a></td></tr>
+</tbody>
+</table></div>
+<h2 id="behaviour">Behaviour</h2>
+<div class="table"><table>
+<thead><tr><th>Fact</th><th>Status</th><th>Source</th></tr></thead>
+<tbody>
+<tr><td>Modbus TCP on port 502; the device address is 1 or 2, depending on the installation (communication module).</td><td>derived</td><td>community; <a href="https://github.com/dominiquehartmann/myampere/blob/main/docs/devices.md">devices.md</a></td></tr>
+<tr><td>EKD's SAJ systems (&quot;Ampere.StoragePro&quot;, 2023–2024) come with a Chint DTSU666 grid meter, sold as &quot;AMPERE.StoragePro Meter&quot; and connected to the inverter over RS485.</td><td>derived</td><td><a href="https://www.photovoltaikforum.com/thread/222147-ekd-speicher-ampere-storage-pro-ein-chinamodell-und-weitere-fragen-dazu/">Photovoltaikforum on the Ampere Storage Pro</a>; <a href="../topics/names.html">names.md</a></td></tr>
+<tr><td>Names and meanings of the live registers were checked against SAJ's protocols for related inverters (R5/R6/C6 and H1).</td><td>derived</td><td><a href="https://github.com/dominiquehartmann/myampere/blob/main/docs/registers.md">registers.md</a></td></tr>
+<tr><td>SAJ's H2 protocol lists the type codes 0x0055–0x005D; 0x005E is not in it.</td><td>documented</td><td>H2 protocol; <a href="https://github.com/Gr33ndev/OpenAmpere/issues/379">#379</a></td></tr>
+<tr><td>A type code does not identify one power class: 0x005B covers 5 to 10 kW.</td><td>documented</td><td>H2 protocol; <a href="https://github.com/Gr33ndev/OpenAmpere/issues/379">#379</a></td></tr>
+<tr><td>On a real device (type 0x005E) detection, live values and battery limits read correctly with this map.</td><td>confirmed</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/334">#334</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/339">#339</a></td></tr>
+<tr><td>The AS2 (0x0055, 0x0056) is read with the same map; no report from a real AS2 yet.</td><td>open</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/347">#347</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/348">#348</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/378">#378</a></td></tr>
+<tr><td>Running mode 3 (0x4004) means off-grid: the inverter supplies the house during a power cut.</td><td>derived</td><td>community</td></tr>
+<tr><td>The summed grid counters 0x4167 ff. are missing on some firmware (the block is rejected).</td><td>derived</td><td>community; <a href="https://github.com/dominiquehartmann/myampere/blob/main/docs/devices.md">devices.md</a></td></tr>
+<tr><td>SAJ's counter names are the wrong way round from the owner's view: export is &quot;sell&quot;, import is &quot;feed-in&quot;.</td><td>derived</td><td>community</td></tr>
+<tr><td>The battery limits are 0x3644 (on grid, = backup reserve) and 0x3645 (off grid, during a power cut), both in % SoC. <strong>Turned out wrong:</strong> up to 0.25.0 OpenAmpere read the reserve from 0x402C and the off-grid limit from 0x402A, so on a real device the two values appeared swapped compared with the manufacturer's app.</td><td>confirmed</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/334">#334</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/335">#335</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/337">#337</a></td></tr>
+<tr><td>The block 0x3644–0x3647 (on-grid depth, off-grid depth, charge limit, work mode) matched the manufacturer's app on a real device.</td><td>confirmed</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/334">#334</a> (diagnostics report), <a href="https://github.com/Gr33ndev/OpenAmpere/issues/337">#337</a></td></tr>
+<tr><td>Some firmware rejects 0x3644–0x3647; then only the read-back registers 0x4022, 0x4029 and 0x402A are available.</td><td>derived</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/335">#335</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/337">#337</a></td></tr>
+<tr><td>In the read-back block of that device 0x402A equalled 0x3644. 0x402C equalled the off-grid depth and not 0x3651, but the off-grid depth had a value an unused register could also show, so this does not settle 0x402C.</td><td>confirmed (0x402A), open (0x402C)</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/334">#334</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/335">#335</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/337">#337</a></td></tr>
+<tr><td>Battery temperature 0x406E matched the value of another integration on a real device. (An earlier question whether this value is the battery or the BMS temperature, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/41">#41</a>, is settled by this.)</td><td>confirmed</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/372">#372</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/376">#376</a></td></tr>
+<tr><td>SAJ has no &quot;feed-in first&quot; work mode; the modes are self-use, time-of-use, backup, passive and peak shaving.</td><td>documented</td><td>H2 protocol; <a href="https://github.com/Gr33ndev/OpenAmpere/issues/377">#377</a></td></tr>
+<tr><td>0x3651 is the reserve of the backup mode. On a real device it held a different value than 0x3644, so the two are separate settings. The backup mode keeps the battery full for a power cut only if 0x3651 is 100 %.</td><td>documented; confirmed (separate register)</td><td>H2 protocol; <a href="https://github.com/Gr33ndev/OpenAmpere/issues/334">#334</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/380">#380</a></td></tr>
+<tr><td>In backup mode the battery supplies the house only down to 0x3651 and keeps the rest for a power cut; 0x3644 has no effect in that mode. evcc relies on this (backup mode with 0x3651 = lowest SoC for normal operation, = highest SoC to hold the battery).</td><td>open</td><td>H2 protocol; evcc <code>saj-h2.yaml</code>; <a href="https://github.com/Gr33ndev/OpenAmpere/issues/380">#380</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/381">#381</a></td></tr>
+<tr><td>0x365A limits the export only while 0x365C is 1 (total power) or 3 (per-phase power); with 0 there is no limit, with 2 the limit is a phase current in 0x365B.</td><td>documented</td><td>H2 protocol; stanus74 (register overview); <a href="https://github.com/Gr33ndev/OpenAmpere/issues/377">#377</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/492">#492</a></td></tr>
+<tr><td>SAJ has no remote control that ends by itself: the H2 protocol defines no timeout for passive mode (0x3636–0x363A), and owners report that passive mode stays on for hours after one write.</td><td>documented (no timeout), derived (owners)</td><td>H2 protocol; stanus74/home-assistant-saj-h2-modbus#157; <a href="https://github.com/Gr33ndev/OpenAmpere/issues/377">#377</a></td></tr>
+<tr><td>No public SAJ document (H2 protocol, H1, AS1, R5/R6/C6) has a timeout, watchdog or validity field for passive mode or any power command. SAJ reportedly has an &quot;External Dispatch / EMS control&quot; specification for professional partners only, which OpenAmpere cannot use.</td><td>documented (none in public documents), derived (partner specification)</td><td>H2 protocol; stanus74/home-assistant-saj-h2-modbus#199 (discussion); research in <a href="https://github.com/Gr33ndev/OpenAmpere/issues/377">#377</a></td></tr>
+<tr><td>Time-of-use charging: AppMode 1, seven charge slots of three registers each from 0x3606 (slot n at 0x3606 + 3 × (n−1)), each with start, end, day mask and power in %, switched on per slot by a bit in 0x3604. Outside the slots the inverter follows 0x365F.</td><td>documented</td><td>H2 protocol; <a href="https://github.com/Gr33ndev/OpenAmpere/issues/377">#377</a></td></tr>
+<tr><td>Charge slots run on the inverter's clock (0x4000), not on the clock of the computer OpenAmpere runs on.</td><td>documented</td><td>H2 protocol; <a href="https://github.com/Gr33ndev/OpenAmpere/issues/378">#378</a></td></tr>
+<tr><td>A slot with a day mask repeats every week until it is switched off or deleted.</td><td>derived</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/378">#378</a></td></tr>
+<tr><td>evcc's saj-h2 template controls the battery only through stored settings: normal = backup mode with 0x3651 = lowest SoC, hold = backup mode with 0x3651 = highest SoC, charge = AppMode 1 with 0x3604 = 1 and slot 1 over the whole day at 100 %. No watchdog (unlike its FoxESS H3 template).</td><td>derived</td><td>evcc-io/evcc <code>templates/definition/meter/saj-h2.yaml</code>; research in <a href="https://github.com/Gr33ndev/OpenAmpere/issues/377">#377</a></td></tr>
+<tr><td>stanus74's &quot;Charging Control&quot; switch sets bit 0 of 0x3604 (slot 1) and AppMode 1, and on switching off writes 0x3604 = 0 and the previous AppMode; the owner sets the slot times. The switch counts as on only with bit and AppMode together.</td><td>derived</td><td>stanus74/home-assistant-saj-h2-modbus <code>charge_control.py</code>, <code>switch.py</code> at e83bfb5; research in <a href="https://github.com/Gr33ndev/OpenAmpere/issues/377">#377</a></td></tr>
+<tr><td>The previous IQ box writes 0x3647 and 0x3644, and the block 0x8300–0x8306 every 1–3 s while charging. Whether 0x8300–0x8306 ends by itself (the only candidate for a remote control with a timeout) has not been tested.</td><td>derived</td><td>stanus74/home-assistant-saj-h2-modbus#18; <a href="https://github.com/Gr33ndev/OpenAmpere/issues/377">#377</a></td></tr>
+<tr><td>When the box writes 0x8300 at the start of a charge, 0x3647 changes to 3 (passive mode) by itself; at the end the box writes 0x8300 = 0 and 0x3647 = 0 back to back. 0x8300 is in no public SAJ document and no other project uses it; nobody has published a meaning for 0x8304 = 600.</td><td>derived</td><td>stanus74/home-assistant-saj-h2-modbus#18 (recorded traffic), stanus74/home-assistant-saj-h2-modbus#19 (research only)</td></tr>
+<tr><td>The inverter keeps running without the IQ box and without any other controller: owners report it running on with the box switched off, or never having had one. No public SAJ document has a function that stops or limits the inverter when an external controller falls silent; a lost meter (&quot;Meter Communication Lost&quot;) is listed as a warning, not a fault, in the error table of the H2 user manual, without a stated effect on the export. See <a href="../topics/iq-box.html">iq-box.md</a>.</td><td>confirmed (owner reports), documented (none in public documents)</td><td>owner reports linked on <a href="../topics/iq-box.html#the-box-and-the-inverter">iq-box.md</a>; H2 user manual (see Sources)</td></tr>
+<tr><td>Another device (the IQ box, the SAJ app) can set the work mode away from time-of-use or clear bit 6 of 0x3604 while OpenAmpere charges through slot 7; the slot then no longer charges.</td><td>derived</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/382">#382</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/383">#383</a>; stanus74/home-assistant-saj-h2-modbus#18</td></tr>
+<tr><td>Writing 0x3644–0x3647 with FC06, one register at a time, is how the H2 protocol, stanus74 and evcc do it. Reading these registers is confirmed on a real device; OpenAmpere's writes were not yet confirmed on a real device when control was added.</td><td>documented</td><td>H2 protocol; stanus74; evcc; <a href="https://github.com/Gr33ndev/OpenAmpere/issues/378">#378</a></td></tr>
+<tr><td>Reading is confirmed on a real 0x005E (&quot;3P-X E2&quot;), and an owner uses OpenAmpere on one in daily operation without problems; whether control was switched on and which writes were made is not recorded. Another owner then changed the on-grid depth 0x3644 from the app; the inverter accepted it and OpenAmpere read it back. The other writes are not confirmed. Nothing is confirmed on 0x005A–0x005D. README and website once showed a checkmark for all of SAJ, corrected to &quot;not yet confirmed&quot; and later to this state.</td><td>confirmed (reading and daily use on 0x005E, write of 0x3644), open (other writes, rest)</td><td>an owner's report (2026-10); <a href="https://github.com/Gr33ndev/OpenAmpere/issues/111">#111</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/173">#173</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/185">#185</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/469">#469</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/601">#601</a>; <a href="https://github.com/dominiquehartmann/myampere/blob/main/docs/devices.md">devices.md</a></td></tr>
+<tr><td>On one 0x005E the previous IQ box kept the inverter's Modbus TCP connection busy all the time, so OpenAmpere could not connect while the box was in the network. After the box was cut from the network, OpenAmpere detected the inverter and read live values a few minutes later.</td><td>confirmed (on 0x005E)</td><td>owner report by e-mail on a 0x005E, summarised in <a href="https://github.com/Gr33ndev/OpenAmpere/issues/469">#469</a>; <a href="https://github.com/Gr33ndev/OpenAmpere/issues/311">#311</a></td></tr>
+<tr><td>On another 0x005E OpenAmpere (&quot;Nur ansehen&quot;, connection mode &quot;per poll&quot;, a reading every 30 s) read live values over Modbus TCP for days while the box stayed connected and controlled the system, also for about two hours in which the box had no cloud connection. Why it worked there and not on the device of <a href="https://github.com/Gr33ndev/OpenAmpere/issues/469">#469</a> is open.</td><td>confirmed (one 0x005E)</td><td>owner report in <a href="https://github.com/Gr33ndev/OpenAmpere/issues/576">#576</a></td></tr>
+</tbody>
+</table></div>
+<h2 id="decisions-in-openampere">Decisions in OpenAmpere</h2>
+<div class="table"><table>
+<thead><tr><th>Decision</th><th>Why</th><th>Issue/PR</th></tr></thead>
+<tbody>
+<tr><td>Detection after FoxESS (unit 247): SAJ at unit 1, then 2. Block 0x8F00 (29 registers), then a plausibility check: 0x4004 ≤ 9 and 0x406F ≤ 10000.</td><td>The address depends on the installation; the check rejects devices that answer 0x8F00 but are no SAJ hybrid.</td><td>initial driver; <a href="https://github.com/dominiquehartmann/myampere/blob/main/docs/devices.md">devices.md</a></td></tr>
+<tr><td>Known codes get their name; other codes in 0x0050–0x006F are accepted with a warning in the log, read like an H2 and shown as &quot;Typ 0x…&quot;; codes outside the range are rejected.</td><td>New family members can be read without a release; a foreign device is not mistaken for an SAJ.</td><td>initial driver; <a href="https://github.com/Gr33ndev/OpenAmpere/issues/379">#379</a></td></tr>
+<tr><td>Register map <code>saj_h2</code>, driver label &quot;SAJ H2 / HS2&quot;; the rated power comes from 0x8F01, not from the model name.</td><td>One type code covers several power classes.</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/379">#379</a></td></tr>
+<tr><td>0x8F01 counts as rated power only within the power class in the name of the type (0x0055–0x005D, e.g. &quot;5-10K&quot;: 5 to 10 kW). Otherwise (outside the class, 0x005E, an unknown type) the export limit is written only after the owner confirmed the rated power from the type plate in the app, also a lower one; the confirmed value is then the base of the per-mille conversion and of the charging power, as long as the device reports the value it was confirmed for.</td><td>The meaning of 0x8F01 has no source, and a wrong base makes the export limit wrong by the same factor while the read-back still matches.</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/492">#492</a></td></tr>
+<tr><td>The live blocks are read with every poll: 0x4004 (14), 0x4022 (11), 0x4069 (20), 0x40A0 (14), 0x40BF (64), 0x4167 (16), 0xA000 (18). A block the device rejects is skipped.</td><td>Optional blocks (summed counters) must not break the reading.</td><td>initial driver</td></tr>
+<tr><td>Meter B (0x40A3) is read with every poll (it is in the block 0x40A0) but counted as solar power only when the owner switches on the second inverter in &quot;Meine Anlage&quot;; it is then shown as its own source. The app points to the switch when the meter reads power.</td><td>Not every system uses Meter B for an extra PV inverter, and the owner can name it.</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/419">#419</a></td></tr>
+<tr><td>The live house power is the balance grid (0x40AD) + PV (0x40A5) + Meter B (0x40A3, negative as 0) + battery (0x40A6), at least 0; 0x40A0 only when one of them is missing or not real. Meter B is taken out again when the owner does not count the second inverter, so the house matches the solar power and the stored energy (which leave Meter B out then too). Confirmed on a 0x005E with a second inverter at Meter B while the battery charged and discharged (<a href="https://github.com/Gr33ndev/OpenAmpere/issues/576">#576</a>).</td><td>0x40A0 did not match the balance on every device; the energy values already come from the balance (<a href="https://github.com/Gr33ndev/OpenAmpere/issues/346">#346</a>). Meter B is not always an extra PV inverter.</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/576">#576</a></td></tr>
+<tr><td>No energy counter for Meter B is known: OpenAmpere integrates its power (not across gaps over 2 minutes) into a counter of its own. The quarter hours add it to PV (and so to the consumption) and keep it in <code>pv_external</code>; Home Assistant gets it as its own lifetime counter.</td><td>Without it, generation, consumption, self-sufficiency and savings would be too low.</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/419">#419</a></td></tr>
+<tr><td>Grid counters: the summed counters (all phases) if the device has them, otherwise L1. The source is fixed after the first reading.</td><td>Switching between them would look like a huge energy jump.</td><td>initial driver; <a href="https://github.com/dominiquehartmann/myampere/blob/main/docs/devices.md">devices.md</a></td></tr>
+<tr><td>Energy counters are treated with a 10 Wh step (0.01 kWh).</td><td>Resolution of the SAJ counters; the app shows the matching decimals.</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/194">#194</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/195">#195</a></td></tr>
+<tr><td>0x3644–0x3647 are read only for the battery settings, not with every poll; a rejected read is remembered. Without them the on-grid limit comes from 0x402A, the charge limit from 0x4029, the work mode from 0x4022; the off-grid limit stays unknown.</td><td>Firmware that rejects them cannot break the live values; no guessed limit.</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/335">#335</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/337">#337</a></td></tr>
+<tr><td>0x402C is not used.</td><td>Its meaning is not certain (see Behaviour).</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/335">#335</a></td></tr>
+<tr><td>Diagnostics check &quot;Speicher-Grenzen (SAJ)&quot; shows 0x3644–0x3647, 0x3651 and 0x4029–0x402C side by side; owners compare them with the manufacturer's app.</td><td>To confirm which register holds which limit.</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/334">#334</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/337">#337</a></td></tr>
+<tr><td>Control only for 0x005A–0x005E (battery settings, export limit, grid charging), with the same checks as FoxESS (master switch, test mode, limits, read-back, control log). AS2 and other codes stay read-only. Before 0.29.0 the SAJ driver was read-only; control was planned only after verification on real devices.</td><td>H2 and HS2 are in the protocol and controlled the same way by stanus74 and evcc; 0x005E's settings matched the manufacturer's app. No evidence for the AS2.</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/113">#113</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/211">#211</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/377">#377</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/378">#378</a></td></tr>
+<tr><td>Work modes offered: self-use (0) and backup (2) only; other modes are refused.</td><td>Time-of-use is OpenAmpere's own tool for grid charging, passive belongs to external controllers, peak shaving is not needed.</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/377">#377</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/378">#378</a></td></tr>
+<tr><td>A work mode changed while OpenAmpere charges (AppMode temporarily 1) is stored and applied when charging ends; the settings show the owner's mode, not time-of-use.</td><td>Writing it right away would stop the charging.</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/378">#378</a></td></tr>
+<tr><td>Limits: charge limit 10–100 %; reserve and off-grid limit by the common rules (off-grid limit from 0 %, reserve at least 10 %, lower only with the owner's confirmation, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/313">#313</a>).</td><td>Same rules as FoxESS.</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/69">#69</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/313">#313</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/378">#378</a></td></tr>
+<tr><td>0x3651 is shown and set as &quot;Reserve im Modus Notstromreserve&quot; while the work mode is backup: 10–100 %, not above the charge limit, with test mode, read-back, control log and overwrite check. Home Assistant gets a <code>backup_soc</code> number only when the device reports it.</td><td>In backup mode it is the reserve that applies; FoxESS has no such setting.</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/380">#380</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/381">#381</a></td></tr>
+<tr><td>Export limit: written rounded down to the per-mille step (step = rated power / 1000, rounded up, shown in the app); a read-back up to one step below the request counts as the same limit. The limit is written before the mode; if 0x365C is not 1 or 3 it is set to 1. With 0x365C = 0 the limit counts as the rated power; 0x365C = 2 is shown as not supported and nothing is written. 0x365C is read and shown. Legal checks and confirmations are the FoxESS ones.</td><td>Never more feed-in than set; a limit that does not apply must not look like one that does.</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/377">#377</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/378">#378</a></td></tr>
+<tr><td>Grid charging through a short charge slot of the time-of-use mode, not passive mode. The issue planned slot 1; the implementation uses <strong>slot 7</strong> (0x3618–0x361A, bit 6 of 0x3604).</td><td>Passive mode would keep charging after OpenAmpere stops; a slot ends by itself. Slot 7 leaves the owner's slots (usually the first) alone. This is the documented exception to &quot;continuous control only via a remote control with a watchdog&quot; (AGENTS.md).</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/377">#377</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/378">#378</a></td></tr>
+<tr><td>The slot covers today from now for 10 minutes (never past 23:59; the next day gets a new slot) and is extended when fewer than 5 minutes are left; only the end moves, so a stored register is written about every 5 minutes. Power = rated power × % rounded up, 1–100 %.</td><td>If OpenAmpere stops, charging ends at most 10 minutes later; few writes to stored registers.</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/377">#377</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/378">#378</a></td></tr>
+<tr><td>Start order: slot registers, 0x365F = 1, bit 6 of 0x3604, AppMode 1 last. With every command, 0x365F, the bit and AppMode are set again where they differ, and a slot changed while switched off is written again.</td><td>The slot holds OpenAmpere's values before it is switched on; like the FoxESS remote control, OpenAmpere takes over again after another device changed something.</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/378">#378</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/382">#382</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/383">#383</a></td></tr>
+<tr><td>The owner's AppMode, 0x365F and slot-7 words are kept in the <code>remote_command</code> meta from the start of a session (also when someone changes them in between) and put back when charging ends, also after a restart. A work mode the owner chooses while OpenAmpere charges is not written but kept for the end of charging, and stored in the meta right away (<a href="https://github.com/Gr33ndev/OpenAmpere/issues/493">#493</a>). After a restart, before the first charging command, the kept values are taken over from the meta while slot 7 still holds OpenAmpere's words, is on and AppMode is 1; otherwise the new mode is written right away (<a href="https://github.com/Gr33ndev/OpenAmpere/issues/497">#497</a>). The takeover also happens when the app reads the settings, so it shows the owner's mode instead of none (<a href="https://github.com/Gr33ndev/OpenAmpere/issues/500">#500</a>).</td><td>Before <a href="https://github.com/Gr33ndev/OpenAmpere/issues/383">#383</a> a slot switched off by another device made the next command look like a new start, AppMode 1 was stored as the owner's mode and the inverter stayed in time-of-use after charging.</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/378">#378</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/382">#382</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/383">#383</a></td></tr>
+<tr><td>Slot 7 is never taken over while it is switched on with other values (the app says to free it in the SAJ app). Release only while slot 7 still holds OpenAmpere's values: clear bit 6, put back AppMode (if 1), 0x365F and the owner's slot words, then check that bit 6 is off.</td><td>Release only what OpenAmpere started.</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/378">#378</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/383">#383</a></td></tr>
+<tr><td>OpenAmpere's new slot words are kept before they are written. While a slot write may have been cut off (written, but the answer timed out), each slot word may be the one before or OpenAmpere's new one and the slot still counts as OpenAmpere's; the <code>remote_command</code> meta keeps this also after a failed command, so a release after a restart puts the owner's slot back as well.</td><td>A write that reached the inverter without an answer would otherwise leave a weekly grid charge switched on.</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/491">#491</a></td></tr>
+<tr><td>The inverter clock (0x4000) is read before each charging command; an implausible clock (no valid date) stops the command. The issue planned to refuse a clock that is far off; the code does not compare it with real time.</td><td>The slot follows the inverter's clock.</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/377">#377</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/378">#378</a></td></tr>
+<tr><td>AppMode 3 (passive) is reported as &quot;another device controls the inverter&quot;.</td><td>Only external controllers use passive mode.</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/378">#378</a></td></tr>
+<tr><td>The charging page says that charging can go on up to 10 minutes after OpenAmpere stops, and that the slot repeats weekly until OpenAmpere runs again or it is deleted in the manufacturer's app.</td><td>The owner must know what stays on the inverter.</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/378">#378</a></td></tr>
+<tr><td>0x8300–0x8306 is not used.</td><td>Undocumented and untested.</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/377">#377</a></td></tr>
+<tr><td>Diagnostics check &quot;Steuerung (SAJ)&quot;: slot 7 on/off, its length and power (no times or days), 0x365F, 0x365A/0x365C and whether the clock is readable (not the time).</td><td>Times and days would tell when the owner charges.</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/378">#378</a></td></tr>
+</tbody>
+</table></div>
+<h2 id="open-questions">Open questions</h2>
+<ul>
+<li>Sign of the battery power 0x40A6 (+ = discharging per evcc) and of the grid power 0x40AD (+ = import per evcc) in
+raw register values of a real device; so far only seen in the app (<a href="https://github.com/Gr33ndev/OpenAmpere/issues/576">#576</a>).</li>
+<li>Why OpenAmpere could read a 0x005E next to the IQ box on one installation (<a href="https://github.com/Gr33ndev/OpenAmpere/issues/576">#576</a>) but not on another (<a href="https://github.com/Gr33ndev/OpenAmpere/issues/469">#469</a>): the number of Modbus TCP connections the inverter accepts (an owner in <a href="https://github.com/Gr33ndev/OpenAmpere/issues/419">#419</a> reported two), other clients using them, or the box's own connection habits.</li>
+<li>What 0x40A0 computes, and why it is off on some devices while the battery runs (<a href="https://github.com/Gr33ndev/OpenAmpere/issues/576">#576</a>).</li>
+<li>Whether the PV energy counter 0x40BF/0x40C5 covers all MPPTs (<a href="https://github.com/dominiquehartmann/myampere/blob/main/docs/registers.md">registers.md</a>).</li>
+<li>Whether 0x8F01 is the rated power in W on every type: diagnostics reports from devices of different power classes
+would settle it (<a href="https://github.com/Gr33ndev/OpenAmpere/issues/492">#492</a>).</li>
+<li>Whether 0x365A works as an export limit at all on a real device: two unverified comments in the Home Assistant
+community thread on the SAJ H2 integration say it seemed not to limit, or had an odd scaling (<a href="https://github.com/Gr33ndev/OpenAmpere/issues/492">#492</a>).</li>
+<li>Size of the export limit step of 0x365A on a real device (per mille of 0x8F01, derived), and which value
+0x365C has on EKD units (<a href="https://github.com/Gr33ndev/OpenAmpere/issues/377">#377</a>).</li>
+<li>Whether extending a running charge slot keeps charging without a gap (<a href="https://github.com/Gr33ndev/OpenAmpere/issues/377">#377</a>,
+<a href="https://github.com/Gr33ndev/OpenAmpere/issues/378">#378</a>).</li>
+<li>Behaviour of 0x3651 in backup mode: does the battery really supply the house down to 0x3651 and ignore 0x3644
+(<a href="https://github.com/Gr33ndev/OpenAmpere/issues/380">#380</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/381">#381</a>)?</li>
+<li>Meaning of 0x402C: a diagnostics report in which the off-grid depth, 0x3651 and 0x3644 all differ would settle it;
+meaning of 0x4029 and 0x402B (<a href="https://github.com/Gr33ndev/OpenAmpere/issues/334">#334</a>).</li>
+<li>OpenAmpere's writes to 0x3645–0x3647, 0x3651, 0x365A/0x365C and the charge slot are not yet confirmed on a real
+device (<a href="https://github.com/Gr33ndev/OpenAmpere/issues/378">#378</a>); writing 0x3644 was confirmed on a 0x005E, whether
+the battery keeps to it is open (<a href="https://github.com/Gr33ndev/OpenAmpere/issues/601">#601</a>).</li>
+<li>Which lowest off-grid limit an SAJ accepts; if a device rejects 0 %, the limit must come from the driver
+(<a href="https://github.com/Gr33ndev/OpenAmpere/issues/69">#69</a>).</li>
+<li>Settled: the old <a href="https://github.com/dominiquehartmann/myampere/blob/main/docs/registers.md">registers.md</a> said 0x3644/0x3645 are not in a public SAJ protocol and that
+there is none for the H2/HS2; both were written before the H2 protocol was found during
+<a href="https://github.com/Gr33ndev/OpenAmpere/issues/377">#377</a>. The protocol lists 0x3644 (on-grid discharge depth),
+0x3645 (off-grid discharge depth), 0x3646 (charge limit) and 0x3647 (AppMode). The measurement registers have not
+been compared with it one by one.</li>
+<li>The clock check refuses only an invalid date; a clock that is far off from real time is not detected, although
+<a href="https://github.com/Gr33ndev/OpenAmpere/issues/377">#377</a> planned it.</li>
+<li>Whether the AS2 (0x0055, 0x0056) answers the same map, and whether it could get control.</li>
+<li>Whether 0x8300–0x8306 is a remote control that ends by itself (untested, stanus74/home-assistant-saj-h2-modbus#18).</li>
+</ul>
+<h2 id="sources">Sources</h2>
+<ul>
+<li><strong>H2 protocol:</strong> SAJ, &quot;H2-3~6K-S2 single phase communication protocol&quot; (2022-12-02), shipped with
+stanus74/home-assistant-saj-h2-modbus. Named, not copied.</li>
+<li><strong>H2 user manual:</strong> SAJ, &quot;H2 series hybrid solar inverter user manual&quot;, error code table with fault types
+(<a href="https://manualshive.com/en/manual/saj/h2-series/3531146?page=21">a copy of the error table</a>); the installation
+part (meter on the &quot;EMS/METER&quot; RS485 port) also in SAJ's
+<a href="https://img.saj-electric.com/file/H2-%285-10%29K-T2%20Series%20manual-20231207055209758.pdf">H2-5-10K-T2 user manual</a>
+(V0.0, 2023), which has no error table.</li>
+<li><strong>H1 protocol</strong> and the protocols for the R5/R6/C6 and AS1: SAJ's Modbus protocols for related inverters, used to
+check names and meanings.</li>
+<li><strong>Community</strong> (credited in <a href="https://github.com/dominiquehartmann/myampere/blob/main/NOTICE">NOTICE</a>):
+<ul>
+<li>stanus74/home-assistant-saj-h2-modbus (MIT), including <code>charge_control.py</code> and <code>switch.py</code> at e83bfb5, issues
+stanus74/home-assistant-saj-h2-modbus#18, stanus74/home-assistant-saj-h2-modbus#19 and stanus74/home-assistant-saj-h2-modbus#157 there, discussion stanus74/home-assistant-saj-h2-modbus#199</li>
+<li>dboeni/home-assistant-ampere-storage-pro-modbus (MIT)</li>
+<li>litronics/EKD_Telegraf_Modbus (Apache-2.0)</li>
+<li>evcc-io/evcc, template <code>templates/definition/meter/saj-h2.yaml</code> (MIT)</li>
+</ul></li>
+<li><strong>OpenAmpere issues and pull requests:</strong> <a href="https://github.com/Gr33ndev/OpenAmpere/issues/41">#41</a>,
+<a href="https://github.com/Gr33ndev/OpenAmpere/issues/69">#69</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/111">#111</a>,
+<a href="https://github.com/Gr33ndev/OpenAmpere/issues/113">#113</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/173">#173</a>,
+<a href="https://github.com/Gr33ndev/OpenAmpere/issues/185">#185</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/194">#194</a>,
+<a href="https://github.com/Gr33ndev/OpenAmpere/issues/195">#195</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/211">#211</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/313">#313</a>,
+<a href="https://github.com/Gr33ndev/OpenAmpere/issues/334">#334</a> (diagnostics report of a real device),
+<a href="https://github.com/Gr33ndev/OpenAmpere/issues/335">#335</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/337">#337</a>,
+<a href="https://github.com/Gr33ndev/OpenAmpere/issues/339">#339</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/347">#347</a>,
+<a href="https://github.com/Gr33ndev/OpenAmpere/issues/348">#348</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/372">#372</a>,
+<a href="https://github.com/Gr33ndev/OpenAmpere/issues/376">#376</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/377">#377</a>
+(control research), <a href="https://github.com/Gr33ndev/OpenAmpere/issues/378">#378</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/379">#379</a>,
+<a href="https://github.com/Gr33ndev/OpenAmpere/issues/380">#380</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/381">#381</a>,
+<a href="https://github.com/Gr33ndev/OpenAmpere/issues/382">#382</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/383">#383</a></li>
+<li><strong>Code:</strong> <code>src/openampere/drivers/saj/registers.py</code>, <code>driver.py</code>; <code>src/openampere/diagnostics.py</code> (SAJ checks);
+<code>src/openampere/control.py</code> (limit checks).</li>
+</ul>
+    </article>
+    <p class="doc-source"><a href="https://github.com/dominiquehartmann/myampere/blob/main/docs/devices/saj/h2-family.md">Diese Seite auf GitHub ansehen und verbessern</a></p>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      <p><a href="../../../impressum.html">Impressum und Datenschutz</a> ·
+        <a href="../../../changelog.html">Changelog</a> ·
+        <a href="../../../docs/devices/">Gerätewissen</a> ·
+        <a href="../../../docs/external-api.html">Für Entwickler</a> ·
+        <a href="https://github.com/Gr33ndev/OpenAmpere">Quellcode</a> ·
+        <a href="https://github.com/Gr33ndev/OpenAmpere/blob/main/LICENSE">MIT-Lizenz</a> ·
+        <a href="https://github.com/Gr33ndev/OpenAmpere/blob/main/SECURITY.md">Sicherheit</a></p>
+      <p class="small">Die meisten Wallboxen steuert <a href="https://evcc.io">evcc</a>, ein eigenständiges Open-Source-Projekt. Danke an die evcc-Community!</p>
+      <p class="small">Diese Seite setzt keine Cookies und nutzt kein Tracking.
+        Schrift: DM Sans (<a href="../../../fonts/OFL.txt">SIL Open Font License</a>).</p>
+    </div>
+  </footer>
+</body>
+</html>

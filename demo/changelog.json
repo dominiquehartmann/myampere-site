@@ -1,0 +1,2457 @@
+{
+  "versions": [
+    {
+      "version": "0.41.0",
+      "date": "2026-11-07",
+      "first": false,
+      "groups": {
+        "feat": [
+          {
+            "scope": "android",
+            "text": "Drop the built-in updater, play protect blocks it (#611)"
+          }
+        ],
+        "fix": [],
+        "perf": [],
+        "other": []
+      },
+      "breaking": []
+    },
+    {
+      "version": "0.40.0",
+      "date": "2026-11-07",
+      "first": false,
+      "groups": {
+        "feat": [
+          {
+            "scope": "cars",
+            "text": "Read bmw and mini cars (#606)"
+          },
+          {
+            "scope": "report",
+            "text": "Show the average power of quarter hours without readings (#607)"
+          },
+          {
+            "scope": "notify",
+            "text": "Send notifications by e-mail (#599)"
+          },
+          {
+            "scope": "wallbox",
+            "text": "Read a go-e charger natively (#598)"
+          }
+        ],
+        "fix": [],
+        "perf": [],
+        "other": [
+          {
+            "scope": "android",
+            "text": "Explain play protect warnings and the developer verification (#609)"
+          },
+          {
+            "scope": "deps-web",
+            "text": "Bump @vitejs/plugin-react from 6.1.2 to 6.2.1 in /web in the vite group (#603)"
+          },
+          {
+            "scope": "deps-web",
+            "text": "Bump @biomejs/biome from 2.6.3 to 2.6.4 in /web (#604)"
+          },
+          {
+            "scope": null,
+            "text": "Mark writing the on-grid depth as confirmed on the saj 3p-x e2 (#602)"
+          },
+          {
+            "scope": "saj",
+            "text": "Confirm the house power balance on a 0x005e (#593)"
+          }
+        ]
+      },
+      "breaking": []
+    },
+    {
+      "version": "0.39.0",
+      "date": "2026-11-06",
+      "first": false,
+      "groups": {
+        "feat": [
+          {
+            "scope": "api",
+            "text": "History for other apps (#592)"
+          }
+        ],
+        "fix": [
+          {
+            "scope": "api",
+            "text": "Name backup_soc in the 400 message of put /battery (#591)"
+          },
+          {
+            "scope": "release",
+            "text": "Also read the \"V2 Signer\" line of apksigner (#583)"
+          },
+          {
+            "scope": "release",
+            "text": "Read the APK certificate from any apksigner signer line (#582)"
+          }
+        ],
+        "perf": [],
+        "other": [
+          {
+            "scope": null,
+            "text": "Describe the interface for other apps, also on the website (#589)"
+          },
+          {
+            "scope": null,
+            "text": "Run the backend tests on python 3.11 as well (#585)"
+          },
+          {
+            "scope": "site",
+            "text": "Compare the three ways to run openampere in one table (#587)"
+          }
+        ]
+      },
+      "breaking": []
+    },
+    {
+      "version": "0.38.0",
+      "date": "2026-11-04",
+      "first": false,
+      "groups": {
+        "feat": [
+          {
+            "scope": "android",
+            "text": "The app installs its updates itself (#573)"
+          },
+          {
+            "scope": "android",
+            "text": "Build current cryptography and cffi for the app (#574)"
+          },
+          {
+            "scope": "android",
+            "text": "Signed APK in every release, with its licenses (#572)"
+          },
+          {
+            "scope": "android",
+            "text": "App project that runs the server on a tablet (#570)"
+          },
+          {
+            "scope": null,
+            "text": "Prepare the server for the coming Android tablet app (#569)"
+          },
+          {
+            "scope": null,
+            "text": "Never read or write another device at the inverter's address (#568)"
+          }
+        ],
+        "fix": [
+          {
+            "scope": "saj",
+            "text": "Show the right house consumption while the battery runs (#577)"
+          },
+          {
+            "scope": "wallbox",
+            "text": "Say why real control does nothing in plug and charge (#566)"
+          },
+          {
+            "scope": "overview",
+            "text": "Show a starting charge at the wallbox, not in the house (#565)"
+          }
+        ],
+        "perf": [],
+        "other": [
+          {
+            "scope": null,
+            "text": "Validate the Gradle wrapper with Gradle's own action (#580)"
+          },
+          {
+            "scope": null,
+            "text": "The android tablet as the third way to install, with its guide (#578)"
+          },
+          {
+            "scope": null,
+            "text": "Smoke test of the Android app in an emulator (#575)"
+          },
+          {
+            "scope": "deps",
+            "text": "Update Python dependencies (#562)"
+          },
+          {
+            "scope": null,
+            "text": "Bump actions/setup-python from 7.0.0 to 7.1.0 (#561)"
+          },
+          {
+            "scope": null,
+            "text": "Bump anthropics/claude-code-action from 1.0.252 to 1.0.264 (#560)"
+          },
+          {
+            "scope": null,
+            "text": "Bump ossf/scorecard-action from 2.4.4 to 2.5.0 (#559)"
+          },
+          {
+            "scope": null,
+            "text": "Bump docker/login-action from 4.6.0 to 4.7.0 (#558)"
+          },
+          {
+            "scope": null,
+            "text": "Bump astral-sh/setup-uv from 10.3.0 to 10.3.3 (#557)"
+          },
+          {
+            "scope": "docker",
+            "text": "Bump node from `143494b` to `c6ad9e9` (#555)"
+          }
+        ]
+      },
+      "breaking": []
+    },
+    {
+      "version": "0.37.0",
+      "date": "2026-11-01",
+      "first": false,
+      "groups": {
+        "feat": [
+          {
+            "scope": "enphase",
+            "text": "Remind the owner before the access token runs out (#545)"
+          },
+          {
+            "scope": "enphase",
+            "text": "Send the token only to the gateway it was set up with (#544)"
+          },
+          {
+            "scope": "enphase",
+            "text": "Show the enphase iq gateway with iq batteries (#537)"
+          },
+          {
+            "scope": "wallbox",
+            "text": "Warn when evcc stays connected next to a direct wallbox (#536)"
+          },
+          {
+            "scope": "senec",
+            "text": "Show the senec.home v3 and v2.1 (#533)"
+          },
+          {
+            "scope": "mtec",
+            "text": "Show the m-tec energy-butler gen3 (#534)"
+          },
+          {
+            "scope": "wallbox",
+            "text": "Show the weidmüller ac smart (\"ampere.charge\") (#532)"
+          },
+          {
+            "scope": "solarmax",
+            "text": "Show the solarmax max.storage (\"ampere.storage\") (#528)"
+          },
+          {
+            "scope": null,
+            "text": "Show the device knowledge on the website and link it from the app (#518)"
+          }
+        ],
+        "fix": [
+          {
+            "scope": "discovery",
+            "text": "Make the network search faster when devices do not answer (#552)"
+          },
+          {
+            "scope": null,
+            "text": "Keep senec and enphase out of the modbus address search and device query (#550)"
+          },
+          {
+            "scope": "senec",
+            "text": "Do not follow redirects of the web interface (#551)"
+          },
+          {
+            "scope": "senec",
+            "text": "Free the connection after an error answer of the device (#541)"
+          },
+          {
+            "scope": "foxess",
+            "text": "Charge the battery, not the AC side, with the remote control (#513)"
+          }
+        ],
+        "perf": [],
+        "other": [
+          {
+            "scope": null,
+            "text": "Put the enphase token's expiry at noon in the tests of its days (#554)"
+          },
+          {
+            "scope": "deps-web",
+            "text": "Bump @biomejs/biome from 2.5.15 to 2.6.3 (#546)"
+          },
+          {
+            "scope": "deps-web",
+            "text": "Bump @playwright/test from 1.63.0 to 1.64.1 in /web (#530)"
+          },
+          {
+            "scope": null,
+            "text": "Take the confirmation status in devices.md from support.json (#543)"
+          },
+          {
+            "scope": "deps-web",
+            "text": "Bump vite from 8.3.4 to 8.3.5 in /web in the vite group (#529)"
+          },
+          {
+            "scope": null,
+            "text": "Generate the device support tables from one data file (#527)"
+          },
+          {
+            "scope": null,
+            "text": "Correct the m-tec sources and the e2 status (#525)"
+          },
+          {
+            "scope": "site",
+            "text": "Show which EKD devices OpenAmpere supports (#517)"
+          },
+          {
+            "scope": "devices",
+            "text": "Record the hardware EKD sold since 2018 (#515)"
+          },
+          {
+            "scope": "devices",
+            "text": "Record what happens when the previous smartbox is switched off (#511)"
+          },
+          {
+            "scope": "report",
+            "text": "Wait for the chart to redraw after a click on the legend (#508)"
+          }
+        ]
+      },
+      "breaking": []
+    },
+    {
+      "version": "0.36.2",
+      "date": "2026-10-30",
+      "first": false,
+      "groups": {
+        "feat": [],
+        "fix": [
+          {
+            "scope": "wallbox",
+            "text": "Describe real control in the FoxESS charger's limit, start and setup texts (#506)"
+          },
+          {
+            "scope": "wallbox",
+            "text": "Offer the FoxESS charger as controllable as a test in the setup (#504)"
+          }
+        ],
+        "perf": [],
+        "other": []
+      },
+      "breaking": []
+    },
+    {
+      "version": "0.36.1",
+      "date": "2026-10-29",
+      "first": false,
+      "groups": {
+        "feat": [],
+        "fix": [
+          {
+            "scope": "saj",
+            "text": "Change the export limit only with a rated power that fits the type (#502)"
+          },
+          {
+            "scope": "saj",
+            "text": "Show the owner's work mode right after a restart while charging (#501)"
+          },
+          {
+            "scope": "saj",
+            "text": "Keep a work mode chosen right after a restart while charging still runs (#499)"
+          },
+          {
+            "scope": "saj",
+            "text": "Keep a work mode chosen while grid charging across a restart (#495)"
+          },
+          {
+            "scope": "saj",
+            "text": "Switch off OpenAmpere's charge slot also when the inverter's answer timed out (#494)"
+          }
+        ],
+        "perf": [],
+        "other": [
+          {
+            "scope": "agents",
+            "text": "A pull request is done when the ai review finds nothing more (#496)"
+          }
+        ]
+      },
+      "breaking": []
+    },
+    {
+      "version": "0.36.0",
+      "date": "2026-10-29",
+      "first": false,
+      "groups": {
+        "feat": [],
+        "fix": [
+          {
+            "scope": "release",
+            "text": "List advisory fixes merged without their id, and write down the advisory steps (#488)"
+          },
+          {
+            "scope": "wallbox",
+            "text": "Say which limit keeps the wallbox from charging and drop an old note (#483)"
+          },
+          {
+            "scope": "wallbox",
+            "text": "Do not charge when the lowest step is above the owner's highest current (#482)"
+          },
+          {
+            "scope": "security",
+            "text": "OCPP listener accepts connections from web pages and puts their data into the diagnostics report (GHSA-q2mp-55hm-346m)"
+          },
+          {
+            "scope": "security",
+            "text": "Prompt injection in the AI review workflow can overwrite a script that runs with the workflow's tokens (GHSA-mwqm-mf75-9jhh)"
+          },
+          {
+            "scope": "security",
+            "text": "Restoring a backup takes over wallbox ownership and real control without the checks of the app (GHSA-wx8q-mh5w-82jr)"
+          },
+          {
+            "scope": "security",
+            "text": "A device in the home network can move a stored dé wallbox to its own address (GHSA-q7r4-hqhv-322x)"
+          },
+          {
+            "scope": "security",
+            "text": "Device query and wallbox check put host names and the device's page title into the report unmasked (GHSA-jpg8-f7vx-4g36)"
+          },
+          {
+            "scope": "security",
+            "text": "Website build lets a javascript: link in a translation pass the check for unsafe links (GHSA-w7hp-wv8j-xff9)"
+          }
+        ],
+        "perf": [],
+        "other": [
+          {
+            "scope": "ai-review",
+            "text": "Trust nothing in the checkout after the review (#484)"
+          }
+        ]
+      },
+      "breaking": []
+    },
+    {
+      "version": "0.35.0",
+      "date": "2026-10-29",
+      "first": false,
+      "groups": {
+        "feat": [
+          {
+            "scope": "wallbox",
+            "text": "Switch the foxess charger between one and three phases (#479)"
+          },
+          {
+            "scope": "import",
+            "text": "Say that the state of charge of old days comes in step 2 (#477)"
+          },
+          {
+            "scope": "wallbox",
+            "text": "Control the foxess ac ev charger for real once its owner agrees (#472)"
+          },
+          {
+            "scope": "wallbox",
+            "text": "Set the work mode of a foxess charger to unlock it (#470)"
+          }
+        ],
+        "fix": [
+          {
+            "scope": "web",
+            "text": "Explain a live connection that fails behind a reverse proxy (#474)"
+          },
+          {
+            "scope": "report",
+            "text": "Show the imported state of charge in the power day view (#473)"
+          },
+          {
+            "scope": "wallbox",
+            "text": "Say when the evcc sponsor token has expired (#466)"
+          }
+        ],
+        "perf": [],
+        "other": [
+          {
+            "scope": null,
+            "text": "Check whether the grid operator needs the old smartbox (#475)"
+          },
+          {
+            "scope": null,
+            "text": "Mark saj reading as confirmed on the 3p-x e2 (#471)"
+          },
+          {
+            "scope": "foxess",
+            "text": "Add the write registers of the ac ev charger (#467)"
+          },
+          {
+            "scope": "deps",
+            "text": "Update Python dependencies (#461)"
+          },
+          {
+            "scope": "deps-web",
+            "text": "Bump react-dom from 19.3.0 to 19.3.1 in /web (#458)"
+          }
+        ]
+      },
+      "breaking": []
+    },
+    {
+      "version": "0.34.0",
+      "date": "2026-10-22",
+      "first": false,
+      "groups": {
+        "feat": [
+          {
+            "scope": "notify",
+            "text": "Tell when a car starts and ends charging at the wallbox (#453)"
+          }
+        ],
+        "fix": [
+          {
+            "scope": "wallbox",
+            "text": "Remember openampere's stop after letting go of the wallbox (#457)"
+          },
+          {
+            "scope": "wallbox",
+            "text": "Start a wallbox again that reports complete after openampere's stop (#455)"
+          }
+        ],
+        "perf": [],
+        "other": [
+          {
+            "scope": null,
+            "text": "Put the review instructions into the ai review prompt and skip bot actors (#450)"
+          },
+          {
+            "scope": "deps",
+            "text": "Update Python dependencies (#448)"
+          }
+        ]
+      },
+      "breaking": []
+    },
+    {
+      "version": "0.33.0",
+      "date": "2026-10-18",
+      "first": false,
+      "groups": {
+        "feat": [
+          {
+            "scope": "cars",
+            "text": "Read the state of charge of vw group cars from the eu data act portal (#441)"
+          },
+          {
+            "scope": "wallbox",
+            "text": "Simulate the surplus control for the foxess ac ev charger without writing (#443)"
+          },
+          {
+            "scope": "wallbox",
+            "text": "Show the foxess ac ev charger live in the app, read only (#442)"
+          },
+          {
+            "scope": "security",
+            "text": "Set own host names for the access check in the app (#438)"
+          }
+        ],
+        "fix": [
+          {
+            "scope": "wallbox",
+            "text": "End the simulation when manual is saved with the setup (#446)"
+          }
+        ],
+        "perf": [],
+        "other": [
+          {
+            "scope": null,
+            "text": "Run the ai review with opus 5.5 (#447)"
+          }
+        ]
+      },
+      "breaking": []
+    },
+    {
+      "version": "0.32.1",
+      "date": "2026-10-17",
+      "first": false,
+      "groups": {
+        "feat": [],
+        "fix": [
+          {
+            "scope": "setup",
+            "text": "Tell a busy wallbox apart from a busy inverter in the network search (#434)"
+          },
+          {
+            "scope": "wallbox",
+            "text": "Name the old smartbox as the usual reason the wallbox check cannot connect (#432)"
+          },
+          {
+            "scope": "diagnostics",
+            "text": "Warn that a report with the full serial number must not be posted publicly (#430)"
+          },
+          {
+            "scope": "wallbox",
+            "text": "Tell unresolvable names, refused connections and silent hosts apart (#429)"
+          }
+        ],
+        "perf": [],
+        "other": [
+          {
+            "scope": null,
+            "text": "Post the ai review summary from the workflow and retry a silent run (#436)"
+          },
+          {
+            "scope": "deps-web",
+            "text": "Bump vite from 8.3.3 to 8.3.4 in /web in the vite group (#425)"
+          },
+          {
+            "scope": null,
+            "text": "Review pull requests automatically with claude (#424)"
+          }
+        ]
+      },
+      "breaking": []
+    },
+    {
+      "version": "0.32.0",
+      "date": "2026-10-16",
+      "first": false,
+      "groups": {
+        "feat": [
+          {
+            "scope": "saj",
+            "text": "Record the energy of a second PV inverter and show it in the report (#421)"
+          },
+          {
+            "scope": "saj",
+            "text": "Count a second PV inverter on Meter B and show it on its own (#420)"
+          },
+          {
+            "scope": "wallbox",
+            "text": "Show the FoxESS charger as the wallbox of EKD systems (#415)"
+          }
+        ],
+        "fix": [
+          {
+            "scope": "evcc",
+            "text": "Count a second PV inverter in the PV counter for evcc (#422)"
+          },
+          {
+            "scope": "wallbox",
+            "text": "Refuse only the inverter's own port in the wallbox check (#418)"
+          },
+          {
+            "scope": "diagnostics",
+            "text": "Show an export limit above the rated power as no limit (#416)"
+          },
+          {
+            "scope": "wallbox",
+            "text": "Name the inverter's address in the wallbox check (#414)"
+          }
+        ],
+        "perf": [],
+        "other": []
+      },
+      "breaking": []
+    },
+    {
+      "version": "0.31.0",
+      "date": "2026-10-16",
+      "first": false,
+      "groups": {
+        "feat": [
+          {
+            "scope": "homeassistant",
+            "text": "Set the highest charging current of a wallbox's mode (#410)"
+          },
+          {
+            "scope": "report",
+            "text": "Hide and show single lines with a tap on the legend (#408)"
+          },
+          {
+            "scope": "wallbox",
+            "text": "Choose the highest current per mode and keep solar charging through clouds (#407)"
+          }
+        ],
+        "fix": [
+          {
+            "scope": "notify",
+            "text": "Report an inverter fault only after it has lasted 30 minutes (#406)"
+          },
+          {
+            "scope": "report",
+            "text": "Show every day or month of the period in the bar charts (#405)"
+          }
+        ],
+        "perf": [],
+        "other": [
+          {
+            "scope": "pages",
+            "text": "Let a running deployment finish instead of cancelling it (#399)"
+          }
+        ]
+      },
+      "breaking": []
+    },
+    {
+      "version": "0.30.1",
+      "date": "2026-10-15",
+      "first": false,
+      "groups": {
+        "feat": [],
+        "fix": [
+          {
+            "scope": "wallbox",
+            "text": "Find the Tuya wallbox, type IP addresses with a dot, stop a self-started charge at once (#397)"
+          }
+        ],
+        "perf": [],
+        "other": []
+      },
+      "breaking": []
+    },
+    {
+      "version": "0.30.0",
+      "date": "2026-10-15",
+      "first": false,
+      "groups": {
+        "feat": [
+          {
+            "scope": "wallbox",
+            "text": "One form to add or check a wallbox, with the steps to the Tuya local key (#389)"
+          },
+          {
+            "scope": "homeassistant",
+            "text": "Show and control OpenAmpere's own wallboxes (#390)"
+          },
+          {
+            "scope": "wallbox",
+            "text": "Read and control the portable dé wallbox over Tuya LAN (#387)"
+          },
+          {
+            "scope": "saj",
+            "text": "Show and set the reserve that applies in backup mode (#381)"
+          }
+        ],
+        "fix": [
+          {
+            "scope": "wallbox",
+            "text": "Keep a wallbox whose local key cannot be read and ask for it again (#393)"
+          },
+          {
+            "scope": "consumers",
+            "text": "Keep a device whose switch addresses cannot be read and ask for them again (#394)"
+          },
+          {
+            "scope": "saj",
+            "text": "Keep charging from the grid when another device changes the mode or the slot (#383)"
+          },
+          {
+            "scope": "saj",
+            "text": "Show the three-phase type 0x005e by its model name (#379)"
+          }
+        ],
+        "perf": [],
+        "other": [
+          {
+            "scope": "wallbox",
+            "text": "No longer say that wallboxes are controlled only through evcc (#395)"
+          },
+          {
+            "scope": null,
+            "text": "Collect what we know per device in docs/devices with status and source (#385)"
+          }
+        ]
+      },
+      "breaking": []
+    },
+    {
+      "version": "0.29.0",
+      "date": "2026-10-14",
+      "first": false,
+      "groups": {
+        "feat": [
+          {
+            "scope": "saj",
+            "text": "Control battery settings, export limit and grid charging of SAJ inverters (#378)"
+          }
+        ],
+        "fix": [],
+        "perf": [],
+        "other": []
+      },
+      "breaking": []
+    },
+    {
+      "version": "0.28.0",
+      "date": "2026-10-14",
+      "first": false,
+      "groups": {
+        "feat": [
+          {
+            "scope": "homeassistant",
+            "text": "Show the inverter firmware as a sensor that follows an update (#376)"
+          },
+          {
+            "scope": "control",
+            "text": "Explain in the app when another device sets a change back (#374)"
+          }
+        ],
+        "fix": [],
+        "perf": [],
+        "other": [
+          {
+            "scope": null,
+            "text": "Reload in the overwrite test only once no request is running (#375)"
+          }
+        ]
+      },
+      "breaking": []
+    },
+    {
+      "version": "0.27.0",
+      "date": "2026-10-14",
+      "first": false,
+      "groups": {
+        "feat": [],
+        "fix": [
+          {
+            "scope": "release",
+            "text": "List only the advisory a fix closes, not one it mentions (#371)"
+          },
+          {
+            "scope": "restore",
+            "text": "Keep the current password and app accesses when a backup is restored (#367)"
+          },
+          {
+            "scope": "updates",
+            "text": "Keep the health check working while the database is busy and harden the update helper (#361)"
+          },
+          {
+            "scope": "auth",
+            "text": "Harden login, sessions, app access and pairing (#366)"
+          },
+          {
+            "scope": "status",
+            "text": "Hide database file names and times without login, refuse credentials in the evcc address (#369)"
+          },
+          {
+            "scope": "security",
+            "text": "Let the web app run only its own scripts (#368)"
+          },
+          {
+            "scope": "install",
+            "text": "Keep the tailscale login link and evcc data private and check helpers against the release (#364)"
+          },
+          {
+            "scope": "control",
+            "text": "Keep grid charging and surplus control within safe limits (#363)"
+          },
+          {
+            "scope": null,
+            "text": "Never send the cloud api key on after a redirect and limit online requests in size and time (#362)"
+          },
+          {
+            "scope": "security",
+            "text": "Home Assistant integration does not check the server when pairing (GHSA-8f28-gpm6-w56g)"
+          },
+          {
+            "scope": "security",
+            "text": "Going back to an older version restores old passwords, sessions and revoked tokens (GHSA-x8rj-ccv8-qvmp)"
+          },
+          {
+            "scope": "security",
+            "text": "Dependency update workflow can run code from an updated package with a write token (GHSA-mh4w-fmr4-2wpw)"
+          },
+          {
+            "scope": "security",
+            "text": "Update helper and installer accept an older release (GHSA-8893-x8jf-64v6)"
+          },
+          {
+            "scope": "security",
+            "text": "Release workflow signs files from any tag when started by hand (GHSA-3xmc-fc67-chgq)"
+          },
+          {
+            "scope": "security",
+            "text": "Manual Docker Compose layout lets the root Tailscale helper follow a link in the data folder (GHSA-3grw-j32m-8gcj)"
+          },
+          {
+            "scope": "security",
+            "text": "Website build can replace the install script that owners run with sudo (GHSA-g83m-rrj2-cm2j)"
+          }
+        ],
+        "perf": [],
+        "other": [
+          {
+            "scope": null,
+            "text": "Correct security notes on backups, home assistant control and relays (#365)"
+          },
+          {
+            "scope": null,
+            "text": "Check website texts for unsafe html and pin the release helper images (#360)"
+          }
+        ]
+      },
+      "breaking": []
+    },
+    {
+      "version": "0.26.4",
+      "date": "2026-10-13",
+      "first": false,
+      "groups": {
+        "feat": [],
+        "fix": [
+          {
+            "scope": null,
+            "text": "Calculate consumption from the other energy values, not the inverter's load counter (#349)"
+          }
+        ],
+        "perf": [],
+        "other": [
+          {
+            "scope": null,
+            "text": "Bring the issue templates in line with the app (#348)"
+          }
+        ]
+      },
+      "breaking": []
+    },
+    {
+      "version": "0.26.3",
+      "date": "2026-10-13",
+      "first": false,
+      "groups": {
+        "feat": [],
+        "fix": [
+          {
+            "scope": "homeassistant",
+            "text": "Show live values when home assistant is opened by a remote address (#345)"
+          }
+        ],
+        "perf": [],
+        "other": []
+      },
+      "breaking": []
+    },
+    {
+      "version": "0.26.2",
+      "date": "2026-10-13",
+      "first": false,
+      "groups": {
+        "feat": [],
+        "fix": [
+          {
+            "scope": "homeassistant",
+            "text": "Show a battery setting change right away (#343)"
+          }
+        ],
+        "perf": [],
+        "other": []
+      },
+      "breaking": []
+    },
+    {
+      "version": "0.26.1",
+      "date": "2026-10-13",
+      "first": false,
+      "groups": {
+        "feat": [],
+        "fix": [
+          {
+            "scope": "diagnostics",
+            "text": "Leave raw modbus frames out of the report log (#341)"
+          },
+          {
+            "scope": "homeassistant",
+            "text": "Keep the entities when the inverter answers slowly (#340)"
+          }
+        ],
+        "perf": [],
+        "other": [
+          {
+            "scope": "saj",
+            "text": "Record the battery limits confirmed on a device (#337)"
+          }
+        ]
+      },
+      "breaking": []
+    },
+    {
+      "version": "0.26.0",
+      "date": "2026-10-13",
+      "first": false,
+      "groups": {
+        "feat": [],
+        "fix": [
+          {
+            "scope": "security",
+            "text": "evcc password and ntfy token from config.yaml or the environment are sent to a changed address (GHSA-8mjv-f2x6-2v3h)"
+          },
+          {
+            "scope": "security",
+            "text": "A damaged database resets a protected installation to setup without a password (GHSA-4pjj-g988-r5vc)"
+          },
+          {
+            "scope": "security",
+            "text": "A slowly answering switched device delays switching off the other devices (GHSA-wxgh-j9mh-32j6)"
+          },
+          {
+            "scope": "security",
+            "text": "A login with the old password can stay valid after the password is changed (GHSA-fqfx-94pj-6jhh)"
+          },
+          {
+            "scope": "security",
+            "text": "Error text of a failed switch command shows the device password without login (GHSA-7whx-cq9r-q56g)"
+          },
+          {
+            "scope": "security",
+            "text": "Credentials in the ntfy address appear in the diagnostics report (GHSA-9fpp-m6jp-5vw4)"
+          },
+          {
+            "scope": "security",
+            "text": "Cloud export tool writes files outside its folder when the cloud sends a crafted installation id (GHSA-8qjf-v7mq-g2r5)"
+          },
+          {
+            "scope": "security",
+            "text": "Importing a crafted ZIP file can use far more memory than the limits allow (GHSA-963v-6j22-r7x5)"
+          },
+          {
+            "scope": "security",
+            "text": "Power curve of the PV inputs loads the readings of a whole year without login (GHSA-p7r4-hj2r-hg5h)"
+          }
+        ],
+        "perf": [],
+        "other": []
+      },
+      "breaking": []
+    },
+    {
+      "version": "0.25.1",
+      "date": "2026-10-13",
+      "first": false,
+      "groups": {
+        "feat": [],
+        "fix": [
+          {
+            "scope": "saj",
+            "text": "Show the on-grid and off-grid battery reserve the right way round (#335)"
+          }
+        ],
+        "perf": [],
+        "other": []
+      },
+      "breaking": []
+    },
+    {
+      "version": "0.25.0",
+      "date": "2026-10-13",
+      "first": false,
+      "groups": {
+        "feat": [
+          {
+            "scope": "wallbox",
+            "text": "Listen to a wallbox over ocpp for the diagnostics report (#333)"
+          },
+          {
+            "scope": "control",
+            "text": "Copy the control log for a report without personal data (#331)"
+          },
+          {
+            "scope": "wallbox",
+            "text": "Check a foxess wallbox read-only in the setup (#327)"
+          },
+          {
+            "scope": "diagnostics",
+            "text": "Read any modbus device in the home network, read-only (#326)"
+          }
+        ],
+        "fix": [
+          {
+            "scope": "homeassistant",
+            "text": "Report an alarm only for fault codes other than 0 (#332)"
+          }
+        ],
+        "perf": [],
+        "other": []
+      },
+      "breaking": []
+    },
+    {
+      "version": "0.24.0",
+      "date": "2026-10-12",
+      "first": false,
+      "groups": {
+        "feat": [
+          {
+            "scope": "evcc",
+            "text": "Explain the sponsor token and warn before it runs out (#319)"
+          }
+        ],
+        "fix": [
+          {
+            "scope": "charging",
+            "text": "Explain in the log why grid charging ended and what changed (#323)"
+          }
+        ],
+        "perf": [],
+        "other": [
+          {
+            "scope": "charging",
+            "text": "Stop raising the backup reserve for grid charging (#321)"
+          }
+        ]
+      },
+      "breaking": []
+    },
+    {
+      "version": "0.23.1",
+      "date": "2026-10-12",
+      "first": false,
+      "groups": {
+        "feat": [],
+        "fix": [
+          {
+            "scope": "charging",
+            "text": "Charge past the backup reserve on inverters that stop there (#316)"
+          }
+        ],
+        "perf": [],
+        "other": []
+      },
+      "breaking": []
+    },
+    {
+      "version": "0.23.0",
+      "date": "2026-10-12",
+      "first": false,
+      "groups": {
+        "feat": [
+          {
+            "scope": "battery",
+            "text": "Allow a backup power reserve below 10 % after a warning (#314)"
+          },
+          {
+            "scope": "connection",
+            "text": "Say when the inverter's connections are all taken (#312)"
+          }
+        ],
+        "fix": [],
+        "perf": [],
+        "other": [
+          {
+            "scope": "site",
+            "text": "Steps to add the app repository by hand for way 2 (#310)"
+          },
+          {
+            "scope": null,
+            "text": "Complete steps to add the app repository, with its maintainer (#308)"
+          }
+        ]
+      },
+      "breaking": []
+    },
+    {
+      "version": "0.22.0",
+      "date": "2026-10-12",
+      "first": false,
+      "groups": {
+        "feat": [
+          {
+            "scope": null,
+            "text": "The control log names the user of Home Assistant (#306)"
+          },
+          {
+            "scope": null,
+            "text": "OpenAmpere as a Home Assistant app for Home Assistant OS (#304)"
+          }
+        ],
+        "fix": [],
+        "perf": [],
+        "other": [
+          {
+            "scope": "deps",
+            "text": "Update Python dependencies (#301)"
+          },
+          {
+            "scope": "ui",
+            "text": "Check the retro charts with a full week (#303)"
+          }
+        ]
+      },
+      "breaking": []
+    },
+    {
+      "version": "0.21.0",
+      "date": "2026-10-11",
+      "first": false,
+      "groups": {
+        "feat": [
+          {
+            "scope": "changelog",
+            "text": "Link security advisories (#278)"
+          }
+        ],
+        "fix": [
+          {
+            "scope": "site",
+            "text": "Use own buttons instead of images from my.home-assistant.io (#296)"
+          },
+          {
+            "scope": "security",
+            "text": "Tailscale option makes services that listen only on localhost reachable from the tailnet (GHSA-6r67-5vwf-5x8x)"
+          },
+          {
+            "scope": "install",
+            "text": "Run the app without capabilities and new privileges (#294)"
+          },
+          {
+            "scope": "pairing",
+            "text": "Limit pairing requests per device and show where they come from (#292)"
+          },
+          {
+            "scope": "diagnostics",
+            "text": "No time in the report header, pseudonymise meters and devices (#290)"
+          },
+          {
+            "scope": null,
+            "text": "Refuse values that are no numbers with a sentence, keep bad cloud data out (#288)"
+          },
+          {
+            "scope": "auth",
+            "text": "Stronger password hashing, 8 characters, secure cookies over HTTPS (#286)"
+          },
+          {
+            "scope": "install",
+            "text": "Pin the update helper image by digest (#284)"
+          },
+          {
+            "scope": "homeassistant",
+            "text": "Leave names, model and firmware out of the diagnostics (#282)"
+          },
+          {
+            "scope": "foxess",
+            "text": "Write settings only to a device confirmed as FoxESS (#280)"
+          },
+          {
+            "scope": "auth",
+            "text": "Issue a new device cookie on every login (#276)"
+          }
+        ],
+        "perf": [],
+        "other": [
+          {
+            "scope": null,
+            "text": "Use an obviously made-up meter number in the diagnostics test (#299)"
+          },
+          {
+            "scope": "agents",
+            "text": "Note that switching off is written in test mode too (#298)"
+          }
+        ]
+      },
+      "breaking": []
+    },
+    {
+      "version": "0.20.0",
+      "date": "2026-10-11",
+      "first": false,
+      "groups": {
+        "feat": [],
+        "fix": [
+          {
+            "scope": "release",
+            "text": "List fixes merged from security advisories in the changelog (#274)"
+          },
+          {
+            "scope": "security",
+            "text": "Database and its copies are readable by other users of the host (GHSA-p5pf-45jm-94c3)"
+          },
+          {
+            "scope": "security",
+            "text": "Restoring a crafted backup takes over unchecked device, charging and update data (GHSA-4jmw-6h58-vc78)"
+          },
+          {
+            "scope": "security",
+            "text": "Concurrent first setup can silently replace the owner's new password (GHSA-m3qh-j9xv-jf9m)"
+          },
+          {
+            "scope": "security",
+            "text": "Full inverter serial number readable without login (GHSA-vcc7-57gx-gcgr)"
+          },
+          {
+            "scope": "security",
+            "text": "Wallbox charging sessions readable without login (GHSA-33vp-mf38-3mj3)"
+          },
+          {
+            "scope": "security",
+            "text": "A long Host header blocks the server (regular expression denial of service) (GHSA-vrrc-53mr-hc3c)"
+          },
+          {
+            "scope": "security",
+            "text": "Large request bodies without login can exhaust the memory (GHSA-gfr8-g665-933w)"
+          },
+          {
+            "scope": "security",
+            "text": "Home Assistant setup dialog shows unverified server text as Markdown (GHSA-vx3h-6qm5-fqr2)"
+          },
+          {
+            "scope": "security",
+            "text": "Exported control log can contain spreadsheet formulas (GHSA-9qfr-fvc7-hm9g)"
+          },
+          {
+            "scope": "security",
+            "text": "Backup download link stays valid after logout and can be used more than once (GHSA-f9rp-mp8c-m936)"
+          },
+          {
+            "scope": "security",
+            "text": "Switch addresses with device passwords are stored unencrypted and included in backups (GHSA-3jrg-5v7g-9f96)"
+          },
+          {
+            "scope": "security",
+            "text": "Changing the evcc or ntfy address sends the stored password or token to the new address (GHSA-pgj6-8cf2-3qxp)"
+          },
+          {
+            "scope": "security",
+            "text": "Client address used for login limits can be spoofed with X-Forwarded-For (GHSA-7qj3-8hhh-r724)"
+          },
+          {
+            "scope": "security",
+            "text": "Anyone on the home network can lock the owner out of the login (GHSA-cp8v-wgf4-r8cj)"
+          },
+          {
+            "scope": "security",
+            "text": "Root helper containers follow symbolic links in the app's data folder (GHSA-2j3r-6fcx-9m7v)"
+          },
+          {
+            "scope": "security",
+            "text": "Restoring a crafted backup can plant database triggers that keep an attacker logged in (GHSA-q3c2-xqgm-w8jw)"
+          },
+          {
+            "scope": "charging",
+            "text": "Run one grid charging tick or stop at a time (#272)"
+          },
+          {
+            "scope": null,
+            "text": "Refuse redirects with credentials, limit and check outgoing requests (#270)"
+          },
+          {
+            "scope": "api",
+            "text": "Send security headers with every answer (#264)"
+          },
+          {
+            "scope": "charging",
+            "text": "Switch the remote control off when a command is refused (#261)"
+          },
+          {
+            "scope": "consumers",
+            "text": "Write to a my-PV heating rod only after it answered like one (#262)"
+          },
+          {
+            "scope": null,
+            "text": "Check the language from the switch, serve web files by normalized path (#256)"
+          },
+          {
+            "scope": null,
+            "text": "No technical error texts in the app, only known language codes in links (#255)"
+          }
+        ],
+        "perf": [],
+        "other": [
+          {
+            "scope": null,
+            "text": "Stub the evcc opener in the cookie test (#273)"
+          },
+          {
+            "scope": "pages",
+            "text": "Add the install scripts in a job without npm (#268)"
+          },
+          {
+            "scope": "release",
+            "text": "Tag only the highest stable version as latest (#266)"
+          },
+          {
+            "scope": "deps",
+            "text": "Run dependency code without write access (#260)"
+          },
+          {
+            "scope": "changelog",
+            "text": "Add a summary for 0.19.0 (#253)"
+          }
+        ]
+      },
+      "breaking": []
+    },
+    {
+      "version": "0.19.0",
+      "date": "2026-10-11",
+      "first": false,
+      "groups": {
+        "feat": [
+          {
+            "scope": "ui",
+            "text": "Extend the easter egg (#216)"
+          }
+        ],
+        "fix": [
+          {
+            "scope": "auth",
+            "text": "Lock out per device, keep revoked tokens revoked, slimmer backups (#251)"
+          },
+          {
+            "scope": "backup",
+            "text": "Restore only settings the app may change"
+          },
+          {
+            "scope": "updates",
+            "text": "Check the provenance also when the app is not running"
+          },
+          {
+            "scope": "consumers",
+            "text": "Show switch addresses only after login"
+          },
+          {
+            "scope": null,
+            "text": "Heating target cap in evcc, space check for cloud export uploads (#249)"
+          },
+          {
+            "scope": "ui",
+            "text": "Wallbox plan at the clock change, form states after saving (#248)"
+          },
+          {
+            "scope": "consumers",
+            "text": "Switch off devices in more situations (#247)"
+          },
+          {
+            "scope": "charging",
+            "text": "Stop at the inverter's charge limit (#246)"
+          },
+          {
+            "scope": "ui",
+            "text": "Smaller bugs in the report, devices and settings (#231)"
+          },
+          {
+            "scope": "api",
+            "text": "Check unexpected input, durations in the diagnostics report (#230)"
+          },
+          {
+            "scope": "install",
+            "text": "Reload helpers, safer downloads and folders, checked releases (#229)"
+          },
+          {
+            "scope": "ui",
+            "text": "Keep what was typed in forms (#228)"
+          },
+          {
+            "scope": "homeassistant",
+            "text": "Hide stale readings, set up again after the first reading (#227)"
+          },
+          {
+            "scope": "control",
+            "text": "Log and gate every write, no false external changes (#226)"
+          },
+          {
+            "scope": "charging",
+            "text": "Treat a normal end of charge as no fault (#225)"
+          },
+          {
+            "scope": "consumers",
+            "text": "Switch off devices that openampere switched on (#224)"
+          }
+        ],
+        "perf": [],
+        "other": [
+          {
+            "scope": null,
+            "text": "Cover the state of my-PV heating rods (#241)"
+          },
+          {
+            "scope": null,
+            "text": "Cover the error paths of the network search (#240)"
+          },
+          {
+            "scope": null,
+            "text": "Cover the calendar periods and buckets (#239)"
+          },
+          {
+            "scope": null,
+            "text": "Add copyright and license headers to every source file (#234)"
+          },
+          {
+            "scope": null,
+            "text": "Document code review, the two-factor rule and first tasks (#235)"
+          },
+          {
+            "scope": "ui",
+            "text": "Add property-based tests with fast-check (#213)"
+          },
+          {
+            "scope": null,
+            "text": "Enforce coding standards with ruff and biome (#212)"
+          },
+          {
+            "scope": null,
+            "text": "Document roles and a roadmap for the next year (#211)"
+          },
+          {
+            "scope": "security",
+            "text": "Add an assurance case and the report handling process (#210)"
+          },
+          {
+            "scope": null,
+            "text": "Show the openssf best practices badge in the readme (#209)"
+          },
+          {
+            "scope": null,
+            "text": "Add property-based tests with hypothesis (#208)"
+          },
+          {
+            "scope": null,
+            "text": "Link the private vulnerability report form in the security policy (#204)"
+          },
+          {
+            "scope": "deps-web",
+            "text": "Bump the vite group in /web with 2 updates (#202)"
+          },
+          {
+            "scope": null,
+            "text": "Attach signed build provenance for the release files (#206)"
+          },
+          {
+            "scope": null,
+            "text": "Pin docker base images and python installs by hash (#207)"
+          },
+          {
+            "scope": null,
+            "text": "Add codeql analysis for python, typescript and workflows (#205)"
+          }
+        ]
+      },
+      "breaking": [],
+      "summary": {
+        "de": "Diese Version schließt drei Sicherheitslücken, bitte aktualisiere bald: Die Schaltadressen eigener Geräte sind nur noch nach der Anmeldung sichtbar, neue Versionen werden vor dem Start immer auf ihre Herkunft geprüft, und beim Wiederherstellen einer Sicherung werden nur noch geprüfte Einstellungen übernommen.\n\nWichtig: Den verbesserten Update-Helfer bekommt deine Installation nur, wenn du das Installationsscript noch einmal ausführst. Deine bisherigen Antworten bleiben dabei erhalten. Den Befehl findest du in der Anleitung zur Installation.",
+        "en": "This version closes three security gaps, please update soon: the switch addresses of your own devices are only visible after logging in, new versions are always checked for their origin before they start, and restoring a backup only takes over checked settings.\n\nImportant: your installation only gets the improved update helper if you run the install script again. Your previous answers are kept. The command is in the installation guide."
+      }
+    },
+    {
+      "version": "0.18.1",
+      "date": "2026-10-09",
+      "first": false,
+      "groups": {
+        "feat": [],
+        "fix": [
+          {
+            "scope": "ui",
+            "text": "Show the easter egg correctly on safari (#201)"
+          }
+        ],
+        "perf": [],
+        "other": []
+      },
+      "breaking": []
+    },
+    {
+      "version": "0.18.0",
+      "date": "2026-10-09",
+      "first": false,
+      "groups": {
+        "feat": [
+          {
+            "scope": "ui",
+            "text": "Add easter egg (#199)"
+          }
+        ],
+        "fix": [],
+        "perf": [],
+        "other": [
+          {
+            "scope": null,
+            "text": "Mark control of the foxess h3 with the new map as confirmed (#197)"
+          }
+        ]
+      },
+      "breaking": []
+    },
+    {
+      "version": "0.17.0",
+      "date": "2026-10-08",
+      "first": false,
+      "groups": {
+        "feat": [
+          {
+            "scope": "storage",
+            "text": "Version the database schema and keep a copy before upgrades (#191)"
+          },
+          {
+            "scope": "storage",
+            "text": "Warn in the app and by notification when readings cannot be stored (#190)"
+          },
+          {
+            "scope": "diagnostics",
+            "text": "Include the recent log in the report and make the log level adjustable (#183)"
+          },
+          {
+            "scope": "changelog",
+            "text": "Show an optional summary per version for owners (#187)"
+          },
+          {
+            "scope": "update",
+            "text": "Add a container health check and pin actions by commit (#181)"
+          }
+        ],
+        "fix": [
+          {
+            "scope": "ui",
+            "text": "Show energy from 0.1 kWh counters with one decimal (#195)"
+          },
+          {
+            "scope": "install",
+            "text": "Limit container logs and explain what to do on errors (#188)"
+          },
+          {
+            "scope": "storage",
+            "text": "Start after a damaged database and restore backups in the app (#189)"
+          },
+          {
+            "scope": "api",
+            "text": "Hide private settings and diagnostics without login (#184)"
+          },
+          {
+            "scope": "gridmeter",
+            "text": "Send an honest user agent to the netze bw portal (#180)"
+          },
+          {
+            "scope": "auth",
+            "text": "Accept only .fritz.box, not every .box host name (#177)"
+          }
+        ],
+        "perf": [],
+        "other": [
+          {
+            "scope": "site",
+            "text": "Base the imprint on the media act and complete the privacy notice (#193)"
+          },
+          {
+            "scope": null,
+            "text": "Regenerate the readme screenshots with two decimals (#186)"
+          },
+          {
+            "scope": null,
+            "text": "Show which devices are confirmed on a real system (#185)"
+          },
+          {
+            "scope": null,
+            "text": "Add backup, move, uninstall and troubleshooting guides (#182)"
+          },
+          {
+            "scope": "site",
+            "text": "Say the update check is on by default and call the report auswertung (#179)"
+          }
+        ]
+      },
+      "breaking": [],
+      "summary": {
+        "de": "Diese Version macht OpenAmpere sicherer und robuster. Bitte aktualisiere bald: Eine Lücke beim Schutz vor fremden Webseiten im Heimnetz ist geschlossen (#163), und Zugangsdaten wie der Login für das Kundenportal oder die Adresse der Push-Nachrichten sind nur noch nach der Anmeldung sichtbar (#164).\n\nNeu: Eine beschädigte Datenbank legt die App nicht mehr lahm, und eine Datensicherung kannst du jetzt direkt in der App wiederherstellen (Mehr → Daten & Sicherung). Ist die Speicherkarte voll, sagt dir die App das sofort. Der Diagnosebericht enthält die letzten Meldungen des Servers, ohne IP-Adressen und Seriennummer. Energiewerte von Wechselrichtern, die nur in 0,1-kWh-Schritten zählen, zeigt die App mit einer Nachkommastelle.",
+        "en": "This version makes OpenAmpere more secure and more robust. Please update soon: a gap in the protection against other web sites on the home network is closed (#163), and login details such as the customer portal login or the address of the push messages are only visible after logging in (#164).\n\nNew: a damaged database no longer stops the app, and you can now restore a backup right in the app (More → Data & backup). If the memory card is full, the app tells you right away. The diagnostics report contains the server's latest messages, without IP addresses and serial number. Energy values of inverters that only count in 0.1 kWh steps are shown with one decimal."
+      }
+    },
+    {
+      "version": "0.16.0",
+      "date": "2026-10-08",
+      "first": false,
+      "groups": {
+        "feat": [
+          {
+            "scope": "ui",
+            "text": "Show kWh and kW with two decimals everywhere (#162)"
+          }
+        ],
+        "fix": [],
+        "perf": [],
+        "other": []
+      },
+      "breaking": []
+    },
+    {
+      "version": "0.15.0",
+      "date": "2026-10-07",
+      "first": false,
+      "groups": {
+        "feat": [
+          {
+            "scope": "changelog",
+            "text": "Show every change without folding (#160)"
+          }
+        ],
+        "fix": [],
+        "perf": [],
+        "other": [
+          {
+            "scope": null,
+            "text": "Run the ui tests in the playwright container image (#158)"
+          }
+        ]
+      },
+      "breaking": []
+    },
+    {
+      "version": "0.14.0",
+      "date": "2026-10-07",
+      "first": false,
+      "groups": {
+        "feat": [
+          {
+            "scope": null,
+            "text": "Show a changelog in the app and on the website (#156)"
+          },
+          {
+            "scope": "control",
+            "text": "Show the control log as sentences and export it as csv (#154)"
+          }
+        ],
+        "fix": [],
+        "perf": [],
+        "other": []
+      },
+      "breaking": []
+    },
+    {
+      "version": "0.13.3",
+      "date": "2026-10-07",
+      "first": false,
+      "groups": {
+        "feat": [],
+        "fix": [
+          {
+            "scope": "report",
+            "text": "Show complete bars and one label per bucket in energy charts (#152)"
+          }
+        ],
+        "perf": [],
+        "other": []
+      },
+      "breaking": []
+    },
+    {
+      "version": "0.13.2",
+      "date": "2026-10-07",
+      "first": false,
+      "groups": {
+        "feat": [],
+        "fix": [
+          {
+            "scope": "diagnostics",
+            "text": "Pseudonymise addresses and leave out times in the shared report (#150)"
+          },
+          {
+            "scope": "charging",
+            "text": "Switch off openampere's remote control values after an inverter restart (#144)"
+          }
+        ],
+        "perf": [],
+        "other": [
+          {
+            "scope": null,
+            "text": "Align contributing guide and issue templates with the privacy rules (#148)"
+          },
+          {
+            "scope": "agents",
+            "text": "List personal and installation data that must not be published (#146)"
+          }
+        ]
+      },
+      "breaking": []
+    },
+    {
+      "version": "0.13.1",
+      "date": "2026-10-07",
+      "first": false,
+      "groups": {
+        "feat": [],
+        "fix": [
+          {
+            "scope": "charging",
+            "text": "Switch off a leftover remote control and stop blaming the smartbox (#142)"
+          }
+        ],
+        "perf": [],
+        "other": []
+      },
+      "breaking": []
+    },
+    {
+      "version": "0.13.0",
+      "date": "2026-10-06",
+      "first": false,
+      "groups": {
+        "feat": [
+          {
+            "scope": "remote",
+            "text": "Optional HTTPS for remote access with tailscale serve (#140)"
+          }
+        ],
+        "fix": [],
+        "perf": [],
+        "other": []
+      },
+      "breaking": []
+    },
+    {
+      "version": "0.12.0",
+      "date": "2026-10-06",
+      "first": false,
+      "groups": {
+        "feat": [
+          {
+            "scope": "diagnostics",
+            "text": "Tell who holds the remote control and for how long (#136)"
+          },
+          {
+            "scope": "notify",
+            "text": "Guided ntfy setup with a QR code and help when nothing arrives (#134)"
+          }
+        ],
+        "fix": [
+          {
+            "scope": "ui",
+            "text": "Keep the update banner within the page column on wide screens (#133)"
+          }
+        ],
+        "perf": [],
+        "other": [
+          {
+            "scope": "ui",
+            "text": "Note that the date field width is a Playwright WebKit quirk, not an iOS bug (#139)"
+          },
+          {
+            "scope": "ui",
+            "text": "Add Playwright UI tests for every page on desktop and iPhone (#138)"
+          }
+        ]
+      },
+      "breaking": []
+    },
+    {
+      "version": "0.11.0",
+      "date": "2026-10-06",
+      "first": false,
+      "groups": {
+        "feat": [
+          {
+            "scope": "updates",
+            "text": "Verify the image provenance before switching to a new version (#125)"
+          },
+          {
+            "scope": "site",
+            "text": "Add English and a language switch to the website (#124)"
+          },
+          {
+            "scope": "ui",
+            "text": "Offer the language switch on the first screens (#122)"
+          }
+        ],
+        "fix": [
+          {
+            "scope": "diagnostics",
+            "text": "Explain who uses the remote control, with real values (#127)"
+          },
+          {
+            "scope": "ui",
+            "text": "Keep the language switch in the settings only (#123)"
+          }
+        ],
+        "perf": [],
+        "other": [
+          {
+            "scope": null,
+            "text": "Add AGENTS.md for AI coding agents and point CLAUDE.md to it (#129)"
+          }
+        ]
+      },
+      "breaking": []
+    },
+    {
+      "version": "0.10.0",
+      "date": "2026-10-06",
+      "first": false,
+      "groups": {
+        "feat": [
+          {
+            "scope": "ui",
+            "text": "Translate the whole app with English keys and add languages without code (#120)"
+          },
+          {
+            "scope": "ui",
+            "text": "Split translations by area and follow the language in numbers and dates (#118)"
+          },
+          {
+            "scope": "ui",
+            "text": "Add a language switch with English as a preview (#108)"
+          }
+        ],
+        "fix": [
+          {
+            "scope": "control",
+            "text": "Do not write the export limit to a read-only device (#119)"
+          }
+        ],
+        "perf": [],
+        "other": [
+          {
+            "scope": null,
+            "text": "Link the public roadmap (#117)"
+          },
+          {
+            "scope": "release",
+            "text": "Provenance, SBOM and install scripts per release (#114)"
+          },
+          {
+            "scope": null,
+            "text": "Point questions to GitHub Discussions (#110)"
+          },
+          {
+            "scope": null,
+            "text": "Add a guide for writing a driver (#112)"
+          },
+          {
+            "scope": null,
+            "text": "Add a device compatibility page (#111)"
+          },
+          {
+            "scope": null,
+            "text": "Add the OpenSSF Scorecard and narrow workflow token permissions (#109)"
+          },
+          {
+            "scope": null,
+            "text": "Make the repository English and keep the user guides German (#107)"
+          }
+        ]
+      },
+      "breaking": []
+    },
+    {
+      "version": "0.9.0",
+      "date": "2026-10-06",
+      "first": false,
+      "groups": {
+        "feat": [
+          {
+            "scope": "outages",
+            "text": "Remove an entry with \"Das war kein Stromausfall\" (#96)"
+          }
+        ],
+        "fix": [
+          {
+            "scope": "outages",
+            "text": "Tell a switched-off inverter from an empty battery (#94)"
+          },
+          {
+            "scope": "outages",
+            "text": "Need two off-grid readings and tell missing data from an empty battery (#90)"
+          }
+        ],
+        "perf": [],
+        "other": [
+          {
+            "scope": null,
+            "text": "Add the seventh insolvency case of the EKD group (#92)"
+          }
+        ]
+      },
+      "breaking": []
+    },
+    {
+      "version": "0.8.1",
+      "date": "2026-10-05",
+      "first": false,
+      "groups": {
+        "feat": [],
+        "fix": [
+          {
+            "scope": "ui",
+            "text": "Show cent amounts with two decimals and keep typed decimals (#88)"
+          }
+        ],
+        "perf": [],
+        "other": []
+      },
+      "breaking": []
+    },
+    {
+      "version": "0.8.0",
+      "date": "2026-10-05",
+      "first": false,
+      "groups": {
+        "feat": [
+          {
+            "scope": "remote",
+            "text": "Set up access from anywhere with tailscale in the app (#86)"
+          }
+        ],
+        "fix": [],
+        "perf": [],
+        "other": [
+          {
+            "scope": null,
+            "text": "Add faq for affected owners and link official insolvency notices (#85)"
+          }
+        ]
+      },
+      "breaking": []
+    },
+    {
+      "version": "0.7.0",
+      "date": "2026-10-05",
+      "first": false,
+      "groups": {
+        "feat": [
+          {
+            "scope": "apps",
+            "text": "Show whether Home Assistant is connected and how to connect (#81)"
+          },
+          {
+            "scope": "homeassistant",
+            "text": "Home Assistant integration via HACS with a secure API (#77)"
+          }
+        ],
+        "fix": [
+          {
+            "scope": "site",
+            "text": "Fit the demo into the phone mockup (#80)"
+          }
+        ],
+        "perf": [],
+        "other": [
+          {
+            "scope": "deps",
+            "text": "Update Python dependencies (#82)"
+          }
+        ]
+      },
+      "breaking": []
+    },
+    {
+      "version": "0.6.0",
+      "date": "2026-10-05",
+      "first": false,
+      "groups": {
+        "feat": [
+          {
+            "scope": "tariffs",
+            "text": "Determine the feed-in compensation from the EEG rates (#74)"
+          }
+        ],
+        "fix": [
+          {
+            "scope": "control",
+            "text": "Allow an outage floor of 0 % (#72)"
+          },
+          {
+            "scope": "ui",
+            "text": "Save CSV export and backup from the iPhone home-screen app (#73)"
+          },
+          {
+            "scope": "updates",
+            "text": "Check the update helper at the time of the hourly tick (#75)"
+          }
+        ],
+        "perf": [],
+        "other": []
+      },
+      "breaking": []
+    },
+    {
+      "version": "0.5.1",
+      "date": "2026-10-04",
+      "first": false,
+      "groups": {
+        "feat": [],
+        "fix": [
+          {
+            "scope": "billing",
+            "text": "Fetch Netze BW values the way real accounts deliver them (#68)"
+          }
+        ],
+        "perf": [],
+        "other": [
+          {
+            "scope": "deps",
+            "text": "Regenerate lockfiles and license list in one step (#66)"
+          }
+        ]
+      },
+      "breaking": []
+    },
+    {
+      "version": "0.5.0",
+      "date": "2026-10-04",
+      "first": false,
+      "groups": {
+        "feat": [
+          {
+            "scope": "billing",
+            "text": "Fetch the grid operator's meter values, starting with Netze BW (#63)"
+          }
+        ],
+        "fix": [
+          {
+            "scope": "security",
+            "text": "Encrypt stored secrets in the database (#65)"
+          },
+          {
+            "scope": "settings",
+            "text": "Move the grid operator's meter values under Verbindung (#64)"
+          },
+          {
+            "scope": "report",
+            "text": "One prepayment block with the stand today instead of two forecasts (#62)"
+          },
+          {
+            "scope": "pv",
+            "text": "Unconnected inputs appear in the settings and drop out of the analysis (#61)"
+          }
+        ],
+        "perf": [],
+        "other": []
+      },
+      "breaking": []
+    },
+    {
+      "version": "0.4.0",
+      "date": "2026-10-04",
+      "first": false,
+      "groups": {
+        "feat": [
+          {
+            "scope": "tariffs",
+            "text": "Time tariff with own price windows (#54)"
+          },
+          {
+            "scope": "report",
+            "text": "History of power cuts (#52)"
+          },
+          {
+            "scope": "ui",
+            "text": "Show and report a power cut (off-grid mode) (#50)"
+          },
+          {
+            "scope": "charging",
+            "text": "Charge levels relative to what the battery allows (#49)"
+          },
+          {
+            "scope": "data",
+            "text": "Keep detail readings for years or forever, with the space it needs (#47)"
+          },
+          {
+            "scope": "ui",
+            "text": "Show whether the battery charges from the sun or the grid (#46)"
+          },
+          {
+            "scope": "pv",
+            "text": "Hide module arrays that are not connected (#40)"
+          }
+        ],
+        "fix": [
+          {
+            "scope": "ui",
+            "text": "No overflow or clipped text on narrow phones (#56)"
+          },
+          {
+            "scope": "ui",
+            "text": "Small display issues from the field (#45)"
+          },
+          {
+            "scope": "diagnostics",
+            "text": "Clearer texts and ratings (#44)"
+          },
+          {
+            "scope": "ui",
+            "text": "Capacity button, date fields in cards, single temperature heading (#43)"
+          },
+          {
+            "scope": "import",
+            "text": "Name both steps of the cloud import progress (#42)"
+          },
+          {
+            "scope": "ui",
+            "text": "Label the battery's own sensor as electronics (BMS) when cell temperatures exist (#41)"
+          },
+          {
+            "scope": "report",
+            "text": "One balance per annual bill, with the calculation behind it (#39)"
+          },
+          {
+            "scope": "report",
+            "text": "Consistent values on the first day (#36)"
+          },
+          {
+            "scope": "ui",
+            "text": "Content no longer runs under the iPhone status bar (#35)"
+          },
+          {
+            "scope": "ui",
+            "text": "Downloads from the iPhone home-screen app open in their own window (#34)"
+          },
+          {
+            "scope": "ui",
+            "text": "Copying works on the iPhone over plain HTTP (#33)"
+          },
+          {
+            "scope": "foxess",
+            "text": "Read the inverter temperature in 0.1 °C (#26)"
+          }
+        ],
+        "perf": [],
+        "other": [
+          {
+            "scope": null,
+            "text": "New README screenshots (#57)"
+          },
+          {
+            "scope": null,
+            "text": "The former smartbox resets settings from the cloud (#53)"
+          },
+          {
+            "scope": null,
+            "text": "Bump actions/checkout from 4 to 7 (#30)"
+          },
+          {
+            "scope": "deps-web",
+            "text": "Bump vite from 8.3.1 to 8.3.2 in /web in the vite group (#29)"
+          },
+          {
+            "scope": null,
+            "text": "Bump actions/deploy-pages from 4 to 5 (#32)"
+          },
+          {
+            "scope": null,
+            "text": "Bump actions/configure-pages from 5 to 6 (#31)"
+          },
+          {
+            "scope": null,
+            "text": "Bump docker/build-push-action from 6 to 7 (#28)"
+          },
+          {
+            "scope": null,
+            "text": "Bump actions/setup-node from 4 to 7 (#27)"
+          },
+          {
+            "scope": "deps",
+            "text": "Label Dependabot pull requests only with dependencies"
+          },
+          {
+            "scope": "github",
+            "text": "English issue labels"
+          },
+          {
+            "scope": "github",
+            "text": "Issue templates with the current app areas and a cause field"
+          }
+        ]
+      },
+      "breaking": []
+    },
+    {
+      "version": "0.3.0",
+      "date": "2026-10-03",
+      "first": false,
+      "groups": {
+        "feat": [
+          {
+            "scope": null,
+            "text": "Updates from the app with one tap"
+          },
+          {
+            "scope": null,
+            "text": "Annual bill forecast, battery health and firmware changes"
+          }
+        ],
+        "fix": [],
+        "perf": [],
+        "other": []
+      },
+      "breaking": []
+    },
+    {
+      "version": "0.2.0",
+      "date": "2026-10-03",
+      "first": false,
+      "groups": {
+        "feat": [
+          {
+            "scope": "ui",
+            "text": "Link to the project imprint in Über OpenAmpere"
+          },
+          {
+            "scope": "evcc",
+            "text": "Car battery, minimum charge and driving statistics"
+          }
+        ],
+        "fix": [],
+        "perf": [],
+        "other": []
+      },
+      "breaking": []
+    },
+    {
+      "version": "0.1.2",
+      "date": "2026-10-03",
+      "first": false,
+      "groups": {
+        "feat": [],
+        "fix": [
+          {
+            "scope": "ui",
+            "text": "Device lines in the energy flow run from corner to corner"
+          },
+          {
+            "scope": "ui",
+            "text": "Car and heating rod icons in the energy flow match the others"
+          }
+        ],
+        "perf": [],
+        "other": [
+          {
+            "scope": null,
+            "text": "Screenshots in the README"
+          },
+          {
+            "scope": null,
+            "text": "Mark only the newest version as latest release"
+          }
+        ]
+      },
+      "breaking": []
+    },
+    {
+      "version": "0.1.1",
+      "date": "2026-10-03",
+      "first": false,
+      "groups": {
+        "feat": [],
+        "fix": [
+          {
+            "scope": "ui",
+            "text": "Lower the nav bar on iPhone, collapse \"Alle Werte\" in the analysis"
+          }
+        ],
+        "perf": [],
+        "other": [
+          {
+            "scope": null,
+            "text": "GitHub release with notes for every version tag"
+          },
+          {
+            "scope": null,
+            "text": "Run the dependency sync on branches only, not on version tags"
+          }
+        ]
+      },
+      "breaking": []
+    },
+    {
+      "version": "0.1.0",
+      "date": "2026-10-03",
+      "first": true,
+      "groups": {
+        "feat": [
+          {
+            "scope": null,
+            "text": "One-line install script"
+          },
+          {
+            "scope": "ui",
+            "text": "Tiles back on the start page, open analysis, setup under Verbindung"
+          },
+          {
+            "scope": "ui",
+            "text": "Clearer wallbox status, unsaved hints, one-line demo banner"
+          },
+          {
+            "scope": "ui",
+            "text": "Short intros, background on request"
+          },
+          {
+            "scope": "ui",
+            "text": "Wallbox setup as three numbered steps"
+          },
+          {
+            "scope": "ui",
+            "text": "Guided device setup instead of one long form"
+          },
+          {
+            "scope": "report",
+            "text": "One analysis page with key figures and foldable sections"
+          },
+          {
+            "scope": "ui",
+            "text": "A shorter start page with the numbers that matter"
+          },
+          {
+            "scope": null,
+            "text": "One list for who gets solar power first"
+          },
+          {
+            "scope": "ui",
+            "text": "Battery under Geräte, a tidier Mehr menu"
+          },
+          {
+            "scope": "ui",
+            "text": "One switch for control: view only, test, active"
+          },
+          {
+            "scope": "ui",
+            "text": "Label the bottom menu and call the start page Übersicht"
+          },
+          {
+            "scope": "demo",
+            "text": "Show charging and heating on days with solar surplus"
+          },
+          {
+            "scope": "ui",
+            "text": "Give devices their own menu and show them everywhere"
+          },
+          {
+            "scope": "devices",
+            "text": "Record power and energy per device, add manual modes"
+          },
+          {
+            "scope": null,
+            "text": "Control my-PV heating rods and wallboxes via evcc"
+          },
+          {
+            "scope": "site",
+            "text": "Add imprint and privacy page, rewrite landing page text"
+          },
+          {
+            "scope": "site",
+            "text": "Add project website with live demo on GitHub Pages"
+          },
+          {
+            "scope": "web",
+            "text": "Add an in-browser demo mode"
+          },
+          {
+            "scope": "diagnostics",
+            "text": "Add read-only diagnostics for on-site verification"
+          },
+          {
+            "scope": null,
+            "text": "Add tariffs, grid charging, surplus consumers and notifications"
+          },
+          {
+            "scope": "report",
+            "text": "Improve report, accessibility and release quality"
+          },
+          {
+            "scope": "app",
+            "text": "Make everyday use more trustworthy and easier"
+          },
+          {
+            "scope": null,
+            "text": "Add access protection and a legally correct feed-in limit"
+          }
+        ],
+        "fix": [],
+        "perf": [],
+        "other": []
+      },
+      "breaking": []
+    }
+  ]
+}

@@ -1,0 +1,211 @@
+<!doctype html>
+<!-- SPDX-FileCopyrightText: Copyright the OpenAmpere contributors -->
+<!-- SPDX-License-Identifier: MIT -->
+<!-- A page of the device knowledge (#512) or of the interface for other apps (#588), filled with a Markdown file by
+     scripts/build-site-pages.mjs -->
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Modbus connections, proxies and what all inverters share | Device knowledge | OpenAmpere</title>
+  <meta name="description" content="What OpenAmpere knows about inverters, wallboxes and other devices: registers, behaviour and how sure each fact is." />
+  <meta name="theme-color" content="#f4f4f4" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#21262b" media="(prefers-color-scheme: dark)" />
+  <link rel="alternate" hreflang="de" href="https://dominiquehartmann.github.io/myampere/docs/devices/topics/modbus.html" />
+  <link rel="alternate" hreflang="en" href="https://dominiquehartmann.github.io/myampere/en/docs/devices/topics/modbus.html" />
+  <link rel="alternate" hreflang="x-default" href="https://dominiquehartmann.github.io/myampere/docs/devices/topics/modbus.html" />
+  <link rel="icon" href="../../../../icon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="../../../../style.css" />
+</head>
+<body>
+  <header class="top">
+    <div class="wrap top-inner">
+      <a class="brand" href="../../../"><img src="../../../../icon.svg" alt="" width="32" height="32" />OpenAmpere</a>
+      <nav aria-label="Site sections">
+        <a href="../../../#funktionen">Features</a>
+        <a href="../../../#installation">Installation</a>
+        <a href="../../../geraete.html">Devices</a>
+        <a href="../../../faq.html">FAQ</a>
+        <a href="../../../changelog.html">Changelog</a>
+        <a href="../../../../demo/?lang=en">Demo</a>
+        <a href="https://github.com/Gr33ndev/OpenAmpere">GitHub</a>
+        <span class="lang-switch" role="group" aria-label="Language"><a href="../../../../docs/devices/topics/modbus.html" hreflang="de" lang="de" title="Deutsch" aria-label="Deutsch">DE</a><a href="modbus.html" hreflang="en" lang="en" title="English" aria-label="English" aria-current="page">EN</a></span>
+      </nav>
+    </div>
+  </header>
+
+  <main class="wrap doc-page">
+    <p class="eyebrow doc-crumb"><a href="../../../docs/devices/">Device knowledge</a></p>
+    <p class="doc-note">These pages are technical. They collect what the OpenAmpere contributors have found out about the devices, each fact with its source and how sure it is. They show the latest state of development, which can be ahead of the version you have installed. They are not official manufacturer information. You don't need them to set up OpenAmpere; the app explains everything you need.</p>
+    <article class="doc" lang="en">
+<h1 id="modbus-connections-proxies-and-what-all-inverters-share">Modbus connections, proxies and what all inverters share</h1>
+<blockquote>
+<p><strong>Not official manufacturer information.</strong> Compiled by the OpenAmpere contributors; can be incomplete or wrong. No
+affiliation with the manufacturers named here or with EKD, not legal advice. See <a href="../index.html">Device knowledge</a>.</p>
+</blockquote>
+<p><strong>Applies to:</strong> every inverter OpenAmpere talks to (FoxESS H3 family, SAJ H2 family), Modbus TCP proxies, gateways
+and data loggers in between · <strong>OpenAmpere:</strong> <code>src/openampere/drivers/modbus.py</code>, <code>drivers/registry.py</code>,
+<code>drivers/base.py</code>, <code>discovery.py</code>, <code>probe.py</code> · <strong>Support:</strong> – · <strong>Confirmed on a real device:</strong> partly</p>
+<h2 id="summary">Summary</h2>
+<ul>
+<li>All inverters are reached over Modbus TCP, usually on port 502. Modbus TCP must be turned on at the inverter.</li>
+<li>A FoxESS H3 allows only very few Modbus TCP connections at a time. Other programs that read the inverter or the
+previous IQ box can take them all.</li>
+<li>Proxies and gateways answer with their own errors (exception 10/11), may reject multi-register writes and may mix
+up the answers of several clients; OpenAmpere retries temporary errors.</li>
+<li>The inverter's own consumption counter can count much more than the house used; OpenAmpere calculates consumption
+from the other flows.</li>
+<li>Every write follows the same safety rules, listed below as decisions.</li>
+</ul>
+<h2 id="behaviour">Behaviour</h2>
+<h3 id="connections">Connections</h3>
+<div class="table"><table>
+<thead><tr><th>Fact</th><th>Status</th><th>Source</th></tr></thead>
+<tbody>
+<tr><td>The inverter is reached over Modbus TCP, usually on port 502; Modbus TCP must be turned on. 1502 is another port seen on Modbus TCP devices.</td><td>confirmed (502, seen in diagnostics reports); derived (1502)</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/149">#149</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/172">#172</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/182">#182</a>; <code>probe.py</code></td></tr>
+<tr><td>On the Ampere.StoragePro systems sold by EKD (SAJ and FoxESS) Modbus TCP is already on; the older EKD systems of other makers differ (see <a href="names.html">names.md</a>); on other devices the installer turns it on.</td><td>derived</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/84">#84</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/85">#85</a>; <a href="https://github.com/dominiquehartmann/myampere/blob/main/README.md">README</a></td></tr>
+<tr><td>The inverter usually needs a LAN cable to the home network; a Wi-Fi stick that only talks to the cloud is often not enough.</td><td>open (general advice, no report)</td><td><a href="https://github.com/dominiquehartmann/myampere/blob/main/README.md">README</a></td></tr>
+<tr><td>A FoxESS H3 allows only very few Modbus TCP connections at a time. When all are taken, it accepts a new TCP connection and closes it right away, before any request.</td><td>confirmed</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/311">#311</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/312">#312</a></td></tr>
+<tr><td>Typical holders of these connections: another program reading the inverter (a Modbus setup in Home Assistant, a dashboard with its own collector, an own script, a second OpenAmpere installation), and the previous IQ box. Several reported cases were other programs, not the box.</td><td>confirmed</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/311">#311</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/312">#312</a>; <a href="iq-box.html">iq-box.md</a></td></tr>
+<tr><td>Typical errors: inverter not found, &quot;the device refuses the connection&quot; (Modbus TCP off or wrong port), &quot;no supported device detected&quot; (wrong device address).</td><td>confirmed</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/149">#149</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/172">#172</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/182">#182</a></td></tr>
+<tr><td>The inverter may get a new IP address from the router's DHCP.</td><td>derived</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/351">#351</a></td></tr>
+<tr><td>Settings written to the inverter stay there when OpenAmpere is uninstalled.</td><td>derived</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/172">#172</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/182">#182</a></td></tr>
+</tbody>
+</table></div>
+<h3 id="proxies-gateways-and-data-loggers">Proxies, gateways and data loggers</h3>
+<div class="table"><table>
+<thead><tr><th>Fact</th><th>Status</th><th>Source</th></tr></thead>
+<tbody>
+<tr><td>A Modbus TCP proxy is a common way to share access when another energy manager is connected. OpenAmpere then uses the proxy's address and port, and the device address set in the proxy applies.</td><td>derived</td><td><a href="https://github.com/dominiquehartmann/myampere/blob/main/README.md">README</a></td></tr>
+<tr><td>Unit id 0 is the Modbus broadcast address: behind a gateway every device takes a write to it.</td><td>documented</td><td>Modbus application protocol specification; <a href="https://github.com/Gr33ndev/OpenAmpere/issues/259">#259</a></td></tr>
+<tr><td>When the inverter does not answer, proxies and gateways reply with exception 10 (gateway path unavailable) or 11 (gateway target failed to respond).</td><td>documented (codes); derived (that proxies use them so)</td><td>Modbus application protocol specification; <a href="https://github.com/dominiquehartmann/myampere/blob/main/README.md">README</a></td></tr>
+<tr><td>A read-only proxy usually answers writes with &quot;illegal function&quot;.</td><td>derived</td><td><a href="https://github.com/dominiquehartmann/myampere/blob/main/README.md">README</a>; <code>drivers/modbus.py</code></td></tr>
+<tr><td>A proxy may answer from a cache with a shorter block than requested.</td><td>derived</td><td><code>drivers/modbus.py</code></td></tr>
+<tr><td>Some gateways or proxies accept single-register writes (FC06) but reject writing several registers at once (FC16). With FoxESS grid charging this could refuse only the power after the remote control was switched on.</td><td>open (example scenario, not reported from a device)</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/258">#258</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/261">#261</a></td></tr>
+<tr><td>With a proxy or data logger that forwards the inverter, a network scan finds the same inverter twice (same name and serial number); both work.</td><td>confirmed</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/20">#20</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/45">#45</a></td></tr>
+<tr><td>An SAJ (type 0x005E) behind a proxy shared with two other integrations: one reading took about 3–22 s, the Modbus library logged mismatched transaction ids (the answer to the previous request) and now and then no answer at all. This suggests the proxy mixes up the answers of several clients. No disconnects from the inverter were recorded.</td><td>confirmed</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/336">#336</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/340">#340</a></td></tr>
+<tr><td>Slow proxies or Wi-Fi need a longer timeout per request.</td><td>derived</td><td><a href="https://github.com/dominiquehartmann/myampere/blob/main/README.md">README</a></td></tr>
+<tr><td>The previous IQ box may set itself back to the inverter's address, so a proxy is no lasting way to share the inverter with it.</td><td>confirmed</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/311">#311</a>; <a href="iq-box.html">iq-box.md</a></td></tr>
+</tbody>
+</table></div>
+<h3 id="readings-and-energy-counters">Readings and energy counters</h3>
+<div class="table"><table>
+<thead><tr><th>Fact</th><th>Status</th><th>Source</th></tr></thead>
+<tbody>
+<tr><td>The drivers' register ranges of FoxESS and SAJ do not overlap, so asking a device of the other make only gives Modbus rejections.</td><td>derived</td><td><code>drivers/registry.py</code>; <a href="https://github.com/dominiquehartmann/myampere/blob/main/docs/devices.md">docs/devices.md</a></td></tr>
+<tr><td>A device can reject a block read although single registers in it work, for example while it is booting.</td><td>derived</td><td><code>drivers/modbus.py</code></td></tr>
+<tr><td>0x7FFF, 0x8000 and 0xFFFF are used by devices for &quot;not available&quot;.</td><td>derived</td><td><code>drivers/base.py</code></td></tr>
+<tr><td>An energy counter can briefly read 0 (device booting, proxy cache).</td><td>derived</td><td><code>storage.py</code></td></tr>
+<tr><td>The inverter's own consumption (load) counter can count much more than the house used: on one system its daily value was about 50 % higher than the balance of generation, grid import, feed-in, battery charge and discharge, while those five matched the manufacturer's app, which shows the balance.</td><td>confirmed (one system)</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/346">#346</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/349">#349</a></td></tr>
+<tr><td>Energy counters with 0.1 kWh steps tick at different moments, so a quarter hour of a balance calculated from them can come out negative.</td><td>derived</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/346">#346</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/349">#349</a></td></tr>
+<tr><td>Some devices' energy counters advance only in steps of 100 Wh, which looked like a false second decimal.</td><td>confirmed</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/194">#194</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/195">#195</a></td></tr>
+<tr><td>Without a fault, all fault words of the inverter read 0; only a non-zero code is a fault. Seen on an SAJ-based &quot;Ampere.StoragePro E2&quot;.</td><td>confirmed</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/330">#330</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/332">#332</a></td></tr>
+<tr><td>The battery may allow less charge power than the inverter's rated power.</td><td>derived</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/23">#23</a></td></tr>
+</tbody>
+</table></div>
+<h2 id="decisions-in-openampere">Decisions in OpenAmpere</h2>
+<h3 id="connection-and-detection">Connection and detection</h3>
+<div class="table"><table>
+<thead><tr><th>Decision</th><th>Why</th><th>Issue/PR</th></tr></thead>
+<tbody>
+<tr><td>Detection only reads: FoxESS at unit 247, then SAJ at units 1 and 2, then Solarmax at unit 1, then M-TEC at 252, 255 and 247; the first match wins. If nothing listens at host and port, other makes are not tried. The detection timeout is at least 2.5 s.</td><td>Reading is harmless; the ranges do not overlap.</td><td><a href="https://github.com/dominiquehartmann/myampere/blob/main/docs/devices.md">docs/devices.md</a>; <code>drivers/registry.py</code></td></tr>
+<tr><td>One persistent connection per inverter, requests one after the other with a short pause (0.03 s). Optionally &quot;per poll&quot;: connect for each poll and release afterwards.</td><td>Inverter stability; &quot;per poll&quot; helps when another energy manager releases its connection now and then (not the IQ box).</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/172">#172</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/182">#182</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/311">#311</a></td></tr>
+<tr><td>A connection that is accepted and closed at once is reported as &quot;currently busy&quot;, with a message that names other programs first and the IQ box second.</td><td>Matches the reported causes.</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/311">#311</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/312">#312</a></td></tr>
+<tr><td>Only exceptions 1, 2 and 3 (illegal function, address, value) count as permanent. Timeouts, 4, 5, 6, 10 and 11 and shortened answers are temporary: up to 3 attempts 0.3 s apart, and the connection counts as lost only after several failures in a row.</td><td>Proxies report a short gap of the inverter as an error.</td><td><a href="https://github.com/dominiquehartmann/myampere/blob/main/README.md">README</a>; <code>drivers/modbus.py</code></td></tr>
+<tr><td>A rejected block read falls back to single registers; a rejected address is skipped for 600 s and then tried again.</td><td>The device may have been booting.</td><td><code>drivers/modbus.py</code></td></tr>
+<tr><td>A read-only proxy's rejection of a write is shown as an understandable message.</td><td>Owners behind such proxies otherwise see only &quot;illegal function&quot;.</td><td><a href="https://github.com/dominiquehartmann/myampere/blob/main/README.md">README</a></td></tr>
+<tr><td>The network scan shows the last digits of the serial number and explains that a second hit is probably a proxy or data logger.</td><td>Owners did not know which hit to choose.</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/20">#20</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/45">#45</a></td></tr>
+<tr><td>The network scan and the search for a new address detect up to 8 hosts at a time, each with one connection at a time; the results stay in address order.</td><td>Detecting a host that accepts the connection but never answers takes about 45 s since the automatic detection also tries Solarmax and M-TEC; one after another, every such device added that.</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/549">#549</a></td></tr>
+<tr><td>After 180 s without a connection, OpenAmpere searches the /24 network for the same serial number (at most every 30 minutes) and switches over. A fixed IP address in the router is still recommended.</td><td>DHCP may give the inverter a new address.</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/351">#351</a></td></tr>
+<tr><td>The search tries only the stored driver when one is set (not &quot;auto&quot;), and it does not run for a device read through its web interface (Senec, Enphase).</td><td>The search is a Modbus one and can never find such a device; it would only open a connection to every Modbus device in the network, also wallboxes that take one client, every 30 minutes.</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/547">#547</a></td></tr>
+<tr><td>Two OpenAmpere installations must never talk to the same inverter; moving from Docker to the Home Assistant app goes through a backup and stopping the old installation first. Modbus TCP works unchanged from the app's network.</td><td>Connection slots and double control.</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/300">#300</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/304">#304</a></td></tr>
+<tr><td>For slow inverters, the external <code>/state</code> waits at most 5 s for the battery settings and otherwise answers with the last known ones; readings count as stale for other apps after 60 s (OpenAmpere's own control: 30 s); the Home Assistant integration bridges up to 3 failed state queries.</td><td>A shared proxy made single readings take up to about 20 s.</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/336">#336</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/340">#340</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/342">#342</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/343">#343</a></td></tr>
+<tr><td>The device reader in the diagnostics (Mehr → Diagnose → Gerät auslesen) reads only (FC03/FC04), at most 600 registers per run in blocks of 60 with 0.5 s pauses over one connection, and checks ports 502, 1502, 80, 443 and 8080. The configured inverter is read only over OpenAmpere's existing connection with its own unit id.</td><td>Some devices accept only one Modbus client.</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/324">#324</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/326">#326</a></td></tr>
+</tbody>
+</table></div>
+<h3 id="readings-and-counters">Readings and counters</h3>
+<div class="table"><table>
+<thead><tr><th>Decision</th><th>Why</th><th>Issue/PR</th></tr></thead>
+<tbody>
+<tr><td>0x7FFF, 0x8000, 0xFFFF (also scaled) count as not available; powers beyond ±100 kW, SoC or SoH outside 0–100 % and temperatures outside −40 to 120 °C are dropped.</td><td>Implausible values must not reach the charts or the control.</td><td><code>drivers/base.py</code></td></tr>
+<tr><td>An energy counter that drops to 0 is ignored for the energy accounting.</td><td>Booting device or proxy cache.</td><td><code>storage.py</code></td></tr>
+<tr><td>Consumption = PV + grid import + battery discharge − feed-in − battery charge. The inverter's own consumption counter stays only as a diagnostic Home Assistant sensor; the former &quot;inverter losses&quot; figure was this counter error and was removed.</td><td>The counter counts too much; the balance matches the manufacturer's app.</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/346">#346</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/349">#349</a></td></tr>
+<tr><td>A negative quarter hour of consumption is carried into the next quarters (at most 1 kWh), so no quarter is negative and the sums stay exact.</td><td>Counters with 0.1 kWh steps tick at different moments.</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/349">#349</a></td></tr>
+<tr><td>Counter step detection: from the last 7 days of locally recorded quarter-hour counter differences (imported history and quarters filled after an outage are ignored), if at least 20 non-zero differences are all multiples of 100 Wh the step is 100 Wh, else 10 Wh; unknown with too little data; cached for an hour. It overrides the driver's hint; <code>/api/status</code> reports <code>energy_step_wh</code> and the app shows one decimal at 100 Wh.</td><td>Coarse counters showed a false second decimal; also covers firmware that counts coarser than its unit.</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/194">#194</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/195">#195</a></td></tr>
+<tr><td>The drivers always deliver every fault word; only a non-zero code is a fault. The Home Assistant alarm sensor showed &quot;Problem&quot; for any non-empty list until 0.25.0; its <code>codes</code> attribute keeps all raw words so the position stays visible.</td><td>A list of zeros is no fault.</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/330">#330</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/332">#332</a></td></tr>
+</tbody>
+</table></div>
+<h3 id="writing-to-an-inverter-safety">Writing to an inverter (safety)</h3>
+<div class="table"><table>
+<thead><tr><th>Decision</th><th>Why</th><th>Issue/PR</th></tr></thead>
+<tbody>
+<tr><td>Writes only through the control features: master switch and test mode respected, the device's <code>supports_control</code> checked, limits checked before writing, the value read back afterwards, every change in the control log.</td><td>Writes can affect devices, warranties and grid connection rules.</td><td><a href="https://github.com/dominiquehartmann/myampere/blob/main/AGENTS.md">AGENTS.md</a></td></tr>
+<tr><td>The export limit is refused for a device with <code>supports_control</code> off, like battery settings and grid charging, not only when the driver reports the limit as unsupported.</td><td>The export limit is part of the grid connection approval; it needs a second safeguard.</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/113">#113</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/119">#119</a></td></tr>
+<tr><td>Only the owner's inverter is read and written: after every new connection the serial number is read again before anything else (every poll in &quot;per poll&quot; mode); the first device detected must have the serial number OpenAmpere knows, and one without a serial number does not count as it. Another one is neither read nor written, also not the &quot;safe&quot; switch-off, and the app shows it with a button for a replaced inverter (one without a serial number is not checked from then on). Setting up another address, port, unit id, driver or register map in the settings takes the device found there; a new timeout or poll interval does not, nor a new address found by the search. With automatic detection, the make is detected anew when a device answers on a new connection but cannot be confirmed (no such register, or no serial number), or after a gateway's &quot;target failed&quot; on three new connections in a row, so a replacement of another make is found; timeouts and network errors keep the driver and what it learned. A device whose detection finds no serial number (FoxESS legacy map) cannot be told apart and is not checked.</td><td>A tablet in another network, or the router gave the address to another device: the same address can reach another Modbus device.</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/567">#567</a></td></tr>
+<tr><td>Never write to unit id 0 or above 247; consumers accept only 1–247.</td><td>Unit id 0 is the broadcast.</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/259">#259</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/262">#262</a></td></tr>
+<tr><td>Continuous control (grid charging) only through the inverter's remote control with a watchdog timeout, never through permanently stored registers; release only what OpenAmpere started. SAJ, which has no such remote control, uses a short charge slot that ends by itself.</td><td>If OpenAmpere stops, the inverter falls back by itself.</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/141">#141</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/377">#377</a>; <a href="../foxess/h3.html">foxess/h3.md</a>, <a href="../saj/h2-family.html">saj/h2-family.md</a></td></tr>
+<tr><td>Switching off is the safe direction and is written even with the master switch off or in test mode.</td><td>Leaving something on is the risk.</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/217">#217</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/243">#243</a></td></tr>
+<tr><td>A value that could not be read back (a single timeout) is ignored when checking battery settings or the export limit, so it is not reported as overwritten; a failed read-back after an export-limit write is still logged (&quot;Rücklesen fehlgeschlagen&quot;) and the later check still runs.</td><td>A timeout is not an overwrite by another device.</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/219">#219</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/226">#226</a></td></tr>
+<tr><td>Stored grid charging power is lowered (not refused) to the inverter's rated power and the battery's charge limit; below 200 W the setting counts as off.</td><td>The battery may allow less than the inverter.</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/23">#23</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/351">#351</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/363">#363</a></td></tr>
+<tr><td>Writes from other apps (Home Assistant) are limited per battery setting to a number per hour; the write times survive a restart.</td><td>Protects the inverter's memory from frequent writes.</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/351">#351</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/352">#352</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/363">#363</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/366">#366</a></td></tr>
+<tr><td>Owners are told to switch off grid charging before they uninstall OpenAmpere.</td><td>Written settings stay in the inverter.</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/172">#172</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/182">#182</a></td></tr>
+</tbody>
+</table></div>
+<h2 id="open-questions">Open questions</h2>
+<ul>
+<li>Whether real gateways reject multi-register writes while accepting single ones; so far only an example scenario
+(<a href="https://github.com/Gr33ndev/OpenAmpere/issues/258">#258</a>).</li>
+<li>Whether the consumption counter error applies to every device and firmware or only to some; seen on one system
+(<a href="https://github.com/Gr33ndev/OpenAmpere/issues/346">#346</a>). See also the conflict on <a href="iq-box.html">iq-box.md</a>.</li>
+<li>How many writes per hour an inverter's memory tolerates: no manufacturer figure is known; the limits for other apps
+are a cautious choice (<a href="https://github.com/Gr33ndev/OpenAmpere/issues/352">#352</a>).</li>
+<li>How many Modbus TCP connections a FoxESS H3 allows exactly, and how many an SAJ allows, is not known.</li>
+<li>Whether a cloud-only Wi-Fi stick can ever be used; only general advice so far.</li>
+</ul>
+<h2 id="sources">Sources</h2>
+<ul>
+<li>Modbus application protocol specification (Modbus Organization): exception codes, broadcast address.</li>
+<li>Issues and pull requests: <a href="https://github.com/Gr33ndev/OpenAmpere/issues/20">#20</a>,
+<a href="https://github.com/Gr33ndev/OpenAmpere/issues/23">#23</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/45">#45</a>,
+<a href="https://github.com/Gr33ndev/OpenAmpere/issues/84">#84</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/85">#85</a>,
+<a href="https://github.com/Gr33ndev/OpenAmpere/issues/113">#113</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/119">#119</a>,
+<a href="https://github.com/Gr33ndev/OpenAmpere/issues/141">#141</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/149">#149</a>,
+<a href="https://github.com/Gr33ndev/OpenAmpere/issues/172">#172</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/182">#182</a>,
+<a href="https://github.com/Gr33ndev/OpenAmpere/issues/194">#194</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/195">#195</a>,
+<a href="https://github.com/Gr33ndev/OpenAmpere/issues/217">#217</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/219">#219</a>,
+<a href="https://github.com/Gr33ndev/OpenAmpere/issues/226">#226</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/243">#243</a>,
+<a href="https://github.com/Gr33ndev/OpenAmpere/issues/258">#258</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/259">#259</a>,
+<a href="https://github.com/Gr33ndev/OpenAmpere/issues/261">#261</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/262">#262</a>,
+<a href="https://github.com/Gr33ndev/OpenAmpere/issues/300">#300</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/304">#304</a>,
+<a href="https://github.com/Gr33ndev/OpenAmpere/issues/311">#311</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/312">#312</a>,
+<a href="https://github.com/Gr33ndev/OpenAmpere/issues/324">#324</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/326">#326</a>,
+<a href="https://github.com/Gr33ndev/OpenAmpere/issues/330">#330</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/332">#332</a>,
+<a href="https://github.com/Gr33ndev/OpenAmpere/issues/336">#336</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/340">#340</a>,
+<a href="https://github.com/Gr33ndev/OpenAmpere/issues/342">#342</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/343">#343</a>,
+<a href="https://github.com/Gr33ndev/OpenAmpere/issues/346">#346</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/349">#349</a>,
+<a href="https://github.com/Gr33ndev/OpenAmpere/issues/351">#351</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/352">#352</a>,
+<a href="https://github.com/Gr33ndev/OpenAmpere/issues/363">#363</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/366">#366</a>,
+<a href="https://github.com/Gr33ndev/OpenAmpere/issues/377">#377</a>.</li>
+<li>Code: <code>src/openampere/drivers/modbus.py</code>, <code>drivers/registry.py</code>, <code>drivers/base.py</code>, <code>discovery.py</code>, <code>probe.py</code>,
+<code>storage.py</code>, <code>charging.py</code>, <code>control.py</code>, <code>external.py</code>.</li>
+</ul>
+    </article>
+    <p class="doc-source"><a href="https://github.com/dominiquehartmann/myampere/blob/main/docs/devices/topics/modbus.md">View and improve this page on GitHub</a></p>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      <p><a href="../../../impressum.html">Imprint and privacy</a> ·
+        <a href="../../../changelog.html">Changelog</a> ·
+        <a href="../../../docs/devices/">Device knowledge</a> ·
+        <a href="../../../docs/external-api.html">For developers</a> ·
+        <a href="https://github.com/Gr33ndev/OpenAmpere">Source code</a> ·
+        <a href="https://github.com/Gr33ndev/OpenAmpere/blob/main/LICENSE">MIT License</a> ·
+        <a href="https://github.com/Gr33ndev/OpenAmpere/blob/main/SECURITY.md">Security</a></p>
+      <p class="small">Most wallboxes are controlled by <a href="https://evcc.io">evcc</a>, an independent open source project. Thanks to the evcc community!</p>
+      <p class="small">This site sets no cookies and uses no tracking.
+        Font: DM Sans (<a href="../../../../fonts/OFL.txt">SIL Open Font License</a>).</p>
+    </div>
+  </footer>
+</body>
+</html>

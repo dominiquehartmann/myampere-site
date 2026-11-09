@@ -1,0 +1,102 @@
+<!doctype html>
+<!-- SPDX-FileCopyrightText: Copyright the OpenAmpere contributors -->
+<!-- SPDX-License-Identifier: MIT -->
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>EKD-Geräte | OpenAmpere</title>
+  <meta name="description" content="Welche Speicher, Wallboxen und Zusatzgeräte EKD verkauft hat und was OpenAmpere davon anzeigen und steuern kann." />
+  <meta name="theme-color" content="#f4f4f4" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#21262b" media="(prefers-color-scheme: dark)" />
+  <link rel="alternate" hreflang="de" href="https://dominiquehartmann.github.io/myampere/geraete.html" />
+  <link rel="alternate" hreflang="en" href="https://dominiquehartmann.github.io/myampere/en/geraete.html" />
+  <link rel="alternate" hreflang="x-default" href="https://dominiquehartmann.github.io/myampere/geraete.html" />
+  <link rel="icon" href="icon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="top">
+    <div class="wrap top-inner">
+      <a class="brand" href="./"><img src="icon.svg" alt="" width="32" height="32" />OpenAmpere</a>
+      <nav aria-label="Seitenbereiche">
+        <a href="./#funktionen">Funktionen</a>
+        <a href="./#installation">Installation</a>
+        <a href="geraete.html">Geräte</a>
+        <a href="faq.html">Fragen</a>
+        <a href="changelog.html">Changelog</a>
+        <a href="demo/?lang=de">Demo</a>
+        <a href="https://github.com/Gr33ndev/OpenAmpere">GitHub</a>
+        <span class="lang-switch" role="group" aria-label="Sprache"><a href="geraete.html" hreflang="de" lang="de" title="Deutsch" aria-label="Deutsch" aria-current="page">DE</a><a href="en/geraete.html" hreflang="en" lang="en" title="English" aria-label="English">EN</a></span>
+      </nav>
+    </div>
+  </header>
+
+  <main class="wrap devices-page">
+    <div class="faq-head">
+      <p class="eyebrow">Geräte</p>
+      <h1>Welche EKD-Geräte funktionieren mit OpenAmpere?</h1>
+      <p class="lead">EKD hat seit 2018 Speicher, Wallboxen und Zusatzgeräte verschiedener Hersteller verkauft. Hier siehst du, was OpenAmpere davon heute kann und woran gearbeitet wird.</p>
+      <p>Welches Gerät du hast, steht auf dem Typenschild am Speicher, am Wechselrichter oder an der Wallbox. Den Verkaufsnamen findest du meist im Angebot oder in der Rechnung von EKD.</p>
+    </div>
+
+    <div class="matrix-wrap" role="region" aria-label="Von EKD verkaufte Geräte" tabindex="0">
+      <table class="matrix">
+        <thead>
+          <tr>
+            <th scope="col">Verkauft als</th>
+            <th scope="col">Gerät</th>
+            <th scope="col">Zeitraum, etwa</th>
+            <th scope="col">In OpenAmpere</th>
+            <th scope="col">Nächster Schritt</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="group"><th colspan="5" scope="rowgroup">Speicher</th></tr>
+<tr><th scope="row">Ampere.StoragePro E3, 22 kW</th><td><a href="docs/devices/foxess/h3.html">FoxESS, wahrscheinlich H3 Pro</a></td><td>2025–2026</td><td><span class="state ok">Anzeige und Steuerung</span><small>Noch nicht bestätigt.</small></td><td>Ein <a href="https://github.com/Gr33ndev/OpenAmpere/issues/new?template=device_report.yml">Gerätebericht</a> hilft, es zu bestätigen</td></tr>
+<tr><th scope="row">Ampere.StoragePro E3, 12 kW</th><td><a href="docs/devices/foxess/h3.html">FoxESS H3, wahrscheinlich H3 Smart</a></td><td>2024–2026</td><td><span class="state ok">Anzeige und Steuerung</span><small>Anzeige und Steuerung bestätigt.</small></td><td>–</td></tr>
+<tr><th scope="row">Ampere.StoragePro (E2)</th><td><a href="docs/devices/saj/h2-family.html">SAJ H2 / HS2</a></td><td>2023–2024</td><td><span class="state ok">Anzeige und Steuerung</span><small>Anzeige bestätigt und im Alltag im Einsatz an einem „3P-X E2“ (ältere „Ampere.StoragePro“); von der Steuerung bisher nur das Ändern der Notstrom-Reserve bestätigt; H2, HS2 und AS2 noch nicht bestätigt.</small></td><td>Ein <a href="https://github.com/Gr33ndev/OpenAmpere/issues/new?template=device_report.yml">Gerätebericht</a> hilft, es zu bestätigen</td></tr>
+<tr><th scope="row">IQ Battery</th><td><a href="docs/devices/enphase/iq-gateway.html">Enphase IQ Battery</a></td><td>ab Ende 2022</td><td><span class="state ok">Nur Anzeige</span><small>Braucht einmal im Jahr ein Zugangs-Token aus dem Enphase-Konto. Noch nicht bestätigt.</small></td><td>Ein <a href="https://github.com/Gr33ndev/OpenAmpere/issues/new?template=device_report.yml">Gerätebericht</a> hilft, es zu bestätigen</td></tr>
+<tr><th scope="row">Energy-Butler</th><td><a href="docs/devices/mtec/energy-butler.html">M-TEC Energy-Butler</a></td><td>ab Ende 2022</td><td><span class="state ok">Nur Anzeige</span><small>Bei älterer Firmware des WLAN-Moduls beim Einrichten Port 5743 eintragen. Noch nicht bestätigt.</small></td><td>Ein <a href="https://github.com/Gr33ndev/OpenAmpere/issues/new?template=device_report.yml">Gerätebericht</a> hilft, es zu bestätigen</td></tr>
+<tr><th scope="row">AMPERE.Storage</th><td><a href="docs/devices/solarmax/max-storage.html">Solarmax MAX.STORAGE Ultimate</a></td><td>2022–2023</td><td><span class="state ok">Nur Anzeige</span><small>Einen Speicher, den EKD aus der Ferne abgeschaltet hat, schaltet OpenAmpere nie wieder ein. Noch nicht bestätigt.</small></td><td>Ein <a href="https://github.com/Gr33ndev/OpenAmpere/issues/new?template=device_report.yml">Gerätebericht</a> hilft, es zu bestätigen</td></tr>
+<tr><th scope="row">Senec</th><td><a href="docs/devices/senec/home-v3.html">Senec.Home V3</a></td><td>2020–2022</td><td><span class="state ok">Nur Anzeige</span><small>Auch ältere Senec.Home V2.1. Beim Einrichten unter „Erweitert“ den Gerätetyp „Senec“ wählen. Noch nicht bestätigt.</small></td><td>Ein <a href="https://github.com/Gr33ndev/OpenAmpere/issues/new?template=device_report.yml">Gerätebericht</a> hilft, es zu bestätigen</td></tr>
+<tr><th scope="row">element backup</th><td>VARTA element backup</td><td>ab 2022</td><td><span class="state info">Infos gesucht</span><small>Unklar, wie viele es gibt und welche Schnittstelle sie haben.</small></td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/new?template=feature_request.yml">Melde dich</a>, wenn du so ein Gerät hast</td></tr>
+<tr class="group"><th colspan="5" scope="rowgroup">Wallboxen</th></tr>
+<tr><th scope="row">Ampere.ChargePro</th><td><a href="docs/devices/foxess/ac-charger.html">FoxESS AC EV Charger</a></td><td>2024–2026</td><td><span class="state ok">Anzeige, Steuerung als Test</span><small>Anzeige teilweise bestätigt (im Leerlauf, an einer Wallbox einer EKD-Anlage); Steuerung noch nicht bestätigt.</small></td><td>–</td></tr>
+<tr><th scope="row">AMPERE.Charge</th><td><a href="docs/devices/weidmueller/ac-smart.html">Weidmüller AC Smart Value</a></td><td>2023–2024</td><td><span class="state ok">Nur Anzeige</span><small>Steuern kann sie weiter evcc, dafür braucht evcc einen Sponsor-Token. Noch nicht bestätigt.</small></td><td>Ein <a href="https://github.com/Gr33ndev/OpenAmpere/issues/new?template=device_report.yml">Gerätebericht</a> hilft, es zu bestätigen</td></tr>
+<tr><th scope="row">SENEC.Wallbox</th><td>Senec</td><td>2020–2022</td><td><span class="state info">Infos gesucht</span><small>Unklar, welche Schnittstelle sie hat.</small></td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/new?template=feature_request.yml">Melde dich</a>, wenn du so ein Gerät hast</td></tr>
+<tr class="group"><th colspan="5" scope="rowgroup">Rund um den Speicher</th></tr>
+<tr><th scope="row">Heizstab</th><td><a href="docs/devices/mypv/elwa.html">my-PV</a></td><td>–</td><td><span class="state ok">Anzeige und Steuerung</span><small>Noch nicht bestätigt.</small></td><td>–</td></tr>
+<tr><th scope="row">Wärmepumpe von Partnern</th><td><a href="docs/devices/topics/consumers.html">verschiedene Hersteller, SG Ready</a></td><td>ab 2025</td><td><span class="state part">Über ein Relais</span><small>Über ein Shelly-Relais am SG-Ready-Eingang. Noch nicht bestätigt.</small></td><td>–</td></tr>
+<tr><th scope="row">Ampere.IQ</th><td>Energiemanager von Kiwigrid</td><td>2023–2026</td><td><span class="state none">Nicht nötig</span><small>OpenAmpere ersetzt die App. Den Verlauf kannst du aus der EKD-Cloud übernehmen, solange sie läuft.</small></td><td>–</td></tr>
+<tr><th scope="row">Ampere.SolarPro</th><td>Solarmodule von SOLYCO</td><td>2022–2026</td><td><span class="state none">Nichts anzubinden</span><small>Solarmodule haben keine Schnittstelle.</small></td><td>–</td></tr>
+<tr><th scope="row">Ampere.Offgrid</th><td>Notstrom-Umschalter</td><td>ab 2024</td><td><span class="state none">Nichts anzubinden</span><small>Das Gerät hat keine Schnittstelle.</small></td><td>–</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <section>
+      <h2>Was „geplant“ heißt</h2>
+      <p>Für jedes geplante Gerät gibt es ein Issue auf GitHub, aber noch keinen Termin. Zuerst kommt die Anzeige. Steuern kommt erst, wenn ein Besitzer die Werte an seiner Anlage bestätigt hat.</p>
+      <p>Hast du so ein Gerät und kannst testen? Dann schreib das bitte im Issue: welches Gerät laut Typenschild. Lass die Seriennummer weg, denn das Issue ist öffentlich.</p>
+      <p>Einzelheiten und Quellen zu jedem Gerät stehen in der <a href="https://github.com/Gr33ndev/OpenAmpere/blob/main/docs/devices/topics/names.md">Geräteübersicht im Repository</a> (auf Englisch).</p>
+      <p class="notice"><strong>Ohne Gewähr:</strong> Diese Übersicht ist keine offizielle Information von EKD oder den Herstellern. Sie stammt aus öffentlichen Datenblättern, Presseberichten und Berichten von Besitzern und kann unvollständig oder falsch sein. OpenAmpere hat keine Verbindung zu EKD oder den genannten Herstellern. Alle Produkt- und Firmennamen gehören ihren Inhabern und stehen hier nur, um zu beschreiben, mit welchen Geräten OpenAmpere funktioniert. Keine Rechtsberatung.</p>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      <p><a href="impressum.html">Impressum und Datenschutz</a> ·
+        <a href="changelog.html">Changelog</a> ·
+        <a href="docs/devices/">Gerätewissen</a> ·
+        <a href="docs/external-api.html">Für Entwickler</a> ·
+        <a href="https://github.com/Gr33ndev/OpenAmpere">Quellcode</a> ·
+        <a href="https://github.com/Gr33ndev/OpenAmpere/blob/main/LICENSE">MIT-Lizenz</a> ·
+        <a href="https://github.com/Gr33ndev/OpenAmpere/blob/main/SECURITY.md">Sicherheit</a></p>
+      <p class="small">Die meisten Wallboxen steuert <a href="https://evcc.io">evcc</a>, ein eigenständiges Open-Source-Projekt. Danke an die evcc-Community!</p>
+      <p class="small">Diese Seite setzt keine Cookies und nutzt kein Tracking.
+        Schrift: DM Sans (<a href="fonts/OFL.txt">SIL Open Font License</a>).</p>
+    </div>
+  </footer>
+</body>
+</html>

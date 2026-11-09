@@ -1,0 +1,163 @@
+<!doctype html>
+<!-- SPDX-FileCopyrightText: Copyright the OpenAmpere contributors -->
+<!-- SPDX-License-Identifier: MIT -->
+<!-- A page of the device knowledge (#512) or of the interface for other apps (#588), filled with a Markdown file by
+     scripts/build-site-pages.mjs -->
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Portable dé wallbox (Tuya) | Device knowledge | OpenAmpere</title>
+  <meta name="description" content="What OpenAmpere knows about inverters, wallboxes and other devices: registers, behaviour and how sure each fact is." />
+  <meta name="theme-color" content="#f4f4f4" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#21262b" media="(prefers-color-scheme: dark)" />
+  <link rel="alternate" hreflang="de" href="https://dominiquehartmann.github.io/myampere/docs/devices/tuya/de-portable.html" />
+  <link rel="alternate" hreflang="en" href="https://dominiquehartmann.github.io/myampere/en/docs/devices/tuya/de-portable.html" />
+  <link rel="alternate" hreflang="x-default" href="https://dominiquehartmann.github.io/myampere/docs/devices/tuya/de-portable.html" />
+  <link rel="icon" href="../../../../icon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="../../../../style.css" />
+</head>
+<body>
+  <header class="top">
+    <div class="wrap top-inner">
+      <a class="brand" href="../../../"><img src="../../../../icon.svg" alt="" width="32" height="32" />OpenAmpere</a>
+      <nav aria-label="Site sections">
+        <a href="../../../#funktionen">Features</a>
+        <a href="../../../#installation">Installation</a>
+        <a href="../../../geraete.html">Devices</a>
+        <a href="../../../faq.html">FAQ</a>
+        <a href="../../../changelog.html">Changelog</a>
+        <a href="../../../../demo/?lang=en">Demo</a>
+        <a href="https://github.com/Gr33ndev/OpenAmpere">GitHub</a>
+        <span class="lang-switch" role="group" aria-label="Language"><a href="../../../../docs/devices/tuya/de-portable.html" hreflang="de" lang="de" title="Deutsch" aria-label="Deutsch">DE</a><a href="de-portable.html" hreflang="en" lang="en" title="English" aria-label="English" aria-current="page">EN</a></span>
+      </nav>
+    </div>
+  </header>
+
+  <main class="wrap doc-page">
+    <p class="eyebrow doc-crumb"><a href="../../../docs/devices/">Device knowledge</a></p>
+    <p class="doc-note">These pages are technical. They collect what the OpenAmpere contributors have found out about the devices, each fact with its source and how sure it is. They show the latest state of development, which can be ahead of the version you have installed. They are not official manufacturer information. You don't need them to set up OpenAmpere; the app explains everything you need.</p>
+    <article class="doc" lang="en">
+<h1 id="portable-dé-wallbox-tuya">Portable dé wallbox (Tuya)</h1>
+<blockquote>
+<p>Not official manufacturer information: compiled by the OpenAmpere contributors, possibly incomplete or wrong.
+Changing device settings can affect warranty and grid connection rules. No affiliation with dé, Tuya or EKD, not
+legal advice. See <a href="../index.html">Device knowledge</a>.</p>
+</blockquote>
+<p><strong>Applies to:</strong> the portable 11 kW wallbox sold as &quot;dé&quot; (three-phase, CEE plug, Tuya Wi-Fi module, local protocol
+3.5) · <strong>Sold as:</strong> &quot;dé&quot; portable EV charger · <strong>OpenAmpere:</strong> <code>src/openampere/tuya.py</code> (protocol),
+<code>src/openampere/wallbox/de_tuya.py</code> (data points), <code>src/openampere/wallbox/native.py</code> (several wallboxes, offline
+behaviour, control) · <strong>Support:</strong> display and control (solar surplus, fast, off) · <strong>Confirmed on a real device:</strong>
+partly (reading yes, control no)</p>
+<h2 id="summary">Summary</h2>
+<ul>
+<li>No Modbus. The wallbox speaks the local Tuya protocol 3.5 on TCP port 6668, encrypted with the device's &quot;local
+key&quot; (16 characters). The owner gets the key once through Tuya's developer platform; no cloud is needed afterwards.</li>
+<li>It accepts only one local connection at a time. OpenAmpere opens one per request and closes it right away.</li>
+<li>It is portable and often unplugged for days. OpenAmpere shows it as &quot;not reachable since …&quot; without old values,
+asks again less and less often (up to every 5 minutes) and controls it again as soon as it answers.</li>
+<li>Values come as data points; two of them are JSON text with the measurements and the device information.</li>
+<li>It has no watchdog: a current or a start written by OpenAmpere stays until something else changes it.</li>
+</ul>
+<h2 id="data-points">Data points</h2>
+<p>Numbers in the JSON texts are integers; &quot;0.1 V&quot; means 2300 is 230.0 V.</p>
+<div class="table"><table>
+<thead><tr><th>Data point</th><th>Meaning</th><th>Type, scale</th><th>R/W</th><th>Status</th><th>Source</th></tr></thead>
+<tbody>
+<tr><td>102 <code>L1</code>…<code>L3</code></td><td>Per phase: voltage, current, power</td><td>JSON text, list [0.1 V, 0.1 A, 0.1 kW]</td><td>R</td><td>confirmed</td><td>an owner's status reads, idle and charging three-phase, matched the car's app; tuya-local, lachand/EV_charger</td></tr>
+<tr><td>102 <code>p</code></td><td>Total charging power</td><td>JSON text, 0.1 kW</td><td>R</td><td>confirmed</td><td>an owner's status read while charging (about 5 kW, matched the car's app)</td></tr>
+<tr><td>102 <code>t</code></td><td>Temperature</td><td>JSON text, 0.1 °C (assumed)</td><td>R</td><td>open</td><td>an owner's status read; the scale is a guess</td></tr>
+<tr><td>102 <code>d</code></td><td>Duration of the running session</td><td>JSON text, 0.1 s</td><td>R</td><td>derived</td><td>lachand/EV_charger (checked there against a long session); an owner's read fits</td></tr>
+<tr><td>102 <code>e</code></td><td>Energy of the running session</td><td>JSON text, 0.1 kWh</td><td>R</td><td>derived</td><td>lachand/EV_charger</td></tr>
+<tr><td>106 <code>fv</code></td><td>Firmware version</td><td>JSON text, text</td><td>R</td><td>confirmed</td><td>an owner's status read, matched the app</td></tr>
+<tr><td>106 <code>cp</code></td><td>Control pilot voltage: about 12 V without a car, 9 V plugged in, 6 V charging</td><td>JSON text, V as text</td><td>R</td><td>confirmed</td><td>an owner's status reads (12.6 V idle, 6.6 V charging); IEC 61851 levels</td></tr>
+<tr><td>106 <code>e</code></td><td>Energy of all sessions</td><td>JSON text, 0.1 kWh as text</td><td>R</td><td>confirmed</td><td>an owner's status read, matched the app's total</td></tr>
+<tr><td>106 <code>r</code></td><td>Residual current protection</td><td>JSON text, text</td><td>R</td><td>confirmed</td><td>an owner's status read</td></tr>
+<tr><td>107</td><td>Current steps the wallbox offers, e.g. 6, 8, 10, 13, 16</td><td>JSON list as text, A</td><td>R</td><td>confirmed</td><td>an owner's status read; tuya-local</td></tr>
+<tr><td>109</td><td>State: SLEEP, IDLE, IDLEINS (plugged in), WORKING (charging), WAIT, ERRORPAUSE (fault), PAUSE, STOP (finished)</td><td>text</td><td>R</td><td>partly confirmed</td><td>SLEEP and WORKING in an owner's reads; the others from tuya-local</td></tr>
+<tr><td>140</td><td>Start (true) or stop (false) charging</td><td>bool</td><td>W</td><td>derived</td><td>tuya-local, lachand/EV_charger; not reported back on reads</td></tr>
+<tr><td>150</td><td>Charging current</td><td>integer, A</td><td>R/W</td><td>derived (write), confirmed (read)</td><td>an owner's read while charging, matched the app; tuya-local</td></tr>
+<tr><td>152</td><td>Maximum current set in the app</td><td>integer, A</td><td>R/W</td><td>derived</td><td>tuya-local; present in an owner's reads</td></tr>
+<tr><td>154</td><td>What happens when a car is plugged in: 0 ask, 1 charge, 2 wait</td><td>integer</td><td>R/W</td><td>derived</td><td>tuya-local (not used by OpenAmpere)</td></tr>
+<tr><td>101</td><td>Operating state as a number (101 idle, 300 charging seen)</td><td>integer</td><td>R/W</td><td>open</td><td>an owner's reads; lachand/EV_charger names 200 ready, 204 paused</td></tr>
+<tr><td>151</td><td>Charging schedule (<code>m</code>, <code>ss</code>, <code>se</code>)</td><td>JSON text</td><td>R/W</td><td>derived</td><td>tuya-local, lachand/EV_charger (not used)</td></tr>
+<tr><td>155–157, 188, 189</td><td>NFC, unearthed mode, product variant, refresh, unknown</td><td>various</td><td>–</td><td>open</td><td>tuya-local names most of them</td></tr>
+</tbody>
+</table></div>
+<h2 id="behaviour">Behaviour</h2>
+<div class="table"><table>
+<thead><tr><th>Fact</th><th>Status</th><th>Source</th></tr></thead>
+<tbody>
+<tr><td>Port 502 (Modbus) is closed; TCP 6668 is open.</td><td>confirmed</td><td>an owner's port check</td></tr>
+<tr><td>The local key changes when the wallbox is paired again in the app.</td><td>derived</td><td>Tuya documentation of the developer platform; tinytuya</td></tr>
+<tr><td>Only one local connection at a time; a second one is closed.</td><td>derived</td><td>lachand/EV_charger, tinytuya</td></tr>
+<tr><td>Some firmware keeps the last current and power after a session ends while the state is not WORKING.</td><td>derived</td><td>lachand/EV_charger</td></tr>
+<tr><td>Currents between the offered steps (e.g. 11 A) were accepted on one device.</td><td>derived</td><td>lachand/EV_charger; OpenAmpere uses only the offered steps</td></tr>
+<tr><td>Devices with protocol 3.3 and newer announce themselves by UDP broadcast on 6667 (3.5 also 7000), with their device ID and IP address.</td><td>derived</td><td>tinytuya</td></tr>
+<tr><td>Announcements come in two formats: prefix 6699 (AES-GCM, protocol 3.5) and the older prefix 55AA (return code, then the JSON encrypted with AES-ECB or plain); devices with protocol 3.5 also use the older one. Both with the fixed key of the announcements.</td><td>derived</td><td>tinytuya (checked against its decoding)</td></tr>
+<tr><td>Some devices with protocol 3.5 announce themselves only after a request (command 0x25, <code>{&quot;from&quot;: &quot;app&quot;, &quot;ip&quot;: …}</code>) to UDP 7000, and may answer it directly to the address that asked.</td><td>derived</td><td>tinytuya</td></tr>
+<tr><td>The OpenAmpere search did not find an owner's wallbox in 0.30.0 (it understood only the 6699 format and did not ask).</td><td>confirmed</td><td>an owner's report (2026-10)</td></tr>
+<tr><td>Many wallboxes start charging by themselves when a car is plugged in, with the current that is set (data point 154, &quot;charge&quot;).</td><td>derived</td><td>tuya-local (154: prompt, charge, wait)</td></tr>
+</tbody>
+</table></div>
+<h2 id="decisions-in-openampere">Decisions in OpenAmpere</h2>
+<div class="table"><table>
+<thead><tr><th>Decision</th><th>Why</th><th>Issue/PR</th></tr></thead>
+<tbody>
+<tr><td>Own implementation of the protocol with <code>cryptography</code> instead of the tinytuya library.</td><td>No new dependency, asyncio, only the few commands needed; checked against tinytuya during development.</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/386">#386</a></td></tr>
+<tr><td>One connection per request, closed right away; the read-back after a write goes over the same connection.</td><td>The device allows one connection; a second one right after the first may be refused while it still closes.</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/386">#386</a></td></tr>
+<tr><td>Read in the background; after a failure again after 15 s, 30 s, … up to every 5 minutes; logged once when it goes and once when it comes back; no old values shown while it is away.</td><td>A portable wallbox is unplugged most of the time.</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/386">#386</a></td></tr>
+<tr><td>With a device ID, a wallbox away for more than 2 minutes is searched by its UDP announcement (at most every 15 minutes) and its new address taken over; not in the Home Assistant app. An announcement counts only if it comes from the address it names and that address is in the home network. The search reads only the 6699 format; the older 55AA format is not read on purpose, because it needs AES-ECB (a device announcing itself only that way is found through the request or entered by its address). It asks every 3 seconds on UDP 7000 and listens for 8 seconds on 255.255.255.255, the broadcast address and the own address of each network card in the home network, never on all interfaces (checked in Linux containers with a device that only answers the request).</td><td>The router may give it a new address; the app has no host network; a forged announcement must not move a wallbox elsewhere; no ECB in OpenAmpere.</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/386">#386</a></td></tr>
+<tr><td>A new address found by the search is taken only after the wallbox answers there with its stored local key (the session handshake checks it), the address is in the home network and is not the inverter's. The change goes into the control log (<code>wallbox_relocated</code>, shown as a warning) and is sent as a notification (with &quot;inverter not reachable&quot; switched on), like a new address of the inverter.</td><td>The announcement is encrypted with a key every Tuya device shares and names the device ID the wallbox sends openly, so any device in the home network can forge one; only the local key proves it is the owner's wallbox. Before, a forged announcement moved the wallbox to the sender, and OpenAmpere could no longer stop a charge it had started.</td><td>security fix, like <a href="https://github.com/Gr33ndev/OpenAmpere/issues/351">#351</a> for the inverter</td></tr>
+<tr><td>Several wallboxes (up to 4) share the place &quot;wallbox&quot; in the order of the solar surplus, in the order of their list.</td><td>Owners may have more than one wallbox.</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/386">#386</a></td></tr>
+<tr><td>Modes: manual (only shown), off, solar, minimum + solar, fast. Default is manual. Without a car nothing is written; the mode applies once one is plugged in.</td><td>Nothing is written until the owner chooses; the mode is chosen before plugging in, as in evcc.</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/386">#386</a></td></tr>
+<tr><td>Only the offered current steps, at most the owner's limit and the maximum of the app; 230 V per phase; phases from the currents while charging, otherwise from the voltages.</td><td>Steps are what the device says it supports; a three-phase wallbox taken for single-phase would draw three times the power.</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/386">#386</a></td></tr>
+<tr><td>If no offered step is at or below the owner's highest current (the limit of the app, of the wallbox or of the mode), OpenAmpere starts no charge, writes no current, stops a running charge (the safe direction, also one the wallbox started by itself) and says in the app that the wallbox's lowest current is above the owner's highest current, naming which limit holds (the highest current in OpenAmpere, the current of the mode or the wallbox's own maximum, dp 152) and what to change there; the note goes as soon as a check no longer finds it, and while OpenAmpere controls nothing (a simulation says it in its own line). Never the lowest step above the limit.</td><td>The owner's limit is the limit of the socket the wallbox is plugged into, so it is an upper bound. The documented steps start at 6 A, the lowest limit of the app; a device or firmware with higher steps would otherwise charge above it.</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/481">#481</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/pull/483">#483</a></td></tr>
+<tr><td>Solar, minimum + solar and fast each have their own highest current (default: the owner's limit), chosen on the wallbox's card; a value above a lowered limit is cut to it.</td><td>Owners want e.g. at most 8 A with minimum + solar and a choice of 6, 8 or 16 A for fast; the lowest step is 6 A, so 4 A is not possible.</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/402">#402</a></td></tr>
+<tr><td>Solar mode: starts after two checks with surplus for the lowest step plus 200 W and 5 minutes after the last stop; lowers at once, raises at most every 30 s. Without enough surplus a charge OpenAmpere started goes on with the lowest step (the rest from the battery or the grid) and stops only when it has stayed so for the owner's waiting time (1–60 minutes, default 10) and after at least 5 minutes of charging. A charge the wallbox started by itself (on plugging in) is stopped at the first check without enough surplus.</td><td>Clouds, the car's contactor, fewer writes; on three phases the lowest step is about 4.1 kW, so a short cloud stopped the car (#402); a wallbox starting on its own would otherwise charge from the grid until the next checks.</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/386">#386</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/402">#402</a></td></tr>
+<tr><td>A wallbox reporting STOP (&quot;complete&quot;) counts as a full car and is not started, unless OpenAmpere has stopped it since the car last charged (stored with the wallbox, so also after a restart): then it is asked to start again when there is surplus (again after 5 minutes if the start did not reach it). The note is cleared when the car charges or is unplugged. It is kept when OpenAmpere lets go of the wallbox (master switch off, address changed) until it controls it again, but not for a wallbox switched off or removed, which is not read any more, so the master switch off and on again with the car plugged in does not leave the car &quot;full&quot; (<a href="https://github.com/Gr33ndev/OpenAmpere/issues/456">#456</a>).</td><td>Whether the wallbox shows STOP also after a stop by OpenAmpere is open; if it does, a cloud would otherwise end solar charging until the car is unplugged. Same rule as the charge notifications (#451).</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/454">#454</a></td></tr>
+<tr><td>Master switch and test mode as for every control; every write read back and in the control log. Before the first write the owner's current is stored (meta <code>wallbox_owned</code>) and put back when OpenAmpere lets go: mode &quot;manual&quot;, master switch off, wallbox removed or switched off. A charge OpenAmpere started is then stopped too, except with &quot;manual&quot;, where the owner takes over.</td><td>No watchdog: OpenAmpere must undo what it did.</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/386">#386</a></td></tr>
+<tr><td>When OpenAmpere stops (update, restart), the wallbox keeps charging as it is.</td><td>A restart for an update should not interrupt the car; the stored owner's current is still put back later.</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/386">#386</a></td></tr>
+<tr><td>The local key is stored encrypted, never sent to the app and replaced by a placeholder in reports, like the address and the device ID; the energy counters are left out.</td><td>The key opens the device in the home network; counters identify an installation.</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/386">#386</a></td></tr>
+</tbody>
+</table></div>
+<h2 id="open-questions">Open questions</h2>
+<ul>
+<li>Writing 140 and 150 is not yet confirmed on a device with OpenAmpere; nor whether 150 is stored permanently (flash
+wear) or only for the session.</li>
+<li>Scale of 102 <code>t</code>; meaning of 101 and of 155–157, 188, 189.</li>
+<li>Whether other dé models (the wall-mounted one) use the same data points.</li>
+<li>How the wallbox behaves when the car is full while OpenAmpere sends a start (STOP state), and after a power cut.</li>
+<li>Whether 102 <code>e</code> counts from plugging in and starts again at 0 with the next car (assumed by the charge notifications, which report it as the energy since plugging in and take a value lower than at the last end message as a new session, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/451">#451</a>).</li>
+<li>Whether DP 109 shows PAUSE or STOP after a stop by OpenAmpere (DP 140 false). Until this is known, the charge notifications end a charge at STOP at once only if OpenAmpere has sent no stop since the car last charged; after a stop by OpenAmpere, STOP waits 15 minutes like a pause (<a href="https://github.com/Gr33ndev/OpenAmpere/issues/451">#451</a>), and the control starts such a wallbox again once (<a href="https://github.com/Gr33ndev/OpenAmpere/issues/454">#454</a>). A diagnostics report or a control log taken after a cloud stopped the car (the wallbox state right after the stop and when the surplus is back) would answer it.</li>
+</ul>
+<h2 id="sources">Sources</h2>
+<ul>
+<li>tinytuya (jasonacox/tinytuya, MIT): the protocol 3.5 (framing, session key, commands, UDP announcements); no code
+in OpenAmpere, see <a href="https://github.com/dominiquehartmann/myampere/blob/main/NOTICE">NOTICE</a>.</li>
+<li>tuya-local (make-all/tuya-local, MIT): device definition of the dé EV charger (data points, states, steps).</li>
+<li>EV_charger (lachand/EV_charger, MIT): data points, scales, behaviour of the dé wallboxes.</li>
+<li>An owner's status reads of a dé portable wallbox, idle and charging three-phase, and a port check (2026-10).</li>
+<li>Code: <code>src/openampere/tuya.py</code>, <code>src/openampere/wallbox/de_tuya.py</code>, <code>src/openampere/wallbox/native.py</code>,
+simulator <code>python -m openampere.simulator --vendor de-tuya --port 6668 --plugged</code>.</li>
+</ul>
+    </article>
+    <p class="doc-source"><a href="https://github.com/dominiquehartmann/myampere/blob/main/docs/devices/tuya/de-portable.md">View and improve this page on GitHub</a></p>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      <p><a href="../../../impressum.html">Imprint and privacy</a> ·
+        <a href="../../../changelog.html">Changelog</a> ·
+        <a href="../../../docs/devices/">Device knowledge</a> ·
+        <a href="../../../docs/external-api.html">For developers</a> ·
+        <a href="https://github.com/Gr33ndev/OpenAmpere">Source code</a> ·
+        <a href="https://github.com/Gr33ndev/OpenAmpere/blob/main/LICENSE">MIT License</a> ·
+        <a href="https://github.com/Gr33ndev/OpenAmpere/blob/main/SECURITY.md">Security</a></p>
+      <p class="small">Most wallboxes are controlled by <a href="https://evcc.io">evcc</a>, an independent open source project. Thanks to the evcc community!</p>
+      <p class="small">This site sets no cookies and uses no tracking.
+        Font: DM Sans (<a href="../../../../fonts/OFL.txt">SIL Open Font License</a>).</p>
+    </div>
+  </footer>
+</body>
+</html>

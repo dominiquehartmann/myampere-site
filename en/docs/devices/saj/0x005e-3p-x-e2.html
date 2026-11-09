@@ -1,0 +1,142 @@
+<!doctype html>
+<!-- SPDX-FileCopyrightText: Copyright the OpenAmpere contributors -->
+<!-- SPDX-License-Identifier: MIT -->
+<!-- A page of the device knowledge (#512) or of the interface for other apps (#588), filled with a Markdown file by
+     scripts/build-site-pages.mjs -->
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>SAJ type code 0x005E, &quot;3P-X E2&quot; | Device knowledge | OpenAmpere</title>
+  <meta name="description" content="What OpenAmpere knows about inverters, wallboxes and other devices: registers, behaviour and how sure each fact is." />
+  <meta name="theme-color" content="#f4f4f4" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#21262b" media="(prefers-color-scheme: dark)" />
+  <link rel="alternate" hreflang="de" href="https://dominiquehartmann.github.io/myampere/docs/devices/saj/0x005e-3p-x-e2.html" />
+  <link rel="alternate" hreflang="en" href="https://dominiquehartmann.github.io/myampere/en/docs/devices/saj/0x005e-3p-x-e2.html" />
+  <link rel="alternate" hreflang="x-default" href="https://dominiquehartmann.github.io/myampere/docs/devices/saj/0x005e-3p-x-e2.html" />
+  <link rel="icon" href="../../../../icon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="../../../../style.css" />
+</head>
+<body>
+  <header class="top">
+    <div class="wrap top-inner">
+      <a class="brand" href="../../../"><img src="../../../../icon.svg" alt="" width="32" height="32" />OpenAmpere</a>
+      <nav aria-label="Site sections">
+        <a href="../../../#funktionen">Features</a>
+        <a href="../../../#installation">Installation</a>
+        <a href="../../../geraete.html">Devices</a>
+        <a href="../../../faq.html">FAQ</a>
+        <a href="../../../changelog.html">Changelog</a>
+        <a href="../../../../demo/?lang=en">Demo</a>
+        <a href="https://github.com/Gr33ndev/OpenAmpere">GitHub</a>
+        <span class="lang-switch" role="group" aria-label="Language"><a href="../../../../docs/devices/saj/0x005e-3p-x-e2.html" hreflang="de" lang="de" title="Deutsch" aria-label="Deutsch">DE</a><a href="0x005e-3p-x-e2.html" hreflang="en" lang="en" title="English" aria-label="English" aria-current="page">EN</a></span>
+      </nav>
+    </div>
+  </header>
+
+  <main class="wrap doc-page">
+    <p class="eyebrow doc-crumb"><a href="../../../docs/devices/">Device knowledge</a></p>
+    <p class="doc-note">These pages are technical. They collect what the OpenAmpere contributors have found out about the devices, each fact with its source and how sure it is. They show the latest state of development, which can be ahead of the version you have installed. They are not official manufacturer information. You don't need them to set up OpenAmpere; the app explains everything you need.</p>
+    <article class="doc" lang="en">
+<h1 id="saj-type-code-0x005e-3p-x-e2">SAJ type code 0x005E, &quot;3P-X E2&quot;</h1>
+<blockquote>
+<p>Not official manufacturer information: compiled by the OpenAmpere contributors, can be incomplete or wrong. Changing
+inverter settings can affect the warranty and grid rules; no affiliation with SAJ or EKD; not legal advice. See the
+<a href="../index.html">device knowledge README</a>.</p>
+</blockquote>
+<p><strong>Applies to:</strong> SAJ inverters reporting type code 0x005E in register 0x8F00 · <strong>Sold as:</strong> &quot;Ampere.StoragePro&quot; (EKD) ·
+<strong>OpenAmpere:</strong> driver <code>saj</code>, register map <code>saj_h2</code> · <strong>Support:</strong> display and control (since 0.29.0) · <strong>Confirmed on
+a real device:</strong> partly (identification, live values and battery limits; in daily use by an owner; of OpenAmpere's writes only the on-grid depth 0x3644)</p>
+<p>Everything this type shares with the H2/HS2 family (registers, behaviour, grid charging, export limit, decisions) is on
+<a href="h2-family.html">h2-family.md</a>. This page holds only what is specific to 0x005E.</p>
+<h2 id="summary">Summary</h2>
+<ul>
+<li>0x005E is not in SAJ's H2 protocol, which lists 0x0055–0x005D. The name &quot;3P-X E2&quot; comes from the manufacturer's app
+of an owner.</li>
+<li>A three-phase type, sold by EKD as &quot;Ampere.StoragePro&quot;.</li>
+<li>Read with the H2 map; detection, live values and the battery limits worked on a real device.</li>
+<li>Control is enabled because its settings registers matched the manufacturer's app
+(<a href="https://github.com/Gr33ndev/OpenAmpere/issues/334">#334</a>).</li>
+</ul>
+<h2 id="registers">Registers</h2>
+<p>No registers of its own: the map is the one on <a href="h2-family.html#registers">h2-family.md</a>. What was checked on a 0x005E:</p>
+<div class="table"><table>
+<thead><tr><th>Register</th><th>Meaning</th><th>Type, scale, sign</th><th>R/W</th><th>Status</th><th>Source</th></tr></thead>
+<tbody>
+<tr><td>0x8F00</td><td>Type code 0x005E</td><td>U16</td><td>R</td><td>confirmed</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/334">#334</a> (diagnostics report), <a href="https://github.com/Gr33ndev/OpenAmpere/issues/339">#339</a></td></tr>
+<tr><td>0x40A6</td><td>Battery power: the state of charge rose while it was negative, as the family map says (+ = discharging)</td><td>I16, W</td><td>R</td><td>derived</td><td>an owner's app screenshots in <a href="https://github.com/Gr33ndev/OpenAmpere/issues/576">#576</a></td></tr>
+<tr><td>0x40AD</td><td>Grid power: positive in the evening without PV and with the battery idle, as the family map says (+ = import)</td><td>I16, W</td><td>R</td><td>derived</td><td>an owner's app screenshots in <a href="https://github.com/Gr33ndev/OpenAmpere/issues/576">#576</a></td></tr>
+<tr><td>0x3644–0x3647</td><td>On-grid depth, off-grid depth, charge limit, work mode: matched the manufacturer's app. OpenAmpere wrote 0x3644 and read the new value back</td><td>4 × U16, % SoC / AppMode</td><td>R/W</td><td>confirmed (read; write 0x3644)</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/334">#334</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/335">#335</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/337">#337</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/601">#601</a></td></tr>
+</tbody>
+</table></div>
+<h2 id="behaviour">Behaviour</h2>
+<div class="table"><table>
+<thead><tr><th>Fact</th><th>Status</th><th>Source</th></tr></thead>
+<tbody>
+<tr><td>The manufacturer's app shows this type as a three-phase &quot;…-3P-X E2&quot; model together with a power class, as given by an owner.</td><td>confirmed</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/339">#339</a></td></tr>
+<tr><td>The type is sold by EKD as &quot;Ampere.StoragePro&quot;.</td><td>confirmed</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/339">#339</a></td></tr>
+<tr><td>0x005E lies inside the family range 0x0050–0x006F, so detection worked before it had a name: the log warned about an unknown SAJ device type and the app showed &quot;Typ 0x005E&quot;. Live values and battery limits read correctly with the H2 map.</td><td>confirmed</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/334">#334</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/339">#339</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/379">#379</a></td></tr>
+<tr><td>The settings registers 0x3644–0x3647 matched the manufacturer's app; this is where the right mapping of the on-grid and off-grid limits was found (see <a href="h2-family.html#behaviour">h2-family.md</a>).</td><td>confirmed</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/334">#334</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/335">#335</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/337">#337</a></td></tr>
+<tr><td>A second owner confirmed detection and live values on this type with the Docker installation, after cutting the previous IQ box from the network (see <a href="h2-family.html#behaviour">h2-family.md</a>).</td><td>confirmed</td><td>owner report by e-mail, summarised in <a href="https://github.com/Gr33ndev/OpenAmpere/issues/469">#469</a></td></tr>
+<tr><td>An owner uses OpenAmpere on this type in daily operation and is satisfied. Whether control was switched on, and which writes were made, is not recorded.</td><td>confirmed (daily use), open (writes)</td><td>an owner's report, 2026-10</td></tr>
+<tr><td>With control switched on (0.35.0), changing the &quot;Notstrom-Reserve&quot; in the app by a few percent wrote the on-grid depth 0x3644; the inverter accepted it and OpenAmpere read the new value back. Whether the battery stops discharging at the new value has not been observed yet.</td><td>confirmed (write and read-back), open (discharge limit)</td><td>owner report by e-mail, summarised in <a href="https://github.com/Gr33ndev/OpenAmpere/issues/601">#601</a></td></tr>
+<tr><td>With a second inverter at Meter B, the inverter's house power 0x40A0 matched the balance (grid + PV + Meter B + battery) only with the battery idle; while the battery charged or discharged it was far off. OpenAmpere takes the live house power from the balance (see <a href="h2-family.html#decisions-in-openampere">h2-family.md</a>).</td><td>derived</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/576">#576</a></td></tr>
+<tr><td>The live house power from the balance (since 0.38.0) agreed within 0.01 kW with the owner's own balance of the values the app showed, with grid import, while the battery discharged and while it charged; before, 0x40A0 was off by up to about 1 kW. The daily energy values (PV, consumption, grid import and export, battery charge and discharge, self-sufficiency), compared on 0.37.0, matched the previous IQ box within its rounding; they already came from the balance (<a href="https://github.com/Gr33ndev/OpenAmpere/issues/346">#346</a>), not from 0x40A0.</td><td>confirmed</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/576">#576</a></td></tr>
+<tr><td>On another 0x005E OpenAmpere (&quot;Nur ansehen&quot;, connection mode &quot;per poll&quot;, a reading every 30 s) read live values over Modbus TCP for days while the box stayed connected and controlled the system, also for about two hours in which the box had no cloud connection. Why it worked there and not on the device of <a href="https://github.com/Gr33ndev/OpenAmpere/issues/469">#469</a> is open. See <a href="h2-family.html#behaviour">h2-family.md</a> and <a href="../topics/iq-box.html">iq-box.md</a>.</td><td>confirmed (one 0x005E)</td><td>owner report in <a href="https://github.com/Gr33ndev/OpenAmpere/issues/576">#576</a></td></tr>
+<tr><td>Being three-phase, the summed grid counters 0x4167 ff. are the ones that cover all phases.</td><td>derived</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/379">#379</a></td></tr>
+<tr><td>Every night in the early morning the inverter reports a fault for about ten minutes and then runs normally again. OpenAmpere saw the fault word value 0x800000 (bit 23); its meaning and the cause (a restart or self-check is suspected) are unknown. Reported by several owners and in owners' forums.</td><td>open</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/404">#404</a></td></tr>
+</tbody>
+</table></div>
+<h2 id="decisions-in-openampere">Decisions in OpenAmpere</h2>
+<div class="table"><table>
+<thead><tr><th>Decision</th><th>Why</th><th>Issue/PR</th></tr></thead>
+<tbody>
+<tr><td>0x005E is named &quot;3P-X E2&quot;, without the power class; the rated power is read from 0x8F01. Without a class to check it against, the export limit waits for the owner's confirmation of the rated power (<a href="https://github.com/Gr33ndev/OpenAmpere/issues/492">#492</a>).</td><td>One type code covers several power classes (0x005B covers 5 to 10 kW).</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/339">#339</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/379">#379</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/492">#492</a></td></tr>
+<tr><td>Control is enabled for 0x005E (battery settings, export limit, grid charging), as for the H2 and HS2.</td><td>Its settings registers matched the manufacturer's app.</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/334">#334</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/378">#378</a></td></tr>
+<tr><td>The summed grid counters are used when the device answers them, otherwise L1 (same rule as the family).</td><td>Three-phase: L1 alone would miss two phases.</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/379">#379</a></td></tr>
+<tr><td>A fault is notified only after it has lasted 30 minutes (all devices).</td><td>The nightly fault of this type sent a false alarm every morning; a real fault still lasts.</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/404">#404</a></td></tr>
+</tbody>
+</table></div>
+<h2 id="open-questions">Open questions</h2>
+<ul>
+<li>Whether a 0x005E answers the summed grid counters 0x4167 ff. on every firmware is not recorded.</li>
+<li>Whether the battery stops discharging at an on-grid depth 0x3644 written by OpenAmpere (<a href="https://github.com/Gr33ndev/OpenAmpere/issues/601">#601</a>).</li>
+<li>OpenAmpere's other writes (0x3645–0x3647, 0x3651, export limit, charge slot) are not yet confirmed on a 0x005E
+(<a href="https://github.com/Gr33ndev/OpenAmpere/issues/378">#378</a>).</li>
+<li>What the nightly fault is (fault bit 23, about ten minutes in the early morning): the running mode 0x4004 and the
+three fault words during the event are not recorded yet
+(<a href="https://github.com/Gr33ndev/OpenAmpere/issues/404">#404</a>).</li>
+<li>The open questions of the family apply as well: <a href="h2-family.html#open-questions">h2-family.md</a>.</li>
+</ul>
+<h2 id="sources">Sources</h2>
+<ul>
+<li>An owner's report of the model name shown in the manufacturer's app, in
+<a href="https://github.com/Gr33ndev/OpenAmpere/issues/339">#339</a>.</li>
+<li>Diagnostics report of a real device in <a href="https://github.com/Gr33ndev/OpenAmpere/issues/334">#334</a>; fixes
+<a href="https://github.com/Gr33ndev/OpenAmpere/issues/335">#335</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/337">#337</a>,
+<a href="https://github.com/Gr33ndev/OpenAmpere/issues/378">#378</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/379">#379</a>.</li>
+<li>Owners' reports of the nightly fault notification, in
+<a href="https://github.com/Gr33ndev/OpenAmpere/issues/404">#404</a>.</li>
+<li>SAJ, &quot;H2-3~6K-S2 single phase communication protocol&quot; (2022-12-02), for the list of type codes; see
+<a href="h2-family.html#sources">h2-family.md</a>.</li>
+</ul>
+    </article>
+    <p class="doc-source"><a href="https://github.com/dominiquehartmann/myampere/blob/main/docs/devices/saj/0x005e-3p-x-e2.md">View and improve this page on GitHub</a></p>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      <p><a href="../../../impressum.html">Imprint and privacy</a> ·
+        <a href="../../../changelog.html">Changelog</a> ·
+        <a href="../../../docs/devices/">Device knowledge</a> ·
+        <a href="../../../docs/external-api.html">For developers</a> ·
+        <a href="https://github.com/Gr33ndev/OpenAmpere">Source code</a> ·
+        <a href="https://github.com/Gr33ndev/OpenAmpere/blob/main/LICENSE">MIT License</a> ·
+        <a href="https://github.com/Gr33ndev/OpenAmpere/blob/main/SECURITY.md">Security</a></p>
+      <p class="small">Most wallboxes are controlled by <a href="https://evcc.io">evcc</a>, an independent open source project. Thanks to the evcc community!</p>
+      <p class="small">This site sets no cookies and uses no tracking.
+        Font: DM Sans (<a href="../../../../fonts/OFL.txt">SIL Open Font License</a>).</p>
+    </div>
+  </footer>
+</body>
+</html>

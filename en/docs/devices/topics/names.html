@@ -1,0 +1,230 @@
+<!doctype html>
+<!-- SPDX-FileCopyrightText: Copyright the OpenAmpere contributors -->
+<!-- SPDX-License-Identifier: MIT -->
+<!-- A page of the device knowledge (#512) or of the interface for other apps (#588), filled with a Markdown file by
+     scripts/build-site-pages.mjs -->
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Sales names and manufacturer models | Device knowledge | OpenAmpere</title>
+  <meta name="description" content="What OpenAmpere knows about inverters, wallboxes and other devices: registers, behaviour and how sure each fact is." />
+  <meta name="theme-color" content="#f4f4f4" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#21262b" media="(prefers-color-scheme: dark)" />
+  <link rel="alternate" hreflang="de" href="https://dominiquehartmann.github.io/myampere/docs/devices/topics/names.html" />
+  <link rel="alternate" hreflang="en" href="https://dominiquehartmann.github.io/myampere/en/docs/devices/topics/names.html" />
+  <link rel="alternate" hreflang="x-default" href="https://dominiquehartmann.github.io/myampere/docs/devices/topics/names.html" />
+  <link rel="icon" href="../../../../icon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="../../../../style.css" />
+</head>
+<body>
+  <header class="top">
+    <div class="wrap top-inner">
+      <a class="brand" href="../../../"><img src="../../../../icon.svg" alt="" width="32" height="32" />OpenAmpere</a>
+      <nav aria-label="Site sections">
+        <a href="../../../#funktionen">Features</a>
+        <a href="../../../#installation">Installation</a>
+        <a href="../../../geraete.html">Devices</a>
+        <a href="../../../faq.html">FAQ</a>
+        <a href="../../../changelog.html">Changelog</a>
+        <a href="../../../../demo/?lang=en">Demo</a>
+        <a href="https://github.com/Gr33ndev/OpenAmpere">GitHub</a>
+        <span class="lang-switch" role="group" aria-label="Language"><a href="../../../../docs/devices/topics/names.html" hreflang="de" lang="de" title="Deutsch" aria-label="Deutsch">DE</a><a href="names.html" hreflang="en" lang="en" title="English" aria-label="English" aria-current="page">EN</a></span>
+      </nav>
+    </div>
+  </header>
+
+  <main class="wrap doc-page">
+    <p class="eyebrow doc-crumb"><a href="../../../docs/devices/">Device knowledge</a></p>
+    <p class="doc-note">These pages are technical. They collect what the OpenAmpere contributors have found out about the devices, each fact with its source and how sure it is. They show the latest state of development, which can be ahead of the version you have installed. They are not official manufacturer information. You don't need them to set up OpenAmpere; the app explains everything you need.</p>
+    <article class="doc" lang="en">
+<h1 id="sales-names-and-manufacturer-models">Sales names and manufacturer models</h1>
+<blockquote>
+<p><strong>Not official manufacturer information.</strong> Compiled by the OpenAmpere contributors; can be incomplete or wrong. No
+affiliation with the manufacturers named here or with EKD, not legal advice. See <a href="../index.html">Device knowledge</a>.</p>
+</blockquote>
+<p><strong>Applies to:</strong> the names under which EKD sold storage systems, the manufacturer models behind them and the
+OpenAmpere driver for each, and the hardware EKD sold since 2018 · <strong>Sold as:</strong> see the tables · <strong>OpenAmpere:</strong> drivers <code>foxess</code> (register maps
+<code>foxess_h3_new</code>, <code>foxess_h3_legacy</code>) and <code>saj</code> (register map <code>saj_h2</code>) · <strong>Support:</strong> display and control, see the
+device pages · <strong>Confirmed on a real device:</strong> partly</p>
+<p>All product and company names are trademarks of their owners and are used here only to describe which devices
+OpenAmpere works with.</p>
+<h2 id="summary">Summary</h2>
+<ul>
+<li>The storage systems EKD sold under its own &quot;Ampere&quot; name since 2023 are standard hybrid inverters of FoxESS and SAJ;
+OpenAmpere talks to them directly with the same drivers as to devices from other sources.</li>
+<li>Before that, EKD sold storage systems of other makers (Senec, then Solarmax as &quot;AMPERE.Storage&quot;, M-TEC, Enphase).
+OpenAmpere supports none of them yet; see <a href="#hardware-sold-by-ekd-over-time">Hardware sold by EKD over time</a>.</li>
+<li>&quot;Ampere.StoragePro E3&quot; is a FoxESS H3; which of its two register maps the E3 uses is still open.</li>
+<li>The older &quot;Ampere.StoragePro&quot;, including the &quot;E2&quot;, is an SAJ of the H2/HS2 family; the E2 reports type code 0x005E.</li>
+<li>&quot;Ampere.IQ&quot; is EKD's app, which works only through EKD's servers; the &quot;IQ box&quot; or &quot;smartbox&quot; is the energy manager
+installed with the systems (<a href="iq-box.html">iq-box.md</a>).</li>
+<li>On the &quot;Ampere.StoragePro&quot; systems sold by EKD since 2023 (SAJ and FoxESS), Modbus TCP is already turned on; on
+the older systems of other makers it depends on the device (a Senec has no Modbus TCP at all).</li>
+</ul>
+<h2 id="sales-names">Sales names</h2>
+<div class="table"><table>
+<thead><tr><th>Sales name</th><th>Manufacturer model</th><th>OpenAmpere</th><th>Unit id</th><th>Status</th><th>Source</th></tr></thead>
+<tbody>
+<tr><td>&quot;Ampere.StoragePro E3&quot;</td><td>FoxESS H3 family; 12 kW probably H3 Smart, 22 kW probably H3 Pro (derived from the datasheets, see <a href="#hardware-sold-by-ekd-over-time">Hardware sold by EKD over time</a>)</td><td>driver <code>foxess</code>, map detected (<code>foxess_h3_new</code> or <code>foxess_h3_legacy</code>)</td><td>247</td><td>confirmed</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/11">#11</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/311">#311</a>; <a href="../foxess/h3.html">foxess/h3.md</a></td></tr>
+<tr><td>&quot;Ampere.StoragePro&quot; (older systems)</td><td>SAJ H2/HS2 family hybrid inverter</td><td>driver <code>saj</code>, map <code>saj_h2</code></td><td>1 or 2 (depends on the communication module)</td><td>confirmed</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/330">#330</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/334">#334</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/336">#336</a>; <a href="../saj/h2-family.html">saj/h2-family.md</a></td></tr>
+<tr><td>&quot;Ampere Storage Pro E2&quot;</td><td>SAJ with type code 0x005E (&quot;3P-X E2&quot;, three-phase)</td><td>driver <code>saj</code>, map <code>saj_h2</code></td><td>1 or 2</td><td>confirmed</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/339">#339</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/378">#378</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/379">#379</a>; <a href="../saj/0x005e-3p-x-e2.html">saj/0x005e-3p-x-e2.md</a></td></tr>
+<tr><td>&quot;AMPERE.Storage&quot; (without &quot;Pro&quot;)</td><td>Solarmax MAX.STORAGE Ultimate (datasheet names Solarmax as maker; the model is derived from the specifications)</td><td>driver <code>solarmax</code>, display only (<a href="../solarmax/max-storage.html">solarmax/max-storage.md</a>)</td><td>1</td><td>documented (maker), derived (model)</td><td>EKD datasheet &quot;AMPERE.Storage&quot;, 2022-07 (<a href="https://www.ekd-solar.de/wp-content/uploads/2022/08/Ampere.Storage_Datenblatt.pdf">PDF</a>)</td></tr>
+<tr><td>&quot;AMPERE.Charge&quot;</td><td>Weidmüller AC Smart Value wallbox, 11 kW</td><td>wallbox module <code>weidmueller_ac_smart</code>, display only (<a href="../weidmueller/ac-smart.html">weidmueller/ac-smart.md</a>); control through evcc (<code>weidmüller</code> template)</td><td>255</td><td>documented (product), derived (evcc template)</td><td>EKD datasheets &quot;AMPERE.Charge&quot;, 2023-04 and 2024-01; <a href="https://www.photovoltaikforum.com/thread/227016-ampere-charge-weidm%C3%BCller-wallbox-energiekonzepte-deutschland-ampere-storage-pro/">Photovoltaikforum thread on the Ampere.Charge</a>; evcc-io/evcc template <code>templates/definition/charger/weidmüller.yaml</code> (requirement <code>sponsorship</code>)</td></tr>
+<tr><td>&quot;Ampere.ChargePro&quot;</td><td>FoxESS AC EV Charger, 22 kW</td><td>wallbox module <code>foxess_ac</code></td><td>1</td><td>documented (sales name), confirmed (FoxESS charger with EKD systems)</td><td><a href="https://amperesolar.de/chargepro/">amperesolar.de/chargepro</a>; <a href="../foxess/ac-charger.html">foxess/ac-charger.md</a></td></tr>
+<tr><td>&quot;Ampere.IQ&quot;</td><td>EKD's app; works only through EKD's servers</td><td>no driver; history import through EKD's customer API</td><td>–</td><td>derived</td><td><a href="https://github.com/dominiquehartmann/myampere/blob/main/README.md">README</a></td></tr>
+<tr><td>&quot;IQ box&quot;, &quot;smartbox&quot;</td><td>the energy manager installed with EKD systems</td><td>no driver; OpenAmpere detects its effects</td><td>–</td><td>derived</td><td><a href="iq-box.html">iq-box.md</a></td></tr>
+</tbody>
+</table></div>
+<h2 id="manufacturer-model-names">Manufacturer model names</h2>
+<p>FoxESS H3 family, as the driver tells them apart by the model string:</p>
+<div class="table"><table>
+<thead><tr><th>Model</th><th>Model string</th><th>Register map</th><th>Status</th><th>Source</th></tr></thead>
+<tbody>
+<tr><td>H3 (classic)</td><td>other H3 strings</td><td><code>foxess_h3_new</code> or <code>foxess_h3_legacy</code>, detected</td><td>derived</td><td><code>drivers/foxess/driver.py</code>; <a href="https://github.com/dominiquehartmann/myampere/blob/main/docs/devices.md">docs/devices.md</a></td></tr>
+<tr><td>H3 Smart</td><td><code>H3-…-Smart</code> or <code>H3-…-M</code></td><td><code>foxess_h3_new</code></td><td>derived</td><td>as above</td></tr>
+<tr><td>H3 Pro</td><td><code>H3-Pro-…</code> or <code>P3-Pro-…</code></td><td><code>foxess_h3_new</code></td><td>derived</td><td>as above</td></tr>
+</tbody>
+</table></div>
+<p>SAJ type codes (register 0x8F00 block), as the driver names them:</p>
+<div class="table"><table>
+<thead><tr><th>Type code</th><th>Name</th><th>Control in OpenAmpere</th><th>Status</th><th>Source</th></tr></thead>
+<tbody>
+<tr><td>0x0055</td><td>AS2 3–6K</td><td>read only</td><td>derived</td><td><code>drivers/saj/registers.py</code></td></tr>
+<tr><td>0x0056</td><td>AS2 5–10K</td><td>read only</td><td>derived</td><td>as above</td></tr>
+<tr><td>0x005A</td><td>H2 3–6K S2</td><td>yes</td><td>derived</td><td>as above</td></tr>
+<tr><td>0x005B</td><td>H2 5–10K S3</td><td>yes</td><td>derived</td><td>as above</td></tr>
+<tr><td>0x005C</td><td>HS2 3–6K S2</td><td>yes</td><td>derived</td><td>as above</td></tr>
+<tr><td>0x005D</td><td>HS2 5–10K S3</td><td>yes</td><td>derived</td><td>as above</td></tr>
+<tr><td>0x005E</td><td>&quot;3P-X E2&quot; (not in SAJ's protocol)</td><td>yes</td><td>confirmed (reported by owners of an E2)</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/339">#339</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/379">#379</a></td></tr>
+</tbody>
+</table></div>
+<p>Other codes in the SAJ family range 0x0050–0x006F are read with the same map and a warning in the log
+(<a href="https://github.com/dominiquehartmann/myampere/blob/main/docs/devices.md">docs/devices.md</a>).</p>
+<h2 id="hardware-sold-by-ekd-over-time">Hardware sold by EKD over time</h2>
+<p>Collected from EKD's datasheets and press releases, trade press and owners' reports in forums (2026-10). Periods are
+approximate: most come from datasheet dates, and when EKD stopped selling a product is mostly unknown. &quot;Local
+interface&quot; says what an owner's software could use, not what OpenAmpere does.</p>
+<p>Storage systems and hybrid inverters:</p>
+<div class="table"><table>
+<thead><tr><th>Period (about)</th><th>Sold as</th><th>Manufacturer model</th><th>Local interface</th><th>OpenAmpere</th><th>Status</th><th>Source</th></tr></thead>
+<tbody>
+<tr><td>2018–2019</td><td>–</td><td>Senec.Home V2.1 (AC-coupled, external PV inverter on RS485)</td><td>local web interface <code>lala.cgi</code> (JSON)</td><td>driver <code>senec</code>, display only (<a href="../senec/home-v3.html">senec/home-v3.md</a>)</td><td>open: no source shows EKD selling it</td><td>energie-experten.org, &quot;SENEC&quot;</td></tr>
+<tr><td>2020 – mid-2022, some into 2023</td><td>Senec storage, EKD as &quot;SENEC-Fachpartner&quot;, with SENEC.Cloud</td><td>Senec.Home V3 hybrid and hybrid duo (DC hybrid)</td><td><code>lala.cgi</code>, HTTPS only with a self-signed certificate since about firmware 825, some fields gone</td><td>driver <code>senec</code>, display only (<a href="../senec/home-v3.html">senec/home-v3.md</a>). Not yet confirmed</td><td>documented (EKD website 2021–2022 in the web archive, Senec datasheets hosted by EKD); derived (owners' reports, end of the period)</td><td><a href="https://www.pv-magazine.de/2022/06/16/ekd-beteiligt-sich-an-solarmax/">pv magazine, 2022-06-16</a>; <a href="https://www.photovoltaikforum.com/thread/222119-suche-ersatz-f%C3%BCr-senec-v3-hybrid-duo/">Photovoltaikforum on a Senec V3 hybrid duo bought through EKD</a>; marq24/ha-senec-v3 and mchwalisz/pysenec (both Apache-2.0, for <code>lala.cgi</code>)</td></tr>
+<tr><td>mid-2022 – mid-2023</td><td>&quot;AMPERE.Storage&quot;</td><td>Solarmax MAX.STORAGE Ultimate: 10 kW, three-phase, 2 MPPT, 6–15 kWh in 3 kWh packs</td><td>Modbus TCP and RTU, KNX (datasheet); battery control only after Solarmax unlocked &quot;Connectivity+&quot;</td><td>driver <code>solarmax</code>, display only (<a href="../solarmax/max-storage.html">solarmax/max-storage.md</a>). Not yet confirmed</td><td>documented (maker, interfaces), derived (model, control, end of the period)</td><td>EKD datasheet &quot;AMPERE.Storage&quot;, 2022-07; evcc template for the Solarmax MAX.STORAGE</td></tr>
+<tr><td>from 2022-10</td><td>M-TEC Energy-Butler</td><td>M-TEC Energy-Butler GEN3: 10 kW hybrid, about 11 kWh</td><td>Modbus over TCP through the Wi-Fi/LAN module, port 5743 (502 on newer module firmware); unit id (252, 247 or 255) and framing (RTU frames or plain Modbus TCP) differ between sources. The inverter is a Solinteg.</td><td>driver <code>mtec</code>, display only (<a href="../mtec/energy-butler.html">mtec/energy-butler.md</a>). Not yet confirmed</td><td>documented (sale), derived (interface), open (unit id, framing)</td><td><a href="https://www.ekd-solar.de/news/energiekonzepte-deutschland-erweitert-portfolio-mit-modularem-energy-butler-von-m-tec/">EKD news on the M-TEC Energy-Butler</a>; croedel/MTECmqtt up to commit 32cdf27 (MIT); evcc template <code>solinteg-gen3</code> (MIT); <a href="https://github.com/Gr33ndev/OpenAmpere/issues/520">#520</a></td></tr>
+<tr><td>from 2022-10</td><td>Enphase IQ Battery</td><td>Enphase IQ Battery (AC-coupled); which models is not stated</td><td>IQ Gateway (Envoy) local HTTPS API; since firmware 7 a token from the owner's Enphase account is needed</td><td>driver <code>enphase</code>, display only, with an access token (<a href="../enphase/iq-gateway.html">enphase/iq-gateway.md</a>). Not yet confirmed</td><td>documented (cooperation), open (models)</td><td>EKD press release on the Enphase cooperation, 2022-10 (<a href="https://www.ekd-solar.de/wp-content/uploads/2022/10/EKD_Enphase_Neue_Kooperation.pdf">PDF</a>); pyenphase/pyenphase (MIT)</td></tr>
+<tr><td>from 2022-08</td><td>VARTA element backup</td><td>VARTA element backup (AC-coupled)</td><td>not looked into</td><td>not supported</td><td>open: only a datasheet hosted by EKD, no owner's report</td><td>VARTA datasheet &quot;element backup&quot; on ekd-solar.de, 2022-08 (web archive)</td></tr>
+<tr><td>2023-04 – about 2024</td><td>&quot;AMPERE.Storage.Pro&quot;, &quot;Ampere.StoragePro&quot;, type &quot;ASP 10KW-3P-X E2&quot;</td><td>SAJ H2/HS2 family (the E2 reports type code 0x005E); 6–20 kWh</td><td>Modbus TCP 502</td><td>driver <code>saj</code>. Monitoring confirmed and in daily use on a &quot;3P-X E2&quot; (older &quot;Ampere.StoragePro&quot;); of the control only changing the backup reserve confirmed so far; H2, HS2 and AS2 not yet confirmed</td><td>documented (start, type string, capacity), derived (end), confirmed (SAJ, 0x005E)</td><td>EKD datasheets &quot;AMPERE.Storage.Pro&quot;, 2023-04 (Rev02: 6–20 kWh), and &quot;AMPERE.StoragePro&quot;, 2023-07 (Rev03: type &quot;ASP 10KW-3P-X E2&quot;); see <a href="#sales-names">Sales names</a></td></tr>
+<tr><td>about 2024 – 2026</td><td>&quot;Ampere.StoragePro E3&quot;, 12 kW (&quot;ASP-12KW-3P-X-A-E3&quot;)</td><td>FoxESS H3 family, probably H3 Smart (3 MPPT)</td><td>Modbus TCP 502</td><td>driver <code>foxess</code>. Monitoring and control confirmed</td><td>confirmed (FoxESS H3), derived (H3 Smart, start of the period)</td><td>see <a href="#sales-names">Sales names</a>; <a href="https://www.photovoltaikforum.com/thread/235451-wer-ist-der-tats%C3%A4chliche-hersteller-vom-neuen-speicher-der-firma-ekd-solar/">Photovoltaikforum on the maker of the E3</a>; amperesolar.de datasheet &quot;Ampere.StoragePro E3 12 kW&quot;, 2026-05</td></tr>
+<tr><td>2025 – 2026</td><td>&quot;Ampere.StoragePro E3&quot;, 22 kW (&quot;ASP-22KW-3P-A-X-E3&quot;; the datasheets put A and X in the other order than for the 12 kW type)</td><td>FoxESS, probably H3 Pro (4 MPPT and 22 kW, more than any H3 Smart)</td><td>Modbus TCP</td><td>driver <code>foxess</code> should detect it as H3 Pro. Not yet confirmed</td><td>open: no owner's report; derived (period)</td><td>amperesolar.de datasheet &quot;Ampere.StoragePro E3 22 kW&quot;, 2026-05</td></tr>
+</tbody>
+</table></div>
+<p>Wallboxes:</p>
+<div class="table"><table>
+<thead><tr><th>Period (about)</th><th>Sold as</th><th>Manufacturer model</th><th>Local interface</th><th>OpenAmpere</th><th>Status</th><th>Source</th></tr></thead>
+<tbody>
+<tr><td>2020–2022</td><td>Senec wallbox</td><td>SENEC.Wallbox</td><td>not looked into</td><td>not supported</td><td>open: only a datasheet hosted by EKD; derived (period)</td><td>Senec datasheet &quot;SENEC.Wallbox&quot; on ekd-solar.de, 2020-03 (web archive)</td></tr>
+<tr><td>2023–2024</td><td>&quot;AMPERE.Charge&quot;</td><td>Weidmüller AC Smart Value, 11 kW</td><td>Modbus TCP 502, Modbus RTU, OCPP 1.6J</td><td>wallbox module <code>weidmueller_ac_smart</code>, display only (<a href="../weidmueller/ac-smart.html">weidmueller/ac-smart.md</a>); control through evcc (needs an evcc sponsor token). Not yet confirmed</td><td>documented (product, interfaces, start), derived (evcc, sponsor token, end of the period)</td><td>see <a href="#sales-names">Sales names</a>; evcc-io/evcc template <code>templates/definition/charger/weidmüller.yaml</code> (requirement <code>sponsorship</code>)</td></tr>
+<tr><td>about 2024 – 2026</td><td>&quot;Ampere.ChargePro&quot;</td><td>FoxESS AC EV Charger, 22 kW</td><td>Modbus TCP 502, OCPP 1.6</td><td>wallbox module <code>foxess_ac</code>. Monitoring partly confirmed (idle, on one charger of an EKD system); control not yet confirmed</td><td>documented (sales name), confirmed (FoxESS charger with EKD systems), derived (period)</td><td><a href="../foxess/ac-charger.html">foxess/ac-charger.md</a></td></tr>
+</tbody>
+</table></div>
+<p>Around the storage system:</p>
+<div class="table"><table>
+<thead><tr><th>Period (about)</th><th>Sold as</th><th>Manufacturer model</th><th>Local interface</th><th>OpenAmpere</th><th>Status</th><th>Source</th></tr></thead>
+<tbody>
+<tr><td>2018–2022</td><td>–</td><td>PV inverter next to a Senec, e.g. Fronius Symo with Datamanager 2.0, coupled to the Senec over RS485</td><td>Fronius Solar API (HTTP, JSON); Modbus TCP probably not free while the Senec reads over Modbus RTU</td><td>not supported</td><td>derived (coupling); open: no source ties Fronius to EKD</td><td><a href="https://www.photovoltaikforum.com/thread/148472-fronius-symo-rs485-an-senec-speicher-per-funk-oder-powerline/">Photovoltaikforum on a Fronius Symo at a Senec over RS485</a>; Fronius Datamanager 2.0 manual, Modbus settings</td></tr>
+<tr><td>2023–2026</td><td>&quot;Ampere.IQ&quot;, &quot;IQ box&quot;, &quot;smartbox&quot;</td><td>Kiwigrid energy manager</td><td>REST in the LAN; no Modbus server of its own (it is a Modbus TCP client of the inverter and the charger)</td><td>no driver; see <a href="iq-box.html">iq-box.md</a></td><td>derived</td><td>evcc-io/evcc discussion 8394; <a href="https://www.photovoltaikforum.com/thread/222147-ekd-speicher-ampere-storage-pro-ein-chinamodell-und-weitere-fragen-dazu/">Photovoltaikforum on the Ampere Storage Pro</a></td></tr>
+<tr><td>2023–2024</td><td>&quot;AMPERE.StoragePro Meter&quot;</td><td>Chint DTSU666 grid meter (SAJ systems)</td><td>RS485 to the inverter</td><td>read through the inverter</td><td>derived</td><td>as above</td></tr>
+<tr><td>from 2024-08</td><td>&quot;Ampere.Offgrid&quot;</td><td>three-phase 63 A transfer switch for backup power; maker not stated</td><td>none</td><td>nothing to read</td><td>documented</td><td>EKD datasheet &quot;Ampere.Offgrid&quot;, 2024-08</td></tr>
+<tr><td>about 2022 – 2026</td><td>&quot;Ampere.SolarPro&quot;</td><td>PV modules of SOLYCO Solar AG</td><td>none</td><td>nothing to read</td><td>documented (maker), derived (period)</td><td>EKD datasheets &quot;Ampere.SolarPro&quot;</td></tr>
+<tr><td>from 2025</td><td>heat pumps of partner makers</td><td>Aira, Defro, Galvany, S&amp;K, WKD, Heat Hero</td><td>SG Ready</td><td>SG Ready through a relay (<a href="consumers.html">consumers.md</a>). Not yet confirmed</td><td>documented (partners), derived (period)</td><td><a href="https://www.ekd-solar.de/waermepumpe/">ekd-solar.de/waermepumpe</a></td></tr>
+<tr><td>–</td><td>heating rod</td><td>my-PV, model not stated</td><td>Modbus TCP</td><td>driver <code>mypv</code> (<a href="../mypv/elwa.html">mypv/elwa.md</a>). Not yet confirmed</td><td>derived</td><td>Photovoltaikforum on the Ampere Storage Pro (as above)</td></tr>
+</tbody>
+</table></div>
+<h2 id="behaviour">Behaviour</h2>
+<div class="table"><table>
+<thead><tr><th>Fact</th><th>Status</th><th>Source</th></tr></thead>
+<tbody>
+<tr><td>On the &quot;Ampere.StoragePro&quot; systems sold by EKD since 2023 (SAJ and FoxESS), Modbus TCP is already turned on; owners do not need to switch it on. This does not hold for the older systems of other makers.</td><td>derived</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/84">#84</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/85">#85</a>; <a href="https://github.com/dominiquehartmann/myampere/blob/main/README.md">README</a></td></tr>
+<tr><td>EKD stands for Energiekonzepte Deutschland GmbH. It and other companies of its group filed for insolvency in early October 2026; the proceedings of seven companies run at the local court of Leipzig.</td><td>documented (public insolvency announcements)</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/85">#85</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/91">#91</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/92">#92</a>; <a href="https://github.com/dominiquehartmann/myampere/blob/main/README.md">README</a></td></tr>
+<tr><td>EKD was founded in 2018 by the founder of Senec and sold Senec storage systems at first; until 2022 its website called it a Senec partner.</td><td>documented</td><td><a href="https://de.wikipedia.org/wiki/Energiekonzepte_Deutschland">Wikipedia, &quot;Energiekonzepte Deutschland&quot;</a>; <a href="https://www.pv-magazine.de/2022/06/16/ekd-beteiligt-sich-an-solarmax/">pv magazine, 2022-06-16</a></td></tr>
+<tr><td>EKD became majority owner of Solarmax in 2022; Solarmax filed for insolvency in late 2024, before the EKD group.</td><td>documented</td><td><a href="https://www.pv-magazine.de/2022/06/16/ekd-beteiligt-sich-an-solarmax/">pv magazine, 2022-06-16</a>; pv magazine, 2024-12-06</td></tr>
+<tr><td>EKD switched off the storage function of &quot;AMPERE.Storage&quot; remotely in September 2025 and released it again after a fuse was fitted on site.</td><td>confirmed (owner reports)</td><td><a href="iq-box.html">iq-box.md</a>; <a href="https://www.photovoltaikforum.com/thread/252527-ekd-zwangsabschaltung-ampere-storage-zum-18-09-2025-ohne-vorherige-kundenbeteili/">Photovoltaikforum thread on the shutdown</a></td></tr>
+<tr><td>Senec stopped taking new customers in July 2026; app, service and the exchange of battery modules go on for existing systems.</td><td>documented (trade press)</td><td><a href="https://www.ess-news.com/2026/07/14/enbw-scraps-senec-investor-search-shifts-storage-business-to-existing-customers/">ess-news, 2026-07-14</a></td></tr>
+<tr><td>Energieversum, which also sold Senec storage, is a separate installer, not an EKD brand.</td><td>derived</td><td>company websites</td></tr>
+<tr><td>&quot;Ampere&quot; is a sales name; the devices come from the makers in the tables above. The datasheets of the &quot;Ampere.StoragePro E3&quot; (2026-05) name AMPERE German Electric Innovation GmbH as maker (&quot;Hersteller&quot;) although the device is a FoxESS; the 2023 datasheets of the SAJ-based &quot;AMPERE.StoragePro&quot; carry EKD's copyright instead.</td><td>documented</td><td>amperesolar.de datasheet &quot;Ampere.StoragePro E3 12 kW&quot;, 2026-05; EKD datasheets &quot;AMPERE.Storage.Pro&quot;, 2023-04, and &quot;AMPERE.StoragePro&quot;, 2023-07</td></tr>
+</tbody>
+</table></div>
+<h2 id="decisions-in-openampere">Decisions in OpenAmpere</h2>
+<div class="table"><table>
+<thead><tr><th>Decision</th><th>Why</th><th>Issue/PR</th></tr></thead>
+<tbody>
+<tr><td>The model string is only a hint; the driver checks which register map really answers and prefers the newer one. Owners can choose the map by hand.</td><td>Sales names and model strings do not tell the firmware's register map.</td><td><a href="https://github.com/dominiquehartmann/myampere/blob/main/docs/devices.md">docs/devices.md</a></td></tr>
+<tr><td>Detection does not depend on a sales name: FoxESS at unit 247 first, then SAJ at 1 and 2, then Solarmax at 1, then M-TEC at 252, 255 and 247 (<a href="modbus.html">modbus.md</a>).</td><td>The same devices are sold under several names.</td><td><a href="https://github.com/dominiquehartmann/myampere/blob/main/docs/devices.md">docs/devices.md</a></td></tr>
+<tr><td>App texts call the box the &quot;former smartbox&quot;, without a manufacturer name; the README names companies only in the background and no-affiliation notes.</td><td>Names only descriptively.</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/53">#53</a></td></tr>
+<tr><td>A driver for a storage system EKD sold must never switch on a storage function that EKD switched off remotely (as with &quot;AMPERE.Storage&quot; in 2025); at most it reads.</td><td>The lock was announced as a safety retrofit; switching it off is the safe direction.</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/514">#514</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/pull/515">#515</a></td></tr>
+</tbody>
+</table></div>
+<h2 id="open-questions">Open questions</h2>
+<ul>
+<li>Which register map (newer or older firmware) the &quot;Ampere.StoragePro E3&quot; uses, and which H3 variant it is. The E3
+is a FoxESS H3 (<a href="https://github.com/Gr33ndev/OpenAmpere/issues/311">#311</a>), but its map is still open in
+<a href="https://github.com/dominiquehartmann/myampere/blob/main/docs/registers.md">registers.md</a> (<a href="https://github.com/Gr33ndev/OpenAmpere/issues/185">#185</a>).</li>
+<li>Whether every &quot;Ampere.StoragePro&quot; system has Modbus TCP turned on is known only from owners' reports, not from a
+document.</li>
+<li>Whether EKD sold Senec.Home V2.1 in 2018–2019; the web archive has no copy of EKD's website before December 2021.</li>
+<li>Which PV inverters EKD installed next to a Senec, and whether the Senec reads a Fronius over the Datamanager's Modbus
+RTU or over Solar Net (only with Solar Net would Modbus TCP stay free).</li>
+<li>Whether &quot;AMPERE.Storage&quot; ships with Modbus TCP on, or only after &quot;Connectivity+&quot;; what the fuse fitted in 2025
+protects against, and whether systems without it are still locked.</li>
+<li>Which Enphase models EKD installed, and when EKD stopped selling M-TEC, Enphase and VARTA.</li>
+<li>Which FoxESS model is the 22 kW &quot;E3&quot; and which battery modules the &quot;E3&quot; uses (the 12 kW datasheet names both 3.3 kWh
+and 4.14 kWh); which grid meter &quot;E3&quot; systems have.</li>
+<li>How many systems EKD sold of each generation.</li>
+</ul>
+<h2 id="sources">Sources</h2>
+<ul>
+<li>Issues and pull requests: <a href="https://github.com/Gr33ndev/OpenAmpere/issues/11">#11</a>,
+<a href="https://github.com/Gr33ndev/OpenAmpere/issues/53">#53</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/84">#84</a>,
+<a href="https://github.com/Gr33ndev/OpenAmpere/issues/85">#85</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/91">#91</a>,
+<a href="https://github.com/Gr33ndev/OpenAmpere/issues/92">#92</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/185">#185</a>,
+<a href="https://github.com/Gr33ndev/OpenAmpere/issues/311">#311</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/330">#330</a>,
+<a href="https://github.com/Gr33ndev/OpenAmpere/issues/334">#334</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/336">#336</a>,
+<a href="https://github.com/Gr33ndev/OpenAmpere/issues/339">#339</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/378">#378</a>,
+<a href="https://github.com/Gr33ndev/OpenAmpere/issues/379">#379</a>.</li>
+<li>Public insolvency announcements (court of Leipzig), linked from the <a href="https://github.com/dominiquehartmann/myampere/blob/main/README.md">README</a>.</li>
+<li>EKD and Ampere datasheets and press releases on ekd-solar.de and amperesolar.de: &quot;AMPERE.Storage&quot; (2022-07),
+&quot;AMPERE.Storage.Pro&quot; (2023-04, Rev02), &quot;AMPERE.StoragePro&quot; (2023-07, Rev03), &quot;AMPERE.Charge&quot; (2023-04, 2024-01),
+&quot;Ampere.StoragePro E3 12 kW&quot; and &quot;Ampere.StoragePro E3 22 kW&quot; (both 2026-05), &quot;Ampere.Offgrid&quot;
+(2024-08), &quot;Ampere.SolarPro&quot;, M-TEC Energy-Butler (2022-10), Enphase cooperation (2022-10); older pages and
+datasheets (Senec, VARTA) through the web archive.</li>
+<li>Trade press: pv magazine (2022-06-16, 2024-12-06), ess-news (2026-07-14), energie-experten.org (&quot;SENEC&quot;);
+Wikipedia, &quot;Energiekonzepte Deutschland&quot;.</li>
+<li>Owners' reports in Photovoltaikforum threads 148472, 222119, 222147, 227016, 235451 and 252527 (linked above).</li>
+<li><a href="https://github.com/evcc-io/evcc/discussions/8394">evcc-io/evcc discussion 8394</a>: owners on the IQ box and its REST interface.</li>
+<li>Projects, used for interfaces only: marq24/ha-senec-v3 and mchwalisz/pysenec (Apache-2.0), croedel/MTECmqtt up to
+commit 32cdf27 (MIT; LGPL-3.0 after it), pyenphase/pyenphase (MIT), evcc-io/evcc templates (MIT).</li>
+<li>Code: <code>src/openampere/drivers/registry.py</code>, <code>src/openampere/drivers/foxess/driver.py</code>,
+<code>src/openampere/drivers/saj/registers.py</code>.</li>
+</ul>
+    </article>
+    <p class="doc-source"><a href="https://github.com/dominiquehartmann/myampere/blob/main/docs/devices/topics/names.md">View and improve this page on GitHub</a></p>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      <p><a href="../../../impressum.html">Imprint and privacy</a> ·
+        <a href="../../../changelog.html">Changelog</a> ·
+        <a href="../../../docs/devices/">Device knowledge</a> ·
+        <a href="../../../docs/external-api.html">For developers</a> ·
+        <a href="https://github.com/Gr33ndev/OpenAmpere">Source code</a> ·
+        <a href="https://github.com/Gr33ndev/OpenAmpere/blob/main/LICENSE">MIT License</a> ·
+        <a href="https://github.com/Gr33ndev/OpenAmpere/blob/main/SECURITY.md">Security</a></p>
+      <p class="small">Most wallboxes are controlled by <a href="https://evcc.io">evcc</a>, an independent open source project. Thanks to the evcc community!</p>
+      <p class="small">This site sets no cookies and uses no tracking.
+        Font: DM Sans (<a href="../../../../fonts/OFL.txt">SIL Open Font License</a>).</p>
+    </div>
+  </footer>
+</body>
+</html>

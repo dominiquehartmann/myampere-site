@@ -1,0 +1,168 @@
+<!doctype html>
+<!-- SPDX-FileCopyrightText: Copyright the OpenAmpere contributors -->
+<!-- SPDX-License-Identifier: MIT -->
+<!-- A page of the device knowledge (#512) or of the interface for other apps (#588), filled with a Markdown file by
+     scripts/build-site-pages.mjs -->
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>FoxESS H3, register map of older firmware | Device knowledge | OpenAmpere</title>
+  <meta name="description" content="What OpenAmpere knows about inverters, wallboxes and other devices: registers, behaviour and how sure each fact is." />
+  <meta name="theme-color" content="#f4f4f4" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#21262b" media="(prefers-color-scheme: dark)" />
+  <link rel="alternate" hreflang="de" href="https://dominiquehartmann.github.io/myampere/docs/devices/foxess/h3-legacy-map.html" />
+  <link rel="alternate" hreflang="en" href="https://dominiquehartmann.github.io/myampere/en/docs/devices/foxess/h3-legacy-map.html" />
+  <link rel="alternate" hreflang="x-default" href="https://dominiquehartmann.github.io/myampere/docs/devices/foxess/h3-legacy-map.html" />
+  <link rel="icon" href="../../../../icon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="../../../../style.css" />
+</head>
+<body>
+  <header class="top">
+    <div class="wrap top-inner">
+      <a class="brand" href="../../../"><img src="../../../../icon.svg" alt="" width="32" height="32" />OpenAmpere</a>
+      <nav aria-label="Site sections">
+        <a href="../../../#funktionen">Features</a>
+        <a href="../../../#installation">Installation</a>
+        <a href="../../../geraete.html">Devices</a>
+        <a href="../../../faq.html">FAQ</a>
+        <a href="../../../changelog.html">Changelog</a>
+        <a href="../../../../demo/?lang=en">Demo</a>
+        <a href="https://github.com/Gr33ndev/OpenAmpere">GitHub</a>
+        <span class="lang-switch" role="group" aria-label="Language"><a href="../../../../docs/devices/foxess/h3-legacy-map.html" hreflang="de" lang="de" title="Deutsch" aria-label="Deutsch">DE</a><a href="h3-legacy-map.html" hreflang="en" lang="en" title="English" aria-label="English" aria-current="page">EN</a></span>
+      </nav>
+    </div>
+  </header>
+
+  <main class="wrap doc-page">
+    <p class="eyebrow doc-crumb"><a href="../../../docs/devices/">Device knowledge</a></p>
+    <p class="doc-note">These pages are technical. They collect what the OpenAmpere contributors have found out about the devices, each fact with its source and how sure it is. They show the latest state of development, which can be ahead of the version you have installed. They are not official manufacturer information. You don't need them to set up OpenAmpere; the app explains everything you need.</p>
+    <article class="doc" lang="en">
+<h1 id="foxess-h3-register-map-of-older-firmware">FoxESS H3, register map of older firmware</h1>
+<blockquote>
+<p>Not official manufacturer information: compiled by the OpenAmpere contributors, possibly incomplete or wrong.
+Changing inverter settings can affect warranty and grid connection rules. No affiliation with FoxESS or EKD, not
+legal advice. See <a href="../index.html">Device knowledge</a>.</p>
+</blockquote>
+<p><strong>Applies to:</strong> classic FoxESS H3 with older firmware · <strong>Sold as:</strong> not stated in the sources (see <a href="h3.html">h3.md</a>) ·
+<strong>OpenAmpere:</strong> driver <code>foxess</code>, register map <code>foxess_h3_legacy</code> · <strong>Support:</strong> display and control (no export
+limit) · <strong>Confirmed on a real device:</strong> no</p>
+<p>Family facts (detection, connection limits, remote control behaviour, decisions on grid charging) are on
+<a href="h3.html">h3.md</a>; the newer map is on <a href="h3-new-map.html">h3-new-map.md</a>.</p>
+<h2 id="summary">Summary</h2>
+<ul>
+<li>Chosen when the new map's counters (39601) do not answer but the counters at 32000 do. Measurement registers are
+holding registers (FC03) by default; OpenAmpere falls back to FC04.</li>
+<li>No total registers for grid and house: OpenAmpere adds up the three phases. Only two PV inputs.</li>
+<li>Energy counters in 0.1 kWh; daily values are 16-bit.</li>
+<li>Settings at 41000–41011 (read each register on its own; some addresses in this range are invalid), remote control
+at 44000–44003. No known export limit register.</li>
+<li>Nothing on this map is confirmed on a real device yet, neither reading nor control.</li>
+</ul>
+<h2 id="registers">Registers</h2>
+<p>Read in blocks (start + count): 31000+52, 31090+1 (optional), 32000+24. Addresses inside a block that are not listed
+below are read but not used. Model string 30000–30015: see <a href="h3.html">h3.md</a>. All registers here are holding registers.</p>
+<div class="table"><table>
+<thead><tr><th>Register</th><th>Meaning</th><th>Type, scale, sign</th><th>R/W</th><th>Status</th><th>Source</th></tr></thead>
+<tbody>
+<tr><td>30016–30018</td><td>Firmware: master, slave, manager (on the new map these addresses hold the serial number)</td><td>U16; shown as master/100, slave/100, manager in hex</td><td>R (detected FC, then FC03, FC04)</td><td>derived</td><td>nathanmarlor/foxess_modbus; <a href="https://github.com/dominiquehartmann/myampere/blob/main/src/openampere/drivers/foxess/registers.py">registers.py</a></td></tr>
+<tr><td>31000 / 31001 / 31002</td><td>PV1 voltage / current / power</td><td>I16, ×0.1 V / I16, ×0.1 A / I16, W</td><td>R FC03</td><td>derived</td><td>nathanmarlor/foxess_modbus</td></tr>
+<tr><td>31003 / 31004 / 31005</td><td>PV2 voltage / current / power</td><td>I16, ×0.1 V / I16, ×0.1 A / I16, W</td><td>R FC03</td><td>derived</td><td>nathanmarlor/foxess_modbus</td></tr>
+<tr><td>31026 / 31027 / 31028</td><td>Grid CT L1 / L2 / L3</td><td>I16, W, + = export</td><td>R FC03</td><td>derived</td><td>nathanmarlor/foxess_modbus</td></tr>
+<tr><td>31029 / 31030 / 31031</td><td>Load L1 / L2 / L3 (no total register)</td><td>I16, W</td><td>R FC03</td><td>derived</td><td>nathanmarlor/foxess_modbus</td></tr>
+<tr><td>31032</td><td>Inverter temperature</td><td>I16, ×0.1 °C</td><td>R FC03</td><td>derived</td><td>nathanmarlor/foxess_modbus</td></tr>
+<tr><td>31033</td><td>Ambient temperature</td><td>I16, ×0.1 °C</td><td>R FC03</td><td>derived</td><td>nathanmarlor/foxess_modbus</td></tr>
+<tr><td>31034</td><td>Battery voltage</td><td>I16, ×0.1 V</td><td>R FC03</td><td>derived</td><td>nathanmarlor/foxess_modbus</td></tr>
+<tr><td>31035</td><td>Battery current</td><td>I16, ×0.1 A</td><td>R FC03</td><td>derived</td><td>nathanmarlor/foxess_modbus</td></tr>
+<tr><td>31036</td><td>Battery power</td><td>I16, W, + = discharging</td><td>R FC03</td><td>derived</td><td>nathanmarlor/foxess_modbus</td></tr>
+<tr><td>31037</td><td>Battery temperature</td><td>I16, ×0.1 °C</td><td>R FC03</td><td>derived</td><td>nathanmarlor/foxess_modbus</td></tr>
+<tr><td>31038</td><td>State of charge</td><td>U16, %</td><td>R FC03</td><td>derived</td><td>nathanmarlor/foxess_modbus</td></tr>
+<tr><td>31041</td><td>Inverter state (status)</td><td>U16</td><td>R FC03</td><td>derived</td><td>nathanmarlor/foxess_modbus</td></tr>
+<tr><td>31044 / 31045 / 31047</td><td>Fault words, read as alarm words 1, 2, 3</td><td>U16 each</td><td>R FC03</td><td>derived</td><td>nathanmarlor/foxess_modbus</td></tr>
+<tr><td>31046, 31048–31051</td><td>Further fault words (the fault words span 31044–31051)</td><td>U16 each</td><td>read in the block, not used</td><td>derived</td><td>nathanmarlor/foxess_modbus; <a href="https://github.com/dominiquehartmann/myampere/blob/main/docs/registers.md">docs/registers.md</a></td></tr>
+<tr><td>31090</td><td>State of health (SoH), only firmware 1.80 or newer</td><td>U16, %</td><td>R FC03 (optional block)</td><td>derived</td><td>nathanmarlor/foxess_modbus</td></tr>
+<tr><td>32000 / 32002</td><td>PV energy: total / today</td><td>U32 / U16, 0.1 kWh</td><td>R FC03</td><td>derived</td><td>nathanmarlor/foxess_modbus</td></tr>
+<tr><td>32003 / 32005</td><td>Battery charge: total / today</td><td>U32 / U16, 0.1 kWh</td><td>R FC03</td><td>derived</td><td>nathanmarlor/foxess_modbus</td></tr>
+<tr><td>32006 / 32008</td><td>Battery discharge: total / today</td><td>U32 / U16, 0.1 kWh</td><td>R FC03</td><td>derived</td><td>nathanmarlor/foxess_modbus</td></tr>
+<tr><td>32009 / 32011</td><td>Grid export: total / today</td><td>U32 / U16, 0.1 kWh</td><td>R FC03</td><td>derived</td><td>nathanmarlor/foxess_modbus</td></tr>
+<tr><td>32012 / 32014</td><td>Grid import: total / today</td><td>U32 / U16, 0.1 kWh</td><td>R FC03</td><td>derived</td><td>nathanmarlor/foxess_modbus</td></tr>
+<tr><td>32021 / 32023</td><td>Load: total / today</td><td>U32 / U16, 0.1 kWh</td><td>R FC03</td><td>derived</td><td>nathanmarlor/foxess_modbus</td></tr>
+<tr><td>41000</td><td>Work mode: 0 self-use, 1 feed-in first, 2 backup, 4 peak shaving</td><td>U16</td><td>R FC03, W FC06</td><td>derived</td><td>nathanmarlor/foxess_modbus</td></tr>
+<tr><td>41001–41006</td><td>Invalid: must not be read</td><td>–</td><td>never read</td><td>derived</td><td>nathanmarlor/foxess_modbus; <a href="https://github.com/dominiquehartmann/myampere/blob/main/docs/registers.md">docs/registers.md</a></td></tr>
+<tr><td>41007</td><td>Maximum charge current</td><td>U16, ×0.1 A</td><td>holding; neither read nor written by OpenAmpere</td><td>derived</td><td>nathanmarlor/foxess_modbus</td></tr>
+<tr><td>41008</td><td>Maximum discharge current</td><td>U16, ×0.1 A</td><td>holding; neither read nor written by OpenAmpere</td><td>derived</td><td>nathanmarlor/foxess_modbus</td></tr>
+<tr><td>41009</td><td>Outage floor (<code>min_soc</code>)</td><td>U16, %</td><td>R FC03, W FC06</td><td>derived</td><td>nathanmarlor/foxess_modbus</td></tr>
+<tr><td>41010</td><td>Charge limit (<code>max_soc</code>)</td><td>U16, %</td><td>R FC03, W FC06</td><td>derived</td><td>nathanmarlor/foxess_modbus</td></tr>
+<tr><td>41011</td><td>Backup reserve (<code>min_soc_on_grid</code>)</td><td>U16, %</td><td>R FC03, W FC06</td><td>derived</td><td>nathanmarlor/foxess_modbus</td></tr>
+<tr><td>41012–41013, 41015</td><td>Invalid: must not be read</td><td>–</td><td>never read</td><td>derived</td><td>nathanmarlor/foxess_modbus; <a href="https://github.com/dominiquehartmann/myampere/blob/main/docs/registers.md">docs/registers.md</a></td></tr>
+<tr><td>44000</td><td>Remote control on/off</td><td>U16</td><td>R FC03, W FC06</td><td>derived</td><td>nathanmarlor/foxess_modbus; <a href="https://github.com/Gr33ndev/OpenAmpere/issues/127">#127</a></td></tr>
+<tr><td>44001</td><td>Remote control watchdog timeout</td><td>U16, s</td><td>R FC03, W FC06</td><td>derived</td><td>nathanmarlor/foxess_modbus; <a href="https://github.com/Gr33ndev/OpenAmpere/issues/127">#127</a></td></tr>
+<tr><td>44002–44003</td><td>Remote control active power</td><td>I32, W, + = discharge/export, − = battery charges</td><td>W FC16, R FC03 (diagnostics)</td><td>derived</td><td>nathanmarlor/foxess_modbus; <a href="https://github.com/Gr33ndev/OpenAmpere/issues/127">#127</a></td></tr>
+</tbody>
+</table></div>
+<h2 id="behaviour">Behaviour</h2>
+<div class="table"><table>
+<thead><tr><th>Fact</th><th>Status</th><th>Source</th></tr></thead>
+<tbody>
+<tr><td>There is no total register for grid or house power, only the three phases; and only two PV inputs.</td><td>derived</td><td>nathanmarlor/foxess_modbus; <a href="https://github.com/dominiquehartmann/myampere/blob/main/docs/registers.md">docs/registers.md</a>, <a href="https://github.com/dominiquehartmann/myampere/blob/main/docs/devices.md">docs/devices.md</a></td></tr>
+<tr><td>Registers in the 41xxx range must be read one at a time; 41001–41006, 41012–41013 and 41015 are invalid.</td><td>derived</td><td>nathanmarlor/foxess_modbus; <a href="https://github.com/dominiquehartmann/myampere/blob/main/docs/registers.md">docs/registers.md</a></td></tr>
+<tr><td>No register for the export limit is known on this map.</td><td>derived</td><td><a href="https://github.com/dominiquehartmann/myampere/blob/main/docs/registers.md">docs/registers.md</a>, <a href="https://github.com/dominiquehartmann/myampere/blob/main/docs/devices.md">docs/devices.md</a></td></tr>
+<tr><td>The remote control block (on/off, timeout, power) sits at 44000–44003, the counterpart of 46001–46004 on the new map.</td><td>derived</td><td>nathanmarlor/foxess_modbus; <a href="https://github.com/Gr33ndev/OpenAmpere/issues/127">#127</a></td></tr>
+<tr><td>The energy counters count in 0.1 kWh (100 Wh) steps, so counter-based energy has no meaningful second decimal.</td><td>derived</td><td>nathanmarlor/foxess_modbus; <a href="https://github.com/Gr33ndev/OpenAmpere/issues/194">#194</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/195">#195</a></td></tr>
+<tr><td>Battery health (31090) needs firmware 1.80 or newer.</td><td>derived</td><td>nathanmarlor/foxess_modbus; <a href="https://github.com/dominiquehartmann/myampere/blob/main/docs/devices.md">docs/devices.md</a></td></tr>
+</tbody>
+</table></div>
+<h2 id="decisions-in-openampere">Decisions in OpenAmpere</h2>
+<div class="table"><table>
+<thead><tr><th>Decision</th><th>Why</th><th>Issue/PR</th></tr></thead>
+<tbody>
+<tr><td>Grid power = −(31026 + 31027 + 31028) (+ = import), house power = 31029 + 31030 + 31031, PV power = PV1 + PV2.</td><td>No total registers on this map.</td><td><a href="https://github.com/dominiquehartmann/myampere/blob/main/src/openampere/drivers/foxess/driver.py">driver.py</a></td></tr>
+<tr><td>31090 is an optional block: skipped if rejected.</td><td>Older firmware has no SoH.</td><td><a href="https://github.com/dominiquehartmann/myampere/blob/main/src/openampere/drivers/foxess/registers.py">registers.py</a></td></tr>
+<tr><td>Battery settings are read one register at a time with FC03 (work mode, 41009, 41010, 41011).</td><td>41xxx must be read individually.</td><td><a href="https://github.com/dominiquehartmann/myampere/blob/main/src/openampere/drivers/foxess/driver.py">driver.py</a></td></tr>
+<tr><td>No check that a new connection still reaches the same inverter: the map has no serial number to compare. A fixed IP address in the router matters even more here.</td><td>The check needs a serial number (<a href="../topics/modbus.html">modbus.md</a>).</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/567">#567</a></td></tr>
+<tr><td>The export limit is reported as not supported.</td><td>No known register.</td><td><a href="https://github.com/dominiquehartmann/myampere/blob/main/src/openampere/drivers/foxess/driver.py">driver.py</a></td></tr>
+<tr><td>Counter step 100 Wh (<code>energy_step_wh</code>); counter-based energy is shown with one decimal.</td><td>0.1 kWh counters.</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/194">#194</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/195">#195</a></td></tr>
+<tr><td>The FoxESS detail checks of the diagnostics (optional blocks, block reads, temperature scale, export limit, remote control) run only for the new map. The background job that watches the remote control (read-only, every 5 minutes) reads 44000–44003 on this map too.</td><td>The detail checks are built on new-map addresses.</td><td><a href="https://github.com/dominiquehartmann/myampere/blob/main/src/openampere/diagnostics.py">diagnostics.py</a></td></tr>
+</tbody>
+</table></div>
+<h2 id="open-questions">Open questions</h2>
+<ul>
+<li>Reading and control on this map are not confirmed on a real device
+(<a href="https://github.com/Gr33ndev/OpenAmpere/issues/111">#111</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/185">#185</a>,
+<a href="https://github.com/Gr33ndev/OpenAmpere/issues/196">#196</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/197">#197</a>).
+A diagnostics report from an H3 with older firmware would help.</li>
+<li>Whether the remote control at 44000–44003 behaves like the new map's (watchdog, values left on after it,
+<a href="https://github.com/Gr33ndev/OpenAmpere/issues/141">#141</a>), and whether 44000 is the same bit field as 46001 on the
+new map (bit 0 on, bits 3:2 target; FoxESS's definition names only 46001).</li>
+<li>Whether the work mode values (0, 1, 2, 4) and the SoC limits behave as documented.</li>
+<li>Whether any firmware of this map has an export limit register.</li>
+</ul>
+<h2 id="sources">Sources</h2>
+<ul>
+<li><a href="https://github.com/nathanmarlor/foxess_modbus">nathanmarlor/foxess_modbus</a> (MIT, credited in
+<a href="https://github.com/dominiquehartmann/myampere/blob/main/NOTICE">NOTICE</a>): <code>entities/entity_descriptions.py</code>, <code>inverter_profiles.py</code>, <code>remote_control_manager.py</code>;
+facts only.</li>
+<li>OpenAmpere issues and pull requests linked above.</li>
+<li>Code: <a href="https://github.com/dominiquehartmann/myampere/blob/main/src/openampere/drivers/foxess/registers.py">registers.py</a>,
+<a href="https://github.com/dominiquehartmann/myampere/blob/main/src/openampere/drivers/foxess/driver.py">driver.py</a>.</li>
+</ul>
+    </article>
+    <p class="doc-source"><a href="https://github.com/dominiquehartmann/myampere/blob/main/docs/devices/foxess/h3-legacy-map.md">View and improve this page on GitHub</a></p>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      <p><a href="../../../impressum.html">Imprint and privacy</a> ·
+        <a href="../../../changelog.html">Changelog</a> ·
+        <a href="../../../docs/devices/">Device knowledge</a> ·
+        <a href="../../../docs/external-api.html">For developers</a> ·
+        <a href="https://github.com/Gr33ndev/OpenAmpere">Source code</a> ·
+        <a href="https://github.com/Gr33ndev/OpenAmpere/blob/main/LICENSE">MIT License</a> ·
+        <a href="https://github.com/Gr33ndev/OpenAmpere/blob/main/SECURITY.md">Security</a></p>
+      <p class="small">Most wallboxes are controlled by <a href="https://evcc.io">evcc</a>, an independent open source project. Thanks to the evcc community!</p>
+      <p class="small">This site sets no cookies and uses no tracking.
+        Font: DM Sans (<a href="../../../../fonts/OFL.txt">SIL Open Font License</a>).</p>
+    </div>
+  </footer>
+</body>
+</html>

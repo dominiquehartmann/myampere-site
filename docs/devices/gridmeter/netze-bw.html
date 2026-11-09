@@ -1,0 +1,133 @@
+<!doctype html>
+<!-- SPDX-FileCopyrightText: Copyright the OpenAmpere contributors -->
+<!-- SPDX-License-Identifier: MIT -->
+<!-- A page of the device knowledge (#512) or of the interface for other apps (#588), filled with a Markdown file by
+     scripts/build-site-pages.mjs -->
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Netze BW meter portal | Gerätewissen | OpenAmpere</title>
+  <meta name="description" content="Was OpenAmpere über Wechselrichter, Wallboxen und weitere Geräte weiß: Register, Verhalten und wie sicher jede Angabe ist." />
+  <meta name="theme-color" content="#f4f4f4" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#21262b" media="(prefers-color-scheme: dark)" />
+  <link rel="alternate" hreflang="de" href="https://dominiquehartmann.github.io/myampere/docs/devices/gridmeter/netze-bw.html" />
+  <link rel="alternate" hreflang="en" href="https://dominiquehartmann.github.io/myampere/en/docs/devices/gridmeter/netze-bw.html" />
+  <link rel="alternate" hreflang="x-default" href="https://dominiquehartmann.github.io/myampere/docs/devices/gridmeter/netze-bw.html" />
+  <link rel="icon" href="../../../icon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="../../../style.css" />
+</head>
+<body>
+  <header class="top">
+    <div class="wrap top-inner">
+      <a class="brand" href="../../../"><img src="../../../icon.svg" alt="" width="32" height="32" />OpenAmpere</a>
+      <nav aria-label="Seitenbereiche">
+        <a href="../../../#funktionen">Funktionen</a>
+        <a href="../../../#installation">Installation</a>
+        <a href="../../../geraete.html">Geräte</a>
+        <a href="../../../faq.html">Fragen</a>
+        <a href="../../../changelog.html">Changelog</a>
+        <a href="../../../demo/?lang=de">Demo</a>
+        <a href="https://github.com/Gr33ndev/OpenAmpere">GitHub</a>
+        <span class="lang-switch" role="group" aria-label="Sprache"><a href="netze-bw.html" hreflang="de" lang="de" title="Deutsch" aria-label="Deutsch" aria-current="page">DE</a><a href="../../../en/docs/devices/gridmeter/netze-bw.html" hreflang="en" lang="en" title="English" aria-label="English">EN</a></span>
+      </nav>
+    </div>
+  </header>
+
+  <main class="wrap doc-page">
+    <p class="eyebrow doc-crumb"><a href="../../../docs/devices/">Gerätewissen</a></p>
+    <p class="doc-note">Diese Seiten sind technisch und auf Englisch. Sie sammeln, was die Mitwirkenden von OpenAmpere über die Geräte herausgefunden haben, jeweils mit Quelle und wie sicher die Angabe ist. Sie zeigen den neuesten Stand der Entwicklung, der manchmal schon über deine installierte Version hinausgeht. Es sind keine offiziellen Angaben der Hersteller. Für die Einrichtung brauchst du sie nicht, die App erklärt dir alles Nötige.</p>
+    <article class="doc" lang="en">
+<h1 id="netze-bw-meter-portal">Netze BW meter portal</h1>
+<blockquote>
+<p><strong>Not official information.</strong> Compiled by the OpenAmpere contributors; can be incomplete or wrong. No affiliation
+with Netze BW, not legal advice. See <a href="../index.html">Device knowledge</a>.</p>
+</blockquote>
+<p><strong>Applies to:</strong> the customer portal of the grid operator Netze BW (Baden-Württemberg) and the smart meters
+(&quot;intelligentes Messsystem&quot;) it lists · <strong>Sold as:</strong> – · <strong>OpenAmpere:</strong> grid meter provider <code>netze_bw</code>,
+<code>src/openampere/gridmeter/netze_bw.py</code> · <strong>Support:</strong> reading the meter's quarter-hour values (import and feed-in) ·
+<strong>Confirmed on a real device:</strong> partly (portal behaviour seen on real accounts in <a href="https://github.com/Gr33ndev/OpenAmpere/issues/67">#67</a>; OpenAmpere's own import not yet
+tested against the portal by the maintainers)</p>
+<h2 id="summary">Summary</h2>
+<ul>
+<li>There is no official API. OpenAmpere logs into the customer portal with the owner's own portal login and reads
+the portal's internal interface, so it can break without warning when the portal changes.</li>
+<li>One smart meter shows up twice: once for grid import (OBIS 1.8.0) and once for feed-in (2.8.0).</li>
+<li>Values exist only since the smart meter was installed. A day is published at no fixed time, often hours after it
+ended, sometimes only the next afternoon or later.</li>
+<li>Values come from the CSV download of quarter-hour values; a day counts only when all its quarter hours are there.</li>
+<li>Two-factor login or a captcha cannot be handled.</li>
+</ul>
+<h2 id="behaviour">Behaviour</h2>
+<div class="table"><table>
+<thead><tr><th>Fact</th><th>Status</th><th>Source</th></tr></thead>
+<tbody>
+<tr><td>The portal has no documented API. Its web app reads data from its own backend under <code>/bff</code> after a login through Auth0 (<code>login.netze-bw.de</code>) with e-mail and password.</td><td>derived</td><td>cygnusb/ha-netze-bw; <a href="https://github.com/Gr33ndev/OpenAmpere/issues/60">#60</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/63">#63</a></td></tr>
+<tr><td>The internal interface lists the installations and gives measurements per meter for consumption and feed-in, as daily or quarter-hour values.</td><td>derived</td><td>cygnusb/ha-netze-bw; <a href="https://github.com/Gr33ndev/OpenAmpere/issues/60">#60</a></td></tr>
+<tr><td>A login with two-factor authentication or a captcha cannot be done by a program.</td><td>derived</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/60">#60</a></td></tr>
+<tr><td>Grid import (OBIS 1.8.0) and feed-in (2.8.0) of one smart meter are two installations with their own ids and the same meter number. Merging them by meter number loses one direction.</td><td>confirmed</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/67">#67</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/68">#68</a></td></tr>
+<tr><td>Only active installations of type &quot;IMS&quot; (intelligentes Messsystem) have quarter-hour values.</td><td>confirmed</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/67">#67</a></td></tr>
+<tr><td>The portal session can still be valid (<code>/bff/auth/user</code> answers 200) while the meter values answer 401. A complete new login helps.</td><td>confirmed</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/67">#67</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/68">#68</a></td></tr>
+<tr><td>Values exist only from the installation of the smart meter on.</td><td>confirmed</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/67">#67</a></td></tr>
+<tr><td>A day is published hours after it ended, at no fixed time, sometimes only in the afternoon of the next day or later. Until then the overview shows 0 kWh for it.</td><td>confirmed</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/67">#67</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/68">#68</a></td></tr>
+<tr><td>A complete day has 96 quarter hours, 92 or 100 on the days the clock changes.</td><td>confirmed</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/67">#67</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/68">#68</a></td></tr>
+<tr><td>CSV download: separated by <code>;</code>, columns &quot;Datum&quot; (dd.mm.yyyy) and &quot;Uhrzeit&quot; (hh:mm) in German local time. The first row is the meter reading at the start; every further row is the energy in kWh (decimal comma) of the quarter hour that ends at its time.</td><td>confirmed</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/67">#67</a> (a working importer shared by a user)</td></tr>
+</tbody>
+</table></div>
+<h2 id="decisions-in-openampere">Decisions in OpenAmpere</h2>
+<div class="table"><table>
+<thead><tr><th>Decision</th><th>Why</th><th>Issue/PR</th></tr></thead>
+<tbody>
+<tr><td>Fetch every 3 hours; after an error try again after an hour.</td><td>The operator publishes the previous day at no fixed time.</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/63">#63</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/68">#68</a></td></tr>
+<tr><td>Read a week of quarter hours per request and walk back week by week until the meter's installation (at most about 400 days); the last 7 days are read again.</td><td>Covers the running billing year; the operator may still correct recent days.</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/63">#63</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/68">#68</a></td></tr>
+<tr><td>Use only complete days; a day drops out again if a later answer is incomplete. A missing value stays unknown, never 0.</td><td>Half-published days would look like low consumption.</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/68">#68</a></td></tr>
+<tr><td>Keep import and feed-in apart by the installation's own id, not by meter number.</td><td>Both directions share the meter number.</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/68">#68</a></td></tr>
+<tr><td>On a 401 for meter values, drop the session and log in from scratch (once per request).</td><td>The session check alone is not reliable.</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/68">#68</a></td></tr>
+<tr><td>After the portal refuses the login, do not retry by itself until the owner changes the login data.</td><td>Repeated failed logins could lock the owner's account.</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/63">#63</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/68">#68</a></td></tr>
+<tr><td>Send an honest user agent that names OpenAmpere instead of a desktop browser string.</td><td>Pretending to be a browser can break the portal's terms of use.</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/174">#174</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/180">#180</a></td></tr>
+<tr><td>Take only facts from other projects, no code.</td><td>License and own words; credited in <a href="https://github.com/dominiquehartmann/myampere/blob/main/NOTICE">NOTICE</a>.</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/63">#63</a></td></tr>
+</tbody>
+</table></div>
+<h2 id="open-questions">Open questions</h2>
+<ul>
+<li>Whether the portal or its Auth0 login turns away clients that do not look like a browser. The honest user agent was
+not tested against the real portal; this needs an owner with an account
+(<a href="https://github.com/Gr33ndev/OpenAmpere/issues/174">#174</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/180">#180</a>).</li>
+<li>OpenAmpere's import as a whole has not been tested against the real portal by the maintainers; the portal behaviour
+above comes from real accounts and a user's importer in <a href="https://github.com/Gr33ndev/OpenAmpere/issues/67">#67</a>
+(<a href="https://github.com/Gr33ndev/OpenAmpere/issues/63">#63</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/68">#68</a>).</li>
+<li>What the portal answers for periods before the meter's installation: OpenAmpere's test model answers HTTP 400; not
+seen on the real portal (<a href="https://github.com/Gr33ndev/OpenAmpere/issues/68">#68</a>).</li>
+</ul>
+<h2 id="sources">Sources</h2>
+<ul>
+<li>cygnusb/ha-netze-bw (MIT): login flow and list of installations, facts only (also where the former desktop browser
+user agent came from, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/174">#174</a>).</li>
+<li>A working importer a user shared in <a href="https://github.com/Gr33ndev/OpenAmpere/issues/67">#67</a>: CSV format, facts only.</li>
+<li>Issues and pull requests: <a href="https://github.com/Gr33ndev/OpenAmpere/issues/60">#60</a>,
+<a href="https://github.com/Gr33ndev/OpenAmpere/issues/63">#63</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/67">#67</a>,
+<a href="https://github.com/Gr33ndev/OpenAmpere/issues/68">#68</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/174">#174</a>,
+<a href="https://github.com/Gr33ndev/OpenAmpere/issues/180">#180</a>.</li>
+<li>Code: <code>src/openampere/gridmeter/netze_bw.py</code>, <code>src/openampere/gridmeter/__init__.py</code>; credits in
+<a href="https://github.com/dominiquehartmann/myampere/blob/main/NOTICE">NOTICE</a>.</li>
+</ul>
+    </article>
+    <p class="doc-source"><a href="https://github.com/dominiquehartmann/myampere/blob/main/docs/devices/gridmeter/netze-bw.md">Diese Seite auf GitHub ansehen und verbessern</a></p>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      <p><a href="../../../impressum.html">Impressum und Datenschutz</a> ·
+        <a href="../../../changelog.html">Changelog</a> ·
+        <a href="../../../docs/devices/">Gerätewissen</a> ·
+        <a href="../../../docs/external-api.html">Für Entwickler</a> ·
+        <a href="https://github.com/Gr33ndev/OpenAmpere">Quellcode</a> ·
+        <a href="https://github.com/Gr33ndev/OpenAmpere/blob/main/LICENSE">MIT-Lizenz</a> ·
+        <a href="https://github.com/Gr33ndev/OpenAmpere/blob/main/SECURITY.md">Sicherheit</a></p>
+      <p class="small">Die meisten Wallboxen steuert <a href="https://evcc.io">evcc</a>, ein eigenständiges Open-Source-Projekt. Danke an die evcc-Community!</p>
+      <p class="small">Diese Seite setzt keine Cookies und nutzt kein Tracking.
+        Schrift: DM Sans (<a href="../../../fonts/OFL.txt">SIL Open Font License</a>).</p>
+    </div>
+  </footer>
+</body>
+</html>

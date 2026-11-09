@@ -1,0 +1,144 @@
+<!doctype html>
+<!-- SPDX-FileCopyrightText: Copyright the OpenAmpere contributors -->
+<!-- SPDX-License-Identifier: MIT -->
+<!-- A page of the device knowledge (#512) or of the interface for other apps (#588), filled with a Markdown file by
+     scripts/build-site-pages.mjs -->
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Senec.Home V3 and V2.1 | Gerätewissen | OpenAmpere</title>
+  <meta name="description" content="Was OpenAmpere über Wechselrichter, Wallboxen und weitere Geräte weiß: Register, Verhalten und wie sicher jede Angabe ist." />
+  <meta name="theme-color" content="#f4f4f4" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#21262b" media="(prefers-color-scheme: dark)" />
+  <link rel="alternate" hreflang="de" href="https://dominiquehartmann.github.io/myampere/docs/devices/senec/home-v3.html" />
+  <link rel="alternate" hreflang="en" href="https://dominiquehartmann.github.io/myampere/en/docs/devices/senec/home-v3.html" />
+  <link rel="alternate" hreflang="x-default" href="https://dominiquehartmann.github.io/myampere/docs/devices/senec/home-v3.html" />
+  <link rel="icon" href="../../../icon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="../../../style.css" />
+</head>
+<body>
+  <header class="top">
+    <div class="wrap top-inner">
+      <a class="brand" href="../../../"><img src="../../../icon.svg" alt="" width="32" height="32" />OpenAmpere</a>
+      <nav aria-label="Seitenbereiche">
+        <a href="../../../#funktionen">Funktionen</a>
+        <a href="../../../#installation">Installation</a>
+        <a href="../../../geraete.html">Geräte</a>
+        <a href="../../../faq.html">Fragen</a>
+        <a href="../../../changelog.html">Changelog</a>
+        <a href="../../../demo/?lang=de">Demo</a>
+        <a href="https://github.com/Gr33ndev/OpenAmpere">GitHub</a>
+        <span class="lang-switch" role="group" aria-label="Sprache"><a href="home-v3.html" hreflang="de" lang="de" title="Deutsch" aria-label="Deutsch" aria-current="page">DE</a><a href="../../../en/docs/devices/senec/home-v3.html" hreflang="en" lang="en" title="English" aria-label="English">EN</a></span>
+      </nav>
+    </div>
+  </header>
+
+  <main class="wrap doc-page">
+    <p class="eyebrow doc-crumb"><a href="../../../docs/devices/">Gerätewissen</a></p>
+    <p class="doc-note">Diese Seiten sind technisch und auf Englisch. Sie sammeln, was die Mitwirkenden von OpenAmpere über die Geräte herausgefunden haben, jeweils mit Quelle und wie sicher die Angabe ist. Sie zeigen den neuesten Stand der Entwicklung, der manchmal schon über deine installierte Version hinausgeht. Es sind keine offiziellen Angaben der Hersteller. Für die Einrichtung brauchst du sie nicht, die App erklärt dir alles Nötige.</p>
+    <article class="doc" lang="en">
+<h1 id="senechome-v3-and-v21">Senec.Home V3 and V2.1</h1>
+<blockquote>
+<p>Not official manufacturer information: compiled by the OpenAmpere contributors, can be incomplete or wrong. No
+affiliation with Senec or EKD; not legal advice. See the <a href="../index.html">device knowledge README</a>.</p>
+</blockquote>
+<p><strong>Applies to:</strong> Senec.Home V3 hybrid, V3 hybrid duo (also LFP) and V2.1 with their local web interface · <strong>Sold as:</strong>
+Senec storage systems (EKD sold them until about 2022) · <strong>OpenAmpere:</strong> driver <code>senec</code>
+(<code>src/openampere/drivers/senec/</code>), &quot;register map&quot; <code>senec_lala</code> · <strong>Support:</strong> display only · <strong>Confirmed on a real
+device:</strong> no (built from open projects and the simulator)</p>
+<h2 id="summary">Summary</h2>
+<ul>
+<li><strong>Not Modbus:</strong> the device has a local web interface, <code>lala.cgi</code>. A POST of JSON <code>{&quot;SECTION&quot;: {&quot;KEY&quot;: &quot;&quot;}}</code> returns the
+same JSON with the values filled in as typed hex strings.</li>
+<li>HTTPS with a <strong>self-signed certificate</strong> since about firmware 825 (2023), plain HTTP before and on the V2.1.</li>
+<li>The owner chooses &quot;Senec&quot; in the setup (advanced settings); detection over Modbus and the network scan do not find it.</li>
+<li><strong>No energy history:</strong> firmware 825 emptied the statistics section, so there are no lifetime counters.</li>
+<li>Asking too often is said to restart the device or stop its cloud sync: OpenAmpere asks at most every 30 s.</li>
+<li>Senec V4, P4 and E4 have no local web interface and are out of scope.</li>
+</ul>
+<h2 id="values">Values</h2>
+<p>Section <code>ENERGY</code> of <code>lala.cgi</code>, plus <code>FACTORY</code> for the identification. &quot;Registers&quot; here are JSON keys.</p>
+<div class="table"><table>
+<thead><tr><th>Key</th><th>Meaning</th><th>Type, sign</th><th>R/W</th><th>Status</th><th>Source</th></tr></thead>
+<tbody>
+<tr><td><code>ENERGY.GUI_INVERTER_POWER</code></td><td>PV power (with an external PV inverter the device measures, not always reliably)</td><td>float, W</td><td>R</td><td>derived</td><td>marq24/ha-senec-v3; evcc <code>senec-home</code></td></tr>
+<tr><td><code>ENERGY.GUI_BAT_DATA_POWER</code></td><td>Battery power, <strong>+ = charging</strong></td><td>float, W</td><td>R</td><td>derived (evcc scales it by −1)</td><td>evcc <code>senec-home</code>; marq24/ha-senec-v3</td></tr>
+<tr><td><code>ENERGY.GUI_GRID_POW</code></td><td>Grid power, + = import</td><td>float, W</td><td>R</td><td>derived</td><td>evcc <code>senec-home</code>; marq24/ha-senec-v3</td></tr>
+<tr><td><code>ENERGY.GUI_HOUSE_POW</code></td><td>House consumption</td><td>float, W</td><td>R</td><td>derived</td><td>marq24/ha-senec-v3</td></tr>
+<tr><td><code>ENERGY.GUI_BAT_DATA_FUEL_CHARGE</code></td><td>State of charge</td><td>float, %</td><td>R</td><td>derived</td><td>evcc <code>senec-home</code>; marq24/ha-senec-v3</td></tr>
+<tr><td><code>ENERGY.GUI_BAT_DATA_VOLTAGE</code>, <code>…_CURRENT</code></td><td>Battery voltage and current</td><td>float, V, A</td><td>R</td><td>derived</td><td>marq24/ha-senec-v3</td></tr>
+<tr><td><code>ENERGY.STAT_STATE</code></td><td>System state (enumeration)</td><td>integer</td><td>R</td><td>derived; meanings not taken over</td><td>marq24/ha-senec-v3</td></tr>
+<tr><td><code>FACTORY.SYS_TYPE</code></td><td>System type: 15 V2.1, 17/19 V3 hybrid, 18 V3 hybrid duo, 20 V3 hybrid LFP, 21 V3 hybrid duo LFP</td><td>integer</td><td>R</td><td>derived</td><td>marq24/ha-senec-v3 <code>pysenec_ha/constants.py</code></td></tr>
+<tr><td><code>FACTORY.DEVICE_ID</code></td><td>Device id (treated like a serial number)</td><td>integer</td><td>R</td><td>derived</td><td>marq24/ha-senec-v3</td></tr>
+<tr><td><code>ENERGY.SAFE_CHARGE_FORCE</code>, <code>…_PROHIBIT</code></td><td>Force charging from the grid, back to normal; no watchdog known</td><td>integer</td><td>W</td><td>derived; not used by OpenAmpere</td><td>evcc <code>senec-home</code>; marq24/ha-senec-v3</td></tr>
+</tbody>
+</table></div>
+<p>Value types: <code>fl_</code> IEEE-754 float as 8 hex digits (big-endian), <code>u…_</code> unsigned and <code>i…_</code> signed integers in hex, <code>st_</code>
+text. Something else (e.g. <code>VARIABLE_NOT_FOUND</code>) is no value.</p>
+<h2 id="behaviour">Behaviour</h2>
+<div class="table"><table>
+<thead><tr><th>Fact</th><th>Status</th><th>Source</th></tr></thead>
+<tbody>
+<tr><td>Since about NPU 2411 a first request for <code>FACTORY</code> (<code>SYS_TYPE</code>, <code>COUNTRY</code>, <code>DEVICE_ID</code>) gives the session cookie the device wants, as its own web page does.</td><td>derived</td><td>marq24/ha-senec-v3 (<code>_init_gui_cookies</code>)</td></tr>
+<tr><td>What a request with the session cookie from before a restart of the device gets is not known (an error answer or empty values); OpenAmpere's simulator answers it with 403.</td><td>open</td><td>assumption for the simulator; marq24/ha-senec-v3 (cookie since NPU 2411)</td></tr>
+<tr><td>The device's web page splits requests into parts below 600 characters with about 200 ms between them.</td><td>derived</td><td>marq24/ha-senec-v3 (<code>_request_senec_lala_chunked</code>, 2026-08)</td></tr>
+<tr><td>Firmware 825–827 (2023-08) emptied <code>STATISTIC</code>: no energy counters any more.</td><td>derived</td><td>marq24/ha-senec-v3#4</td></tr>
+<tr><td>Polling too often can restart the device or stop its cloud sync; ioBroker polls every 10 s, Home Assistant every 30 s (V3) or 60 s (V2); two clients at the same time were linked to repeated errors.</td><td>derived</td><td>nobl/ioBroker.senec (MIT); marq24/ha-senec-v3#235 (2026-09)</td></tr>
+<tr><td>The Senec app and mein-senec.de work only through Senec's cloud; firmware updates come automatically.</td><td>documented</td><td>Senec datasheets V2.1 (TD220-020.28, 2023-06) and V3 hybrid (TD220-022.13, 2019-12)</td></tr>
+<tr><td>A separate PV inverter (e.g. a Fronius Symo with Datamanager 2.0) is coupled to the Senec over RS485 (&quot;Solar Net&quot;) or measured with extra meters; its own Solar API stays readable.</td><td>documented</td><td>Senec list of compatible inverters (TD130-002.14, 2016-07); Senec installation manual V3; Fronius Solar API V1</td></tr>
+<tr><td>A local &quot;SENEC OpenAPI&quot; on V3 (TCP 4424) needs the owner's approval in mein-senec.de, so the cloud.</td><td>derived, open</td><td>marq24/ha-senec-v3#241 (2026-10)</td></tr>
+</tbody>
+</table></div>
+<h2 id="decisions-in-openampere">Decisions in OpenAmpere</h2>
+<div class="table"><table>
+<thead><tr><th>Decision</th><th>Why</th><th>Issue/PR</th></tr></thead>
+<tbody>
+<tr><td>Display only: every write method refuses, <code>supports_control</code> is off.</td><td>Nothing confirmed on a device; the known writes have no watchdog.</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/521">#521</a></td></tr>
+<tr><td>Only when the owner chooses &quot;Senec&quot;; port 502 (the setup's default) stands for 443 and then 80, HTTPS before HTTP. Its error messages name the web interface, not Modbus.</td><td>It does not answer on the Modbus port, so the other drivers' detection would stop there.</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/521">#521</a></td></tr>
+<tr><td>The certificate is not checked, and not pinned after the first contact either (as #521 first planned).</td><td>It is self-signed with nothing to check it against. A pinned certificate would lock the owner out after every firmware update or reset that brings a new one, with no way to pair again in the app; and what an attacker in the home network could gain is only wrong values on the display: OpenAmpere only reads and sends nothing secret.</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/521">#521</a></td></tr>
+<tr><td>Asked at most every 30 s (<code>MIN_POLL_S</code>), also after an error (no quick retries; the reconnect waits at least as long), one request at a time, below 600 characters, the session cookie kept until a reconnect.</td><td>What the open projects found the device stands.</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/521">#521</a></td></tr>
+<tr><td>Error answers of the device (403, 404) are closed at once.</td><td>Unclosed, they hold a connection to the device until the error object is collected.</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/540">#540</a></td></tr>
+<tr><td>No counters: no energy history for this device.</td><td>The device has none since firmware 825; integrating the power is a follow-up.</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/521">#521</a></td></tr>
+<tr><td>The diagnostics show the <code>ENERGY</code> values of the last read with Senec's own signs (powers rounded) and how the device answered (scheme, port), not the device id; the report sends no request of its own.</td><td>So the first owner's report can confirm the signs.</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/521">#521</a></td></tr>
+<tr><td>A redirect of the web interface (301/302/303) is not followed; it counts as an error answer and is closed at once: during the detection the device answers but is no Senec, while reading it is not answering.</td><td>Requests stay at the address the owner set, like every other outgoing request (<code>outbound.py</code>).</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/548">#548</a></td></tr>
+<tr><td>No search for a new address when the device is unreachable, and the device query (Mehr → Geräteabfrage) does not read it: it says so.</td><td>Both read Modbus registers only; this device has none. A fixed IP address in the router keeps it reachable.</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/547">#547</a></td></tr>
+</tbody>
+</table></div>
+<h2 id="open-questions">Open questions</h2>
+<ul>
+<li>Everything: no owner has tried it yet. Whether a V2.1 answers on HTTP or HTTPS, and whether newer firmware still
+answers <code>lala.cgi</code> at all.</li>
+<li>The signs of <code>GUI_BAT_DATA_POWER</code> and <code>GUI_GRID_POW</code> on a real device.</li>
+<li>Which polling interval is safe next to the Senec cloud sync.</li>
+<li>What <code>STAT_STATE</code> reports in a power cut (for the outage detection).</li>
+</ul>
+<h2 id="sources">Sources</h2>
+<ul>
+<li>marq24/ha-senec-v3 (Apache-2.0) and mchwalisz/pysenec (Apache-2.0): request format, value types, keys, system types,
+cookie and request size. Facts only, see NOTICE.</li>
+<li>evcc-io/evcc, template <code>senec-home</code> (MIT): keys and signs.</li>
+<li>nobl/ioBroker.senec (MIT): polling intervals.</li>
+<li>Senec datasheets and installation manual, Fronius Solar API V1: as cited above.</li>
+<li>Research comment in <a href="https://github.com/Gr33ndev/OpenAmpere/issues/521">#521</a>.</li>
+</ul>
+    </article>
+    <p class="doc-source"><a href="https://github.com/dominiquehartmann/myampere/blob/main/docs/devices/senec/home-v3.md">Diese Seite auf GitHub ansehen und verbessern</a></p>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      <p><a href="../../../impressum.html">Impressum und Datenschutz</a> ·
+        <a href="../../../changelog.html">Changelog</a> ·
+        <a href="../../../docs/devices/">Gerätewissen</a> ·
+        <a href="../../../docs/external-api.html">Für Entwickler</a> ·
+        <a href="https://github.com/Gr33ndev/OpenAmpere">Quellcode</a> ·
+        <a href="https://github.com/Gr33ndev/OpenAmpere/blob/main/LICENSE">MIT-Lizenz</a> ·
+        <a href="https://github.com/Gr33ndev/OpenAmpere/blob/main/SECURITY.md">Sicherheit</a></p>
+      <p class="small">Die meisten Wallboxen steuert <a href="https://evcc.io">evcc</a>, ein eigenständiges Open-Source-Projekt. Danke an die evcc-Community!</p>
+      <p class="small">Diese Seite setzt keine Cookies und nutzt kein Tracking.
+        Schrift: DM Sans (<a href="../../../fonts/OFL.txt">SIL Open Font License</a>).</p>
+    </div>
+  </footer>
+</body>
+</html>

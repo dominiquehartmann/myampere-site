@@ -1,0 +1,474 @@
+<!doctype html>
+<!-- SPDX-FileCopyrightText: Copyright the OpenAmpere contributors -->
+<!-- SPDX-License-Identifier: MIT -->
+<!-- A page of the device knowledge (#512) or of the interface for other apps (#588), filled with a Markdown file by
+     scripts/build-site-pages.mjs -->
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Schnittstelle für andere Apps | OpenAmpere</title>
+  <meta name="description" content="Wie Dashboards, Skripte und andere Apps die Werte von OpenAmpere lesen und es steuern: Kopplung, Zugang, Endpunkte und Befehle." />
+  <meta name="theme-color" content="#f4f4f4" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#21262b" media="(prefers-color-scheme: dark)" />
+  <link rel="alternate" hreflang="de" href="https://dominiquehartmann.github.io/myampere/docs/external-api.html" />
+  <link rel="alternate" hreflang="en" href="https://dominiquehartmann.github.io/myampere/en/docs/external-api.html" />
+  <link rel="alternate" hreflang="x-default" href="https://dominiquehartmann.github.io/myampere/docs/external-api.html" />
+  <link rel="icon" href="../icon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="../style.css" />
+</head>
+<body>
+  <header class="top">
+    <div class="wrap top-inner">
+      <a class="brand" href="../"><img src="../icon.svg" alt="" width="32" height="32" />OpenAmpere</a>
+      <nav aria-label="Seitenbereiche">
+        <a href="../#funktionen">Funktionen</a>
+        <a href="../#installation">Installation</a>
+        <a href="../geraete.html">Geräte</a>
+        <a href="../faq.html">Fragen</a>
+        <a href="../changelog.html">Changelog</a>
+        <a href="../demo/?lang=de">Demo</a>
+        <a href="https://github.com/Gr33ndev/OpenAmpere">GitHub</a>
+        <span class="lang-switch" role="group" aria-label="Sprache"><a href="external-api.html" hreflang="de" lang="de" title="Deutsch" aria-label="Deutsch" aria-current="page">DE</a><a href="../en/docs/external-api.html" hreflang="en" lang="en" title="English" aria-label="English">EN</a></span>
+      </nav>
+    </div>
+  </header>
+
+  <main class="wrap doc-page">
+    <p class="eyebrow doc-crumb"><a href="../docs/external-api.html">Für Entwickler</a></p>
+    <p class="doc-note">Diese Seite ist technisch und auf Englisch. Sie richtet sich an Entwickler, die OpenAmpere mit einer eigenen App, einem Dashboard oder einem Skript verbinden wollen. Für Home Assistant brauchst du sie nicht, die Integration erledigt das für dich.</p>
+    <article class="doc" lang="en">
+<h1 id="interface-for-other-apps">Interface for other apps</h1>
+<p>This page is for developers of other apps, such as dashboards, home automation or your own scripts, that want to
+read data from OpenAmpere or control it. The Home Assistant integration (<code>custom_components/openampere/</code>) uses exactly
+this interface and is the reference client: <a href="https://github.com/dominiquehartmann/myampere/blob/main/custom_components/openampere/api.py">api.py</a> and
+<a href="https://github.com/dominiquehartmann/myampere/blob/main/custom_components/openampere/config_flow.py">config_flow.py</a>. The server side is
+<a href="https://github.com/dominiquehartmann/myampere/blob/main/src/openampere/external.py">external.py</a> and <a href="https://github.com/dominiquehartmann/myampere/blob/main/src/openampere/apitokens.py">apitokens.py</a> (#76).</p>
+<p>Apps that need only the power values of the former cloud can use the read-only endpoint
+<code>/api/v1/installation/{id}/now/all/power</code> of the web app instead. It needs no token, but it offers only five values.</p>
+<blockquote>
+<p><strong>Use OpenAmpere as the only Modbus client.</strong> Many inverters accept only one Modbus TCP connection, or very few
+(#311). An app that reads the inverter directly while OpenAmpere runs can take turns with OpenAmpere or lock it
+out. Read the values from this interface instead.</p>
+</blockquote>
+<h2 id="overview">Overview</h2>
+<ul>
+<li><strong>Base address:</strong> <code>https://&lt;host&gt;:&lt;port&gt;/api/external/v1</code>. The HTTPS port is <code>8443</code> with Docker and on the Android
+tablet, and <code>8743</code> for the Home Assistant app (its default port mapping). The owner can change it. The page <strong>Mehr
+→ Verbundene Apps</strong> in OpenAmpere shows the port and the certificate fingerprint.</li>
+<li><strong>HTTPS only.</strong> Plain HTTP gets <code>403</code> with <code>&quot;code&quot;: &quot;https_required&quot;</code>. The web app's port (8080) refuses it the
+same way.</li>
+<li><strong>Self-signed certificate, pinned by its SHA-256 fingerprint.</strong> There is no certificate authority and no host
+name to check. Your app stores the fingerprint and accepts exactly this certificate, nothing else. A new
+certificate means pairing again.</li>
+<li><strong>A token per app</strong> in the header <code>Authorization: Bearer oa_…</code>. A token is valid only for this interface, never
+for the web app, and the owner can remove it at any time under <strong>Mehr → Verbundene Apps</strong>.</li>
+<li><strong>Two scopes:</strong> <code>read</code> sees the data, <code>control</code> may also use the commands below. The owner chooses the scope when
+approving the app.</li>
+<li><strong>JSON</strong> in both directions. Units: power in W, energy in Wh, temperatures in °C, state of charge in %, times as
+Unix time in seconds.</li>
+<li><strong><code>api_version</code></strong> is <code>1</code>. It changes only with an incompatible change; new fields can appear in any answer at any
+time, so ignore fields you do not know.</li>
+</ul>
+<h2 id="connecting">Connecting</h2>
+<p>There are two ways to get a token. Pairing is the better one for an app with a user interface: the owner does not
+copy a secret, only compares six digits.</p>
+<h3 id="pairing">Pairing</h3>
+<p>Pairing works like numeric comparison when pairing Bluetooth devices. Your app and OpenAmpere each compute six digits
+from the certificate the app sees and two random numbers. If someone sits in between, the app sees a different
+certificate and the digits differ.</p>
+<ol>
+<li><p><strong>Ask the owner for the address and the HTTPS port.</strong> Prefer the IP address: a host name needs to be allowed in
+OpenAmpere first (see <a href="#errors">Errors</a>).</p></li>
+<li><p><strong>Read the certificate.</strong> Open a TLS connection without verification and compute the SHA-256 of the certificate
+in DER form (<code>fingerprint</code>, 64 hex characters). Keep it; from now on accept only this certificate.</p></li>
+<li><p><strong>Commit to a random number.</strong> Create 32 random bytes <code>app_nonce</code> and send their SHA-256 as hex:</p>
+<pre><code>POST /api/external/v1/pair/start
+{&quot;name&quot;: &quot;My dashboard&quot;, &quot;commitment&quot;: &quot;&lt;sha256(app_nonce) as 64 hex characters&gt;&quot;}
+</code></pre>
+<p>The answer contains <code>request_id</code>, <code>poll_key</code> (secret, keep it in memory), the server's random number <code>nonce</code>
+(32 bytes as hex), <code>expires_in</code> (600 s), <code>api_version</code>, <code>installation_id</code> and <code>version</code>. The name (at most 40
+characters) is what the owner sees in OpenAmpere and in the control log.</p></li>
+<li><p><strong>Reveal your number</strong> within 60 seconds:</p>
+<pre><code>POST /api/external/v1/pair/{request_id}/reveal
+{&quot;poll_key&quot;: &quot;&lt;poll_key&gt;&quot;, &quot;nonce&quot;: &quot;&lt;app_nonce as hex&gt;&quot;}
+</code></pre>
+<p>Only now does the request appear in OpenAmpere, with its code.</p></li>
+<li><p><strong>Show the code</strong> and ask the owner to compare it with the one in OpenAmpere (<strong>Mehr → Verbundene Apps</strong>):</p>
+<pre><code>digest = sha256(bytes.fromhex(fingerprint) + app_nonce + bytes.fromhex(server_nonce)).digest()
+code = f&quot;{int.from_bytes(digest[:4], 'big') % 1_000_000:06d}&quot;
+</code></pre></li>
+<li><p><strong>Wait for the decision.</strong> Poll every 2 seconds:</p>
+<pre><code>POST /api/external/v1/pair/{request_id}/status
+{&quot;poll_key&quot;: &quot;&lt;poll_key&gt;&quot;}
+</code></pre>
+<p>The answer is <code>{&quot;status&quot;: &quot;pending&quot;}</code>, <code>{&quot;status&quot;: &quot;rejected&quot;}</code> or
+<code>{&quot;status&quot;: &quot;approved&quot;, &quot;token&quot;: &quot;oa_…&quot;, &quot;scope&quot;: &quot;read&quot;}</code>. The token is handed out once; store it together with
+address, port and fingerprint. <code>404</code> means the request expired (after 10 minutes) or OpenAmpere restarted: start
+again.</p></li>
+</ol>
+<p>Limits against misuse: at most 3 open requests per device and 10 in total, at most 10 starts per device and 30 in
+total per hour. Beyond that <code>pair/start</code> answers <code>429</code>.
+OpenAmpere keeps at most 10 tokens. With 10 already there, the owner cannot approve until they remove one; your
+app then sees <code>pending</code> until the request expires.</p>
+<h3 id="connection-code">Connection code</h3>
+<p>Alternatively, the owner creates a token under <strong>Mehr → Verbundene Apps</strong> and copies the connection code. It is
+<code>openampere1:</code> followed by URL-safe Base64 (without padding) of this JSON:</p>
+<pre><code>{&quot;host&quot;: &quot;192.168.x.x&quot;, &quot;port&quot;: 8443, &quot;fingerprint&quot;: &quot;&lt;64 hex characters&gt;&quot;, &quot;token&quot;: &quot;oa_…&quot;}
+</code></pre>
+<p>The host is the address the owner's browser used; your app should let the owner change it. A host name instead of
+an IP address works only after the owner added it under <strong>Mehr → Zugriffsschutz → Eigene Adressen</strong>; otherwise
+every HTTP request gets <code>421</code>.</p>
+<h3 id="example-client">Example client</h3>
+<p>Pairing and one reading in Python, with nothing but the standard library. A real app keeps the token and the
+fingerprint and skips the pairing next time; for live values it opens the WebSocket (<code>/ws</code>) with the same header and
+the same certificate check.</p>
+<pre><code>import hashlib
+import http.client
+import json
+import secrets
+import ssl
+import time
+
+HOST, PORT = &quot;192.168.x.x&quot;, 8443  # ask the owner
+
+
+def connect(fingerprint=None):
+    context = ssl.create_default_context()
+    context.check_hostname = False
+    context.verify_mode = ssl.CERT_NONE  # instead: exactly this certificate, checked below
+    conn = http.client.HTTPSConnection(HOST, PORT, context=context, timeout=20)
+    conn.connect()
+    seen = hashlib.sha256(conn.sock.getpeercert(binary_form=True)).hexdigest()
+    if fingerprint and seen != fingerprint:
+        conn.close()
+        raise RuntimeError(&quot;OpenAmpere shows a different certificate: pair again&quot;)
+    return conn, seen
+
+
+def call(method, path, fingerprint, body=None, token=None):
+    conn, _ = connect(fingerprint)
+    headers = {&quot;Content-Type&quot;: &quot;application/json&quot;}
+    if token:
+        headers[&quot;Authorization&quot;] = f&quot;Bearer {token}&quot;
+    conn.request(method, &quot;/api/external/v1&quot; + path, json.dumps(body) if body is not None else None, headers)
+    response = conn.getresponse()
+    data = json.loads(response.read() or b&quot;{}&quot;)
+    conn.close()
+    if response.status &gt;= 400:
+        raise RuntimeError(f&quot;{response.status}: {data.get('detail')}&quot;)
+    return data
+
+
+# pairing: once, then store HOST, PORT, fingerprint and token
+_, fingerprint = connect()
+app_nonce = secrets.token_bytes(32)
+start = call(&quot;POST&quot;, &quot;/pair/start&quot;, fingerprint,
+             {&quot;name&quot;: &quot;My dashboard&quot;, &quot;commitment&quot;: hashlib.sha256(app_nonce).hexdigest()})
+request, poll = f&quot;/pair/{start['request_id']}&quot;, {&quot;poll_key&quot;: start[&quot;poll_key&quot;]}
+call(&quot;POST&quot;, request + &quot;/reveal&quot;, fingerprint, {**poll, &quot;nonce&quot;: app_nonce.hex()})
+digest = hashlib.sha256(bytes.fromhex(fingerprint) + app_nonce + bytes.fromhex(start[&quot;nonce&quot;])).digest()
+print(&quot;Compare in OpenAmpere (Mehr → Verbundene Apps):&quot;, f&quot;{int.from_bytes(digest[:4], 'big') % 1_000_000:06d}&quot;)
+while (status := call(&quot;POST&quot;, request + &quot;/status&quot;, fingerprint, poll))[&quot;status&quot;] == &quot;pending&quot;:
+    time.sleep(2)
+if status[&quot;status&quot;] != &quot;approved&quot;:
+    raise SystemExit(&quot;The owner rejected the request.&quot;)
+token = status[&quot;token&quot;]
+
+# reading
+state = call(&quot;GET&quot;, &quot;/state&quot;, fingerprint, token=token)
+live = state[&quot;live&quot;] or {}
+print(f&quot;PV {live.get('pv_power')} W, battery {live.get('battery_soc')} %, grid {live.get('grid_power')} W&quot;)
+</code></pre>
+<h2 id="reading">Reading</h2>
+<h3 id="get-info"><code>GET /info</code></h3>
+<p>What is connected. Read it once after connecting and again when <code>status</code> changes in a way that matters to you (for
+example a new PV inverter in <code>pv_external</code>).</p>
+<pre><code>{
+  &quot;api_version&quot;: 1, &quot;version&quot;: &quot;0.38.0&quot;, &quot;installation_id&quot;: &quot;…&quot;,
+  &quot;token&quot;: {&quot;name&quot;: &quot;My dashboard&quot;, &quot;scope&quot;: &quot;read&quot;},
+  &quot;device&quot;: {&quot;manufacturer&quot;: &quot;FoxESS&quot;, &quot;model&quot;: &quot;H3&quot;, &quot;firmware&quot;: &quot;…&quot;, &quot;rated_power_w&quot;: 10000,
+             &quot;supports_control&quot;: true, &quot;work_modes&quot;: null, &quot;backup_reserve&quot;: false},
+  &quot;pv_inputs&quot;: [{&quot;index&quot;: 0, &quot;name&quot;: &quot;Süddach&quot;}, {&quot;index&quot;: 1, &quot;name&quot;: &quot;Modulfeld 2&quot;}],
+  &quot;pv_input_count&quot;: 2,
+  &quot;pv_external&quot;: null,
+  &quot;devices&quot;: [{&quot;id&quot;: &quot;…&quot;, &quot;name&quot;: &quot;Heizstab&quot;, &quot;kind&quot;: &quot;mypv&quot;}],
+  &quot;wallboxes&quot;: [{&quot;id&quot;: &quot;…&quot;, &quot;name&quot;: &quot;Garage&quot;, &quot;model&quot;: &quot;…&quot;, &quot;read_only&quot;: false}],
+  &quot;poll_interval&quot;: 10, &quot;web_port&quot;: 8080
+}
+</code></pre>
+<ul>
+<li><code>device</code> is <code>null</code> until OpenAmpere has found the inverter. There is no serial number on purpose.</li>
+<li><code>work_modes</code>: the battery modes the device offers, <code>null</code> for all of them (see <a href="#put-battery">Battery</a>).</li>
+<li><code>backup_reserve</code>: whether the device has its own reserve for the backup mode (<code>backup_soc</code>).</li>
+<li><code>pv_inputs</code>: the inputs the owner did not hide, with the owner's names. <code>index</code> is the position in
+<code>live.pv_inputs</code>.</li>
+<li><code>pv_external</code>: <code>{&quot;name&quot;: …}</code> if the owner counts a second PV inverter, otherwise <code>null</code>.</li>
+<li><code>devices</code>: heaters and relays OpenAmpere switches itself; <code>wallboxes</code>: wallboxes it reads itself. Wallboxes run
+through evcc are not part of this interface.</li>
+</ul>
+<h3 id="get-state"><code>GET /state</code></h3>
+<p>Everything at once: the same content as a <a href="#live-values-ws">live message</a>, plus the settings.</p>
+<pre><code>{
+  &quot;type&quot;: &quot;state&quot;,
+  &quot;live&quot;: { &quot;…&quot;: &quot;see below&quot; },
+  &quot;status&quot;: { &quot;…&quot;: &quot;see below&quot; },
+  &quot;devices&quot;: [],
+  &quot;wallboxes&quot;: [],
+  &quot;battery_settings&quot;: {&quot;work_mode&quot;: &quot;self_use&quot;, &quot;min_soc&quot;: 10, &quot;max_soc&quot;: 100, &quot;min_soc_on_grid&quot;: 15,
+                       &quot;backup_soc&quot;: null},
+  &quot;grid_charging&quot;: {&quot;enabled&quot;: false, &quot;target_soc&quot;: 80, &quot;active&quot;: false},
+  &quot;price_ct&quot;: 31.2
+}
+</code></pre>
+<ul>
+<li><code>battery_settings</code> is <code>null</code> while they could not be read. OpenAmpere waits at most 5 seconds for a fresh reading
+and otherwise answers with the last one.</li>
+<li><code>price_ct</code>: the electricity price now in cent per kWh from the owner's tariff (fixed or dynamic), <code>null</code> without a
+tariff.</li>
+</ul>
+<h3 id="live-the-latest-reading"><code>live</code>: the latest reading</h3>
+<p><code>null</code> before the first reading. All values can be <code>null</code> when the device does not provide them.</p>
+<div class="table"><table>
+<thead><tr><th>Field</th><th>Meaning</th></tr></thead>
+<tbody>
+<tr><td><code>timestamp</code></td><td>Time of the reading</td></tr>
+<tr><td><code>pv_power</code></td><td>Solar power, ≥ 0. Includes <code>pv_external_power</code> if the owner counts a second PV inverter.</td></tr>
+<tr><td><code>pv_external_power</code></td><td>Power of a second PV inverter the device measures, ≥ 0</td></tr>
+<tr><td><code>house_power</code></td><td>Consumption of the house, ≥ 0</td></tr>
+<tr><td><code>grid_power</code></td><td><strong>+ import</strong> from the grid, <strong>− export</strong> to the grid</td></tr>
+<tr><td><code>battery_power</code></td><td><strong>+ discharging</strong>, <strong>− charging</strong></td></tr>
+<tr><td><code>battery_soc</code>, <code>battery_soh</code></td><td>State of charge and state of health in %</td></tr>
+<tr><td><code>battery_voltage</code>, <code>battery_current</code>, <code>battery_temperature</code></td><td>Battery in V, A and °C</td></tr>
+<tr><td><code>pv_inputs</code></td><td>List per PV input: <code>power</code>, <code>voltage</code>, <code>current</code>. The position matches <code>index</code> in <code>/info</code>; also contains hidden inputs.</td></tr>
+<tr><td><code>temperatures</code></td><td>°C by name: <code>inverter</code>, <code>ambient</code>, <code>battery</code>, <code>battery_cell_max</code>, <code>battery_cell_min</code>, and the same with <code>battery2</code> for a second battery. Only what the device provides.</td></tr>
+<tr><td><code>inverter_state</code></td><td>The device's own state number (meaning per device, see <a href="devices/index.html">docs/devices/</a>)</td></tr>
+<tr><td><code>off_grid</code></td><td>The device reports off-grid operation in this reading. For a confirmed outage use <code>status.off_grid</code>.</td></tr>
+<tr><td><code>alarms</code></td><td>The device's alarm codes</td></tr>
+<tr><td><code>today</code></td><td>Energy since midnight in Wh, see below</td></tr>
+<tr><td><code>totals</code></td><td>Lifetime counters in Wh, see below</td></tr>
+</tbody>
+</table></div>
+<p>Fields of <code>today</code> and <code>totals</code>: <code>pv</code>, <code>consumption</code> (what the app shows as consumption), <code>grid_import</code>,
+<code>grid_export</code>, <code>battery_charge</code>, <code>battery_discharge</code>, <code>load</code> (the inverter's own load counter, which can count much
+more than the house used; prefer <code>consumption</code>) and, only in <code>totals</code>, <code>pv_external</code>.</p>
+<h3 id="status"><code>status</code></h3>
+<div class="table"><table>
+<thead><tr><th>Field</th><th>Meaning</th></tr></thead>
+<tbody>
+<tr><td><code>connected</code></td><td>OpenAmpere is connected to the inverter</td></tr>
+<tr><td><code>stale</code></td><td>No new reading for more than 60 seconds: show the values as outdated</td></tr>
+<tr><td><code>last_update</code></td><td>Time of the latest reading</td></tr>
+<tr><td><code>off_grid</code></td><td>A power outage OpenAmpere has confirmed</td></tr>
+<tr><td><code>grid_charging</code></td><td>Grid charging is running right now</td></tr>
+<tr><td><code>control</code></td><td><code>{&quot;enabled&quot;, &quot;dry_run&quot;}</code>: the master switch for control and the test mode</td></tr>
+<tr><td><code>firmware</code></td><td>Firmware of the inverter (changes with an update)</td></tr>
+<tr><td><code>token_days_left</code></td><td>Days until the token of an Enphase gateway runs out, <code>null</code> for other devices</td></tr>
+<tr><td><code>pv_external</code></td><td>As in <code>/info</code></td></tr>
+</tbody>
+</table></div>
+<h3 id="devices-and-wallboxes"><code>devices</code> and <code>wallboxes</code></h3>
+<p><code>devices</code> (heaters and relays OpenAmpere switches): <code>id</code>, <code>name</code>, <code>kind</code>, <code>enabled</code>, <code>power_w</code>, <code>on</code>,
+<code>temperature_c</code>, <code>target_c</code>, <code>status</code>, <code>error</code> and <code>mode</code> (<code>auto</code>, <code>off</code> or <code>boost</code>).</p>
+<p><code>wallboxes</code> (wallboxes OpenAmpere reads itself): <code>id</code>, <code>name</code>, <code>enabled</code>, <code>mode</code>, <code>max_current_a</code> (the owner's
+limit), <code>mode_current_a</code> (highest current per charging mode), and the live values <code>online</code>, <code>state</code>, <code>connected</code>,
+<code>charging</code>, <code>power_w</code>, <code>current_a</code>. The live values are <code>null</code> while the wallbox does not answer, which is normal for
+a portable one that is unplugged.</p>
+<h3 id="live-values-ws">Live values: <code>/ws</code></h3>
+<p>A WebSocket at <code>wss://&lt;host&gt;:&lt;port&gt;/api/external/v1/ws</code> with the same <code>Authorization</code> header. Right after connecting
+and after every new reading of the inverter (every <code>poll_interval</code> seconds) OpenAmpere sends:</p>
+<pre><code>{&quot;type&quot;: &quot;live&quot;, &quot;live&quot;: {}, &quot;status&quot;: {}, &quot;devices&quot;: [], &quot;wallboxes&quot;: []}
+</code></pre>
+<p>The settings (<code>battery_settings</code>, <code>grid_charging</code>, <code>price_ct</code>) are not part of it; read <code>/state</code> after a command or
+every few minutes. A connection without a valid token or over plain <code>ws://</code> is refused in the handshake with HTTP <code>403</code>. An open connection whose token the owner removes
+is closed with code <code>1008</code>. Reconnect with a growing pause (the integration waits 5, 10, 30, then
+60 seconds). OpenAmpere shows which apps are connected live.</p>
+<h3 id="history">History</h3>
+<p>The history a <code>read</code> token may see, with the same answers as the charts in the web app (#588). All of them are
+<code>GET</code> requests with query parameters; times in the answers are the start of each bucket.</p>
+<p>Parameters shared by several endpoints:</p>
+<ul>
+<li><code>period</code>: <code>day</code> (default), <code>week</code>, <code>month</code> or <code>year</code>.</li>
+<li><code>date</code>: a day in the period as <code>YYYY-MM-DD</code>, default today. Also <code>YYYY-Www</code> for a week, <code>YYYY-MM</code> for a month and
+<code>YYYY</code> for a year. Days and weeks follow the time zone of the installation; a week starts on Monday.</li>
+<li><code>resolution</code>: <code>15m</code>, <code>60m</code>, <code>day</code> or <code>month</code>.</li>
+</ul>
+<p>An unknown period or a date that cannot be read answers <code>400</code>; a parameter outside its values (<code>step</code>, <code>resolution</code>,
+<code>mode</code>) answers <code>422</code> with FastAPI's technical list (see <a href="#errors">Errors</a>).</p>
+<p><strong>At most 30 reads of the history per minute and token</strong>, for all five endpoints together. Beyond that the answer is
+<code>429</code>, with the seconds to wait in the message. Live values (<code>/state</code>, <code>/ws</code>) do not count.</p>
+<p><strong>What is kept:</strong> energy per quarter hour is kept for good, so <code>summary</code>, <code>energy</code> and the energy of <code>pv-inputs</code> work
+for any period OpenAmpere has recorded (or imported from the former cloud). The single readings behind <code>power</code>, the
+power curve of <code>pv-inputs</code> and <code>temperatures</code> are kept for 30 days by default (the owner can change that); older
+days answer with empty <code>entries</code>, except <code>power</code>, which then has the average of each quarter hour (see there).</p>
+<h4 id="get-historysummary"><code>GET /history/summary</code></h4>
+<p>Energy of a period, the shares and the money, as the report in the app shows them.</p>
+<pre><code>GET /api/external/v1/history/summary?period=month&amp;date=2026-06
+</code></pre>
+<pre><code>{
+  &quot;period&quot;: &quot;month&quot;, &quot;from&quot;: 1780264800, &quot;to&quot;: 1782856800, &quot;quarters&quot;: 2880,
+  &quot;partial_since&quot;: null, &quot;recorded_since&quot;: null,
+  &quot;energy_wh&quot;: {&quot;pv&quot;: 1200000, &quot;load&quot;: 900000, &quot;grid_import&quot;: 150000, &quot;grid_export&quot;: 450000,
+                &quot;battery_charge&quot;: 200000, &quot;battery_discharge&quot;: 180000, &quot;pv_external&quot;: null},
+  &quot;autarky&quot;: 0.83, &quot;self_consumption&quot;: 0.63,
+  &quot;money&quot;: {&quot;savings_eur&quot;: 210.5, &quot;feed_in_eur&quot;: 36.0, &quot;grid_cost_eur&quot;: 45.3, &quot;base_fee_eur&quot;: 12.0,
+            &quot;net_cost_eur&quot;: 21.3, &quot;incomplete&quot;: false}
+}
+</code></pre>
+<ul>
+<li><code>energy_wh</code>: energy in Wh. <code>load</code> is the consumption of the house (as <code>consumption</code> in <code>live.today</code>), not the
+inverter's own load counter. <code>pv_external</code>: a counted second PV inverter, otherwise <code>null</code>; it is part of <code>pv</code>.</li>
+<li><code>quarters</code>: quarter hours with data, including the one that is running.</li>
+<li><code>recorded_since</code>: on the first day of recording, when recording started; the values then come from the inverter's
+daily counters and are complete. <code>partial_since</code>: the values cover only the time since then.</li>
+<li><code>autarky</code>: share of the consumption not drawn from the grid, <code>self_consumption</code>: share of the solar energy used in
+the house; 0–1, <code>null</code> without consumption or solar energy.</li>
+<li><code>money</code>: from the owner's tariffs. <code>savings_eur</code>: self-used solar energy at the price of that moment plus the feed-in
+pay; <code>net_cost_eur</code>: grid power plus base fee minus feed-in pay. <code>incomplete</code>: prices were missing for part of the
+period.</li>
+</ul>
+<h4 id="get-historyenergy"><code>GET /history/energy</code></h4>
+<p>Energy per bucket, for bar charts. Parameters: <code>period</code>, <code>date</code>, <code>resolution</code> (default <code>15m</code>).</p>
+<pre><code>{&quot;period&quot;: &quot;day&quot;, &quot;resolution&quot;: &quot;60m&quot;, &quot;from&quot;: 1780351200, &quot;to&quot;: 1780437600,
+ &quot;entries&quot;: [{&quot;ts&quot;: 1780351200, &quot;pv&quot;: 0, &quot;load&quot;: 350, &quot;grid_import&quot;: 350, &quot;grid_export&quot;: 0,
+              &quot;battery_charge&quot;: 0, &quot;battery_discharge&quot;: 0, &quot;pv_external&quot;: null, &quot;soc&quot;: 42}]}
+</code></pre>
+<p>Each entry has the energy of the bucket in Wh (fields as in <code>summary</code>) and <code>soc</code>, the state of charge at the end of
+the bucket. A bucket without data is missing, not zero. The quarter hour that is running is included.</p>
+<h4 id="get-historypower"><code>GET /history/power</code></h4>
+<p>Power curve of one day. Parameters: <code>date</code>, <code>step</code> (seconds per point, 10–3600, default 60).</p>
+<pre><code>{&quot;from&quot;: 1780351200, &quot;to&quot;: 1780437600, &quot;step&quot;: 300,
+ &quot;entries&quot;: [{&quot;ts&quot;: 1780394400, &quot;pv&quot;: 4200, &quot;house&quot;: 600, &quot;grid&quot;: -2100, &quot;battery&quot;: -1500, &quot;soc&quot;: 64,
+              &quot;pv_external&quot;: null}]}
+</code></pre>
+<p>Averages per step in W, with the signs of <code>live</code>: <code>grid</code> + import, − export; <code>battery</code> + discharging, − charging. A
+step without readings is missing. A quarter hour with no readings but with stored energy or state of charge (a day
+imported from the former cloud, or older than the readings are kept) has one entry at its start with
+<code>&quot;quarter&quot;: true</code>: the average power of that quarter hour from its energy (Wh × 4) and its state of charge. Values
+the quarter hour has no energy for are <code>null</code>. A gap in OpenAmpere's own readings (it did not run) stays missing, also
+once the readings around it are no longer kept.</p>
+<h4 id="get-historypv-inputs"><code>GET /history/pv-inputs</code></h4>
+<p>Per PV input (module array). Parameters: <code>period</code>, <code>date</code>, <code>mode</code> (<code>energy</code>, default, or <code>power</code>, only with
+<code>period=day</code>), <code>resolution</code> (default <code>60m</code>, for <code>energy</code>).</p>
+<pre><code>{&quot;mode&quot;: &quot;energy&quot;, &quot;inputs&quot;: [1, 2], &quot;labels&quot;: [&quot;Süddach&quot;, &quot;Modulfeld 2&quot;],
+ &quot;entries&quot;: [{&quot;ts&quot;: 1780394400, &quot;values&quot;: [2100, 1400]}], &quot;totals_wh&quot;: [21000, 14000]}
+</code></pre>
+<ul>
+<li><code>inputs</code>: the numbers of the inputs, <strong>counted from 1</strong> (<code>index</code> in <code>/info</code> counts from 0). Inputs the owner hid are left out,
+and so are inputs without any yield in the period, unless no input had any (at night, or a day without data).</li>
+<li><code>labels</code>: the owner's names, in the same order.</li>
+<li><code>entries[].values</code>: per input, energy in Wh per bucket (<code>energy</code>) or average power in W per 5 minutes (<code>power</code>).</li>
+<li><code>totals_wh</code>: energy of each input over the period, <code>null</code> with <code>mode=power</code>.</li>
+</ul>
+<h4 id="get-historytemperatures"><code>GET /history/temperatures</code></h4>
+<p>Temperatures of one day. Parameters: <code>date</code>, <code>step</code> (seconds, 60–3600, default 300).</p>
+<pre><code>{&quot;entries&quot;: [{&quot;ts&quot;: 1780394400, &quot;inverter&quot;: 41.5, &quot;battery&quot;: 24.0, &quot;cell_max&quot;: 24.5, &quot;cell_min&quot;: 23.5}]}
+</code></pre>
+<p>Averages per step in °C, <code>null</code> for what the device does not provide.</p>
+<h2 id="controlling">Controlling</h2>
+<p>Commands need a <code>control</code> token, and the owner must have switched control on in OpenAmpere (<strong>Mehr → Steuerung und
+Protokoll</strong>). Everything goes through the same checks as in the app:</p>
+<ul>
+<li><strong>Test mode</strong> (<code>status.control.dry_run</code>): OpenAmpere checks the command and logs it, but writes nothing to the
+inverter. The answer of <code>/battery</code> says so with <code>&quot;dry_run&quot;: true</code>.</li>
+<li><strong>Limits</strong> of the device are checked before writing, the value is read back afterwards.</li>
+<li><strong>Control log:</strong> every change appears there with the token's name, so the owner sees what your app did.</li>
+<li><strong>Not available</strong> on purpose: the master switch and test mode, the export limit, settings, tariffs, the
+configuration of devices, tokens, backups and updates. These stay with the owner in the app.</li>
+</ul>
+<h3 id="put-battery"><code>PUT /battery</code></h3>
+<p>Battery settings. Send only what you want to change.</p>
+<pre><code>{&quot;work_mode&quot;: &quot;self_use&quot;, &quot;min_soc&quot;: 10, &quot;max_soc&quot;: 100, &quot;min_soc_on_grid&quot;: 20}
+</code></pre>
+<div class="table"><table>
+<thead><tr><th>Field</th><th>Values</th></tr></thead>
+<tbody>
+<tr><td><code>work_mode</code></td><td><code>self_use</code>, <code>feed_in_first</code>, <code>backup</code>, <code>peak_shaving</code>; only those in <code>device.work_modes</code> if that is not <code>null</code></td></tr>
+<tr><td><code>min_soc</code></td><td>Lowest state of charge during a power outage (off-grid), 0–100 %</td></tr>
+<tr><td><code>min_soc_on_grid</code></td><td>Backup reserve, 10–100 %, at least <code>min_soc</code></td></tr>
+<tr><td><code>max_soc</code></td><td>Charge limit, 10–100 %, above <code>min_soc_on_grid</code></td></tr>
+<tr><td><code>backup_soc</code></td><td>Reserve in the backup mode, 10–100 %, only if <code>device.backup_reserve</code>; not above <code>max_soc</code></td></tr>
+</tbody>
+</table></div>
+<p>The answer is <code>{&quot;dry_run&quot;, &quot;written&quot;, &quot;warning&quot;}</code>. A backup reserve below 10 % can only be set in OpenAmpere itself,
+after a warning (<code>428</code>).</p>
+<p><strong>At most 6 changes per hour per setting.</strong> These settings end up in the inverter's permanent memory, and an
+automation stuck in a loop must not wear it out. Beyond that the answer is <code>429</code>, with the minutes to wait in the
+message. A command refused before anything was written does not count.</p>
+<p>Not every inverter accepts every command: <code>supports_control</code> in <code>/info</code> says whether OpenAmpere may control the
+device at all.</p>
+<h3 id="put-grid-charging"><code>PUT /grid-charging</code></h3>
+<p>Charging the battery from the grid, for example when electricity is cheap.</p>
+<pre><code>{&quot;enabled&quot;: true, &quot;target_soc&quot;: 80}
+</code></pre>
+<p><code>target_soc</code>: 20–100 %. The owner must have set up grid charging once in OpenAmpere (it asks about the legal side);
+until then switching it on answers <code>400</code>. OpenAmpere charges through the inverter's remote control with a watchdog,
+so charging stops by itself when OpenAmpere stops. Answer: <code>{&quot;enabled&quot;, &quot;target_soc&quot;, &quot;active&quot;}</code>. At most 60 changes
+per hour.</p>
+<h3 id="put-devicesidmode"><code>PUT /devices/{id}/mode</code></h3>
+<p>Mode of a heater or relay from <code>devices</code>:</p>
+<pre><code>{&quot;mode&quot;: &quot;boost&quot;, &quot;hours&quot;: 2}
+</code></pre>
+<p><code>mode</code>: <code>auto</code> (follow the solar surplus), <code>off</code> (stay off) or <code>boost</code> (full power, for example hot water now).
+<code>hours</code> (optional, up to 48) ends <code>off</code> or <code>boost</code> after that time; without it the mode stays until changed. Answer:
+<code>{&quot;devices&quot;: [...]}</code>. At most 60 changes per hour per device.</p>
+<h3 id="put-wallboxesidmode"><code>PUT /wallboxes/{id}/mode</code></h3>
+<p>Charging mode of a wallbox OpenAmpere controls itself (not <code>read_only</code>):</p>
+<pre><code>{&quot;mode&quot;: &quot;pv&quot;, &quot;current_a&quot;: 16}
+</code></pre>
+<p><code>mode</code>: <code>off</code>, <code>pv</code> (solar surplus only), <code>minpv</code> (minimum current plus surplus), <code>now</code> (full current) or <code>manual</code> (OpenAmpere leaves the wallbox alone; the owner
+controls it on the wallbox itself).
+<code>current_a</code> (optional, only with <code>pv</code>, <code>minpv</code> and <code>now</code>) sets the highest current of that mode, within the owner's
+limit. Answer: <code>{&quot;wallboxes&quot;: [...]}</code>. At most 60 changes per hour per wallbox.</p>
+<h2 id="errors">Errors</h2>
+<p>Errors are JSON with a German explanation for the owner in <code>detail</code>, which your app can show as it is (except for
+<code>422</code>, see below):</p>
+<pre><code>{&quot;detail&quot;: &quot;Dieser Zugang darf nur lesen.&quot;, &quot;code&quot;: &quot;read_only&quot;}
+</code></pre>
+<div class="table"><table>
+<thead><tr><th>Status</th><th>Meaning</th></tr></thead>
+<tbody>
+<tr><td><code>400</code></td><td>Invalid value or command; <code>detail</code> says what is wrong</td></tr>
+<tr><td><code>401</code></td><td>Token invalid or removed (<code>&quot;code&quot;: &quot;token_invalid&quot;</code>): pair again</td></tr>
+<tr><td><code>421</code></td><td>An HTTP request used a host name that OpenAmpere does not know (protection against DNS rebinding); no <code>code</code> field. Use the IP address, or the owner adds the name under <strong>Mehr → Zugriffsschutz → Eigene Adressen</strong>.</td></tr>
+<tr><td><code>403</code></td><td>Plain HTTP (<code>https_required</code>), a <code>read</code> token tried to write (<code>read_only</code>), or control is switched off in OpenAmpere</td></tr>
+<tr><td><code>404</code></td><td>Pairing request expired or unknown</td></tr>
+<tr><td><code>422</code></td><td>The body is not a JSON object (an array, a number, broken JSON or no body), or a query parameter of the history is outside its values. Here <code>detail</code> is FastAPI's technical list in English, not a text for the owner: a bug in your app.</td></tr>
+<tr><td><code>428</code></td><td>Needs a confirmation that only OpenAmpere itself can ask for</td></tr>
+<tr><td><code>429</code></td><td>Too many changes, pairing requests or reads of the history; <code>detail</code> says how long to wait</td></tr>
+<tr><td><code>502</code></td><td>The inverter refused the write or did not confirm it</td></tr>
+<tr><td><code>503</code></td><td>OpenAmpere is not connected to the inverter</td></tr>
+</tbody>
+</table></div>
+<p>A changed certificate shows up as a failed TLS handshake (the fingerprint does not match). Do not accept the new
+certificate silently: ask the owner to pair again.</p>
+<h2 id="good-manners">Good manners</h2>
+<ul>
+<li>Read with <code>/ws</code> instead of polling <code>/state</code> every few seconds.</li>
+<li>Read the history when it is shown or once per quarter hour, not with every live value: <code>power</code> with a small
+<code>step</code> reads every reading of the day.</li>
+<li>Send a command only when the owner or a rule of your app really changes something, not on every reading.</li>
+<li>Show <code>status.stale</code> and <code>status.connected</code>; old values shown as current are worse than none.</li>
+<li>Store the token like a password. Whoever has a <code>control</code> token can change the battery settings.</li>
+<li>Do not show or log the token, and keep the owner's data on their network.</li>
+</ul>
+    </article>
+    <p class="doc-source"><a href="https://github.com/dominiquehartmann/myampere/blob/main/docs/external-api.md">Diese Seite auf GitHub ansehen und verbessern</a></p>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      <p><a href="../impressum.html">Impressum und Datenschutz</a> ·
+        <a href="../changelog.html">Changelog</a> ·
+        <a href="../docs/devices/">Gerätewissen</a> ·
+        <a href="../docs/external-api.html">Für Entwickler</a> ·
+        <a href="https://github.com/Gr33ndev/OpenAmpere">Quellcode</a> ·
+        <a href="https://github.com/Gr33ndev/OpenAmpere/blob/main/LICENSE">MIT-Lizenz</a> ·
+        <a href="https://github.com/Gr33ndev/OpenAmpere/blob/main/SECURITY.md">Sicherheit</a></p>
+      <p class="small">Die meisten Wallboxen steuert <a href="https://evcc.io">evcc</a>, ein eigenständiges Open-Source-Projekt. Danke an die evcc-Community!</p>
+      <p class="small">Diese Seite setzt keine Cookies und nutzt kein Tracking.
+        Schrift: DM Sans (<a href="../fonts/OFL.txt">SIL Open Font License</a>).</p>
+    </div>
+  </footer>
+</body>
+</html>

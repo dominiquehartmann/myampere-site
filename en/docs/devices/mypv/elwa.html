@@ -1,0 +1,155 @@
+<!doctype html>
+<!-- SPDX-FileCopyrightText: Copyright the OpenAmpere contributors -->
+<!-- SPDX-License-Identifier: MIT -->
+<!-- A page of the device knowledge (#512) or of the interface for other apps (#588), filled with a Markdown file by
+     scripts/build-site-pages.mjs -->
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>my-PV AC ELWA heating rods | Device knowledge | OpenAmpere</title>
+  <meta name="description" content="What OpenAmpere knows about inverters, wallboxes and other devices: registers, behaviour and how sure each fact is." />
+  <meta name="theme-color" content="#f4f4f4" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#21262b" media="(prefers-color-scheme: dark)" />
+  <link rel="alternate" hreflang="de" href="https://dominiquehartmann.github.io/myampere/docs/devices/mypv/elwa.html" />
+  <link rel="alternate" hreflang="en" href="https://dominiquehartmann.github.io/myampere/en/docs/devices/mypv/elwa.html" />
+  <link rel="alternate" hreflang="x-default" href="https://dominiquehartmann.github.io/myampere/docs/devices/mypv/elwa.html" />
+  <link rel="icon" href="../../../../icon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="../../../../style.css" />
+</head>
+<body>
+  <header class="top">
+    <div class="wrap top-inner">
+      <a class="brand" href="../../../"><img src="../../../../icon.svg" alt="" width="32" height="32" />OpenAmpere</a>
+      <nav aria-label="Site sections">
+        <a href="../../../#funktionen">Features</a>
+        <a href="../../../#installation">Installation</a>
+        <a href="../../../geraete.html">Devices</a>
+        <a href="../../../faq.html">FAQ</a>
+        <a href="../../../changelog.html">Changelog</a>
+        <a href="../../../../demo/?lang=en">Demo</a>
+        <a href="https://github.com/Gr33ndev/OpenAmpere">GitHub</a>
+        <span class="lang-switch" role="group" aria-label="Language"><a href="../../../../docs/devices/mypv/elwa.html" hreflang="de" lang="de" title="Deutsch" aria-label="Deutsch">DE</a><a href="elwa.html" hreflang="en" lang="en" title="English" aria-label="English" aria-current="page">EN</a></span>
+      </nav>
+    </div>
+  </header>
+
+  <main class="wrap doc-page">
+    <p class="eyebrow doc-crumb"><a href="../../../docs/devices/">Device knowledge</a></p>
+    <p class="doc-note">These pages are technical. They collect what the OpenAmpere contributors have found out about the devices, each fact with its source and how sure it is. They show the latest state of development, which can be ahead of the version you have installed. They are not official manufacturer information. You don't need them to set up OpenAmpere; the app explains everything you need.</p>
+    <article class="doc" lang="en">
+<h1 id="my-pv-ac-elwa-heating-rods">my-PV AC ELWA heating rods</h1>
+<blockquote>
+<p><strong>Not official manufacturer information.</strong> Compiled by the OpenAmpere contributors; can be incomplete or wrong. No
+affiliation with my-PV, not legal advice. See <a href="../index.html">Device knowledge</a>.</p>
+</blockquote>
+<p><strong>Applies to:</strong> my-PV AC ELWA-E, AC ELWA 2, AC THOR · <strong>Sold as:</strong> – (owners report a my-PV heating rod in EKD systems, connected through the IQ box; derived,
+<a href="https://www.photovoltaikforum.com/thread/222147-ekd-speicher-ampere-storage-pro-ein-chinamodell-und-weitere-fragen-dazu/">Photovoltaikforum</a>) · <strong>OpenAmpere:</strong> consumer type &quot;my-PV heating
+rod&quot;, <code>src/openampere/drivers/mypv.py</code> (<code>MyPvHeatingRod</code>) · <strong>Support:</strong> display and control (power setpoint only) ·
+<strong>Confirmed on a real device:</strong> no (simulator only)</p>
+<h2 id="summary">Summary</h2>
+<ul>
+<li>Modbus TCP, port 502, unit id 1 by default. OpenAmpere reads four registers (1000–1003) and writes only one: the
+power setpoint 1000.</li>
+<li>The rod has its own control timeout: without a new setpoint it stops heating. The control type in its web interface
+must be &quot;Modbus TCP&quot;.</li>
+<li>The manufacturer asks not to write other registers frequently (non-volatile memory).</li>
+<li>The rod's real power is not read; OpenAmpere estimates it from the setpoint and the status.</li>
+<li>Before the first write OpenAmpere checks that the device really looks like a my-PV rod, so a wrong address can never
+hit the inverter.</li>
+</ul>
+<h2 id="registers">Registers</h2>
+<div class="table"><table>
+<thead><tr><th>Register</th><th>Meaning</th><th>Type, scale, sign</th><th>R/W</th><th>Status</th><th>Source</th></tr></thead>
+<tbody>
+<tr><td>1000</td><td>Power setpoint</td><td>U16, W</td><td>R/W (holding, FC03 read, FC06 write)</td><td>documented</td><td>my-PV Modbus TCP description; <a href="https://github.com/Gr33ndev/OpenAmpere/issues/238">#238</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/241">#241</a></td></tr>
+<tr><td>1001</td><td>Water temperature</td><td>S16 (two's complement), 0.1 °C, e.g. 0xFFF6 = −1.0 °C</td><td>R</td><td>documented</td><td>my-PV Modbus TCP description; <a href="https://github.com/Gr33ndev/OpenAmpere/issues/241">#241</a></td></tr>
+<tr><td>1002</td><td>Target temperature</td><td>S16 (two's complement), 0.1 °C</td><td>R</td><td>documented</td><td>my-PV Modbus TCP description; <a href="https://github.com/Gr33ndev/OpenAmpere/issues/241">#241</a></td></tr>
+<tr><td>1003</td><td>Status, see below</td><td>U16, code</td><td>R</td><td>documented</td><td>my-PV Modbus TCP description; <a href="https://github.com/Gr33ndev/OpenAmpere/issues/238">#238</a></td></tr>
+</tbody>
+</table></div>
+<p>Status codes of register 1003:</p>
+<div class="table"><table>
+<thead><tr><th>Code</th><th>Meaning</th></tr></thead>
+<tbody>
+<tr><td>1</td><td>not controlled</td></tr>
+<tr><td>2</td><td>heating</td></tr>
+<tr><td>3</td><td>standby</td></tr>
+<tr><td>4</td><td>boost heating</td></tr>
+<tr><td>5</td><td>water has reached the target temperature</td></tr>
+<tr><td>9</td><td>setup</td></tr>
+<tr><td>20</td><td>legionella protection</td></tr>
+<tr><td>21</td><td>switched off</td></tr>
+<tr><td>22</td><td>locked</td></tr>
+<tr><td>200 and up</td><td>fault (the value is the fault code)</td></tr>
+</tbody>
+</table></div>
+<h2 id="behaviour">Behaviour</h2>
+<div class="table"><table>
+<thead><tr><th>Fact</th><th>Status</th><th>Source</th></tr></thead>
+<tbody>
+<tr><td>Connection: Modbus TCP, port 502, unit id 1 (configurable).</td><td>documented</td><td>my-PV Modbus TCP description; <a href="https://github.com/dominiquehartmann/myampere/blob/main/docs/devices.md">docs/devices.md</a></td></tr>
+<tr><td>The rod follows Modbus setpoints only while its control type is set to &quot;Modbus TCP&quot; in its web interface. A read that the rod rejects usually means another control type is set.</td><td>documented (the hint about rejected reads: derived)</td><td>my-PV Modbus TCP description; <code>mypv.py</code></td></tr>
+<tr><td>The rod has a control timeout set in its web interface: when no new setpoint arrives in time, it stops heating by itself. It has to be a little longer than OpenAmpere's interval.</td><td>documented</td><td>my-PV Modbus TCP description; <a href="https://github.com/Gr33ndev/OpenAmpere/issues/243">#243</a></td></tr>
+<tr><td>The manufacturer asks not to write any other register frequently, because they are kept in non-volatile memory.</td><td>documented</td><td>my-PV Modbus TCP description; <a href="https://github.com/dominiquehartmann/myampere/blob/main/NOTICE">NOTICE</a></td></tr>
+<tr><td>The registers 1000–1003 do not contain the power the rod really takes; only the setpoint.</td><td>derived</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/238">#238</a></td></tr>
+</tbody>
+</table></div>
+<h2 id="decisions-in-openampere">Decisions in OpenAmpere</h2>
+<div class="table"><table>
+<thead><tr><th>Decision</th><th>Why</th><th>Issue/PR</th></tr></thead>
+<tbody>
+<tr><td>Read 1000–1003 in one FC03 request; write only 1000, clamped to 0–65000 W, continuously by solar surplus (optionally with cheap grid power).</td><td>Only the documented registers; the manufacturer asks not to write others.</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/238">#238</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/241">#241</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/262">#262</a></td></tr>
+<tr><td>Estimated power: the setpoint while the status is 2 or 4, or 3 with a setpoint above 0; otherwise 0.</td><td>The rod's power is not available in these registers.</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/241">#241</a></td></tr>
+<tr><td>A temperature of 0 counts as not available; status 200 and up is shown as a fault with its code.</td><td>0 is what an unset value reads.</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/241">#241</a></td></tr>
+<tr><td>Before the first write the rod is read once; OpenAmpere writes only if the status is 1–999 and both temperatures are within −30 to 120 °C.</td><td>Register 1000 used to be written every few seconds to whatever address was entered; a wrong address (e.g. the inverter's) could be written outside its driver's checks.</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/259">#259</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/262">#262</a></td></tr>
+<tr><td>Only unit ids 1–247 are accepted; never 0.</td><td>Unit id 0 is the Modbus broadcast: behind a gateway every device would take the write.</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/259">#259</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/262">#262</a></td></tr>
+<tr><td>A rod cannot be saved at the inverter's host and port. The resolved addresses are compared, so a host name and its IP address, or <code>localhost</code> and <code>127.0.0.1</code>, count as the same device.</td><td>The inverter must never be configured as a heating rod.</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/262">#262</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/351">#351</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/363">#363</a></td></tr>
+<tr><td>0 W is sent once to a rod OpenAmpere set to power when it is disabled, removed or changed, when control is switched off, when test mode is entered and when OpenAmpere stops; also with the master switch off or in test mode.</td><td>Switching off is the safe direction; the rod's own timeout is only a second safeguard.</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/217">#217</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/224">#224</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/243">#243</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/247">#247</a></td></tr>
+</tbody>
+</table></div>
+<p>Retries for an unreachable rod follow the rules for all consumers, see <a href="../topics/consumers.html">consumers.md</a>.</p>
+<h2 id="open-questions">Open questions</h2>
+<ul>
+<li>No owner has run a my-PV rod with OpenAmpere yet; everything is tested against the simulator only. The website and
+README had wrongly shown it as tested
+(<a href="https://github.com/Gr33ndev/OpenAmpere/issues/111">#111</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/173">#173</a>,
+<a href="https://github.com/Gr33ndev/OpenAmpere/issues/185">#185</a>).</li>
+<li>The power estimate (heating in status 2 and 4, and in 3 only with a setpoint) is OpenAmpere's reading of the status
+list; a real device may take power in other states or less than the setpoint.</li>
+<li>The title and date of the my-PV document behind the registers are not recorded in the repository; a later edit
+should add them.</li>
+</ul>
+<h2 id="sources">Sources</h2>
+<ul>
+<li>my-PV's public Modbus TCP description for its heating rods (manufacturer document; facts only, see
+<a href="https://github.com/dominiquehartmann/myampere/blob/main/NOTICE">NOTICE</a>).</li>
+<li>Issues and pull requests: <a href="https://github.com/Gr33ndev/OpenAmpere/issues/111">#111</a>,
+<a href="https://github.com/Gr33ndev/OpenAmpere/issues/173">#173</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/185">#185</a>,
+<a href="https://github.com/Gr33ndev/OpenAmpere/issues/217">#217</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/224">#224</a>,
+<a href="https://github.com/Gr33ndev/OpenAmpere/issues/238">#238</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/241">#241</a>,
+<a href="https://github.com/Gr33ndev/OpenAmpere/issues/243">#243</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/247">#247</a>,
+<a href="https://github.com/Gr33ndev/OpenAmpere/issues/259">#259</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/262">#262</a>,
+<a href="https://github.com/Gr33ndev/OpenAmpere/issues/351">#351</a>, <a href="https://github.com/Gr33ndev/OpenAmpere/issues/363">#363</a>.</li>
+<li>Code: <code>src/openampere/drivers/mypv.py</code>, <code>src/openampere/consumers.py</code>; simulator <code>src/openampere/simulator.py</code>.</li>
+</ul>
+    </article>
+    <p class="doc-source"><a href="https://github.com/dominiquehartmann/myampere/blob/main/docs/devices/mypv/elwa.md">View and improve this page on GitHub</a></p>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      <p><a href="../../../impressum.html">Imprint and privacy</a> ·
+        <a href="../../../changelog.html">Changelog</a> ·
+        <a href="../../../docs/devices/">Device knowledge</a> ·
+        <a href="../../../docs/external-api.html">For developers</a> ·
+        <a href="https://github.com/Gr33ndev/OpenAmpere">Source code</a> ·
+        <a href="https://github.com/Gr33ndev/OpenAmpere/blob/main/LICENSE">MIT License</a> ·
+        <a href="https://github.com/Gr33ndev/OpenAmpere/blob/main/SECURITY.md">Security</a></p>
+      <p class="small">Most wallboxes are controlled by <a href="https://evcc.io">evcc</a>, an independent open source project. Thanks to the evcc community!</p>
+      <p class="small">This site sets no cookies and uses no tracking.
+        Font: DM Sans (<a href="../../../../fonts/OFL.txt">SIL Open Font License</a>).</p>
+    </div>
+  </footer>
+</body>
+</html>

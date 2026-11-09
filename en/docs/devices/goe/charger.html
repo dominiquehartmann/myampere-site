@@ -1,0 +1,147 @@
+<!doctype html>
+<!-- SPDX-FileCopyrightText: Copyright the OpenAmpere contributors -->
+<!-- SPDX-License-Identifier: MIT -->
+<!-- A page of the device knowledge (#512) or of the interface for other apps (#588), filled with a Markdown file by
+     scripts/build-site-pages.mjs -->
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>go-e Charger | Device knowledge | OpenAmpere</title>
+  <meta name="description" content="What OpenAmpere knows about inverters, wallboxes and other devices: registers, behaviour and how sure each fact is." />
+  <meta name="theme-color" content="#f4f4f4" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#21262b" media="(prefers-color-scheme: dark)" />
+  <link rel="alternate" hreflang="de" href="https://dominiquehartmann.github.io/myampere/docs/devices/goe/charger.html" />
+  <link rel="alternate" hreflang="en" href="https://dominiquehartmann.github.io/myampere/en/docs/devices/goe/charger.html" />
+  <link rel="alternate" hreflang="x-default" href="https://dominiquehartmann.github.io/myampere/docs/devices/goe/charger.html" />
+  <link rel="icon" href="../../../../icon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="../../../../style.css" />
+</head>
+<body>
+  <header class="top">
+    <div class="wrap top-inner">
+      <a class="brand" href="../../../"><img src="../../../../icon.svg" alt="" width="32" height="32" />OpenAmpere</a>
+      <nav aria-label="Site sections">
+        <a href="../../../#funktionen">Features</a>
+        <a href="../../../#installation">Installation</a>
+        <a href="../../../geraete.html">Devices</a>
+        <a href="../../../faq.html">FAQ</a>
+        <a href="../../../changelog.html">Changelog</a>
+        <a href="../../../../demo/?lang=en">Demo</a>
+        <a href="https://github.com/Gr33ndev/OpenAmpere">GitHub</a>
+        <span class="lang-switch" role="group" aria-label="Language"><a href="../../../../docs/devices/goe/charger.html" hreflang="de" lang="de" title="Deutsch" aria-label="Deutsch">DE</a><a href="charger.html" hreflang="en" lang="en" title="English" aria-label="English" aria-current="page">EN</a></span>
+      </nav>
+    </div>
+  </header>
+
+  <main class="wrap doc-page">
+    <p class="eyebrow doc-crumb"><a href="../../../docs/devices/">Device knowledge</a></p>
+    <p class="doc-note">These pages are technical. They collect what the OpenAmpere contributors have found out about the devices, each fact with its source and how sure it is. They show the latest state of development, which can be ahead of the version you have installed. They are not official manufacturer information. You don't need them to set up OpenAmpere; the app explains everything you need.</p>
+    <article class="doc" lang="en">
+<h1 id="go-e-charger">go-e Charger</h1>
+<blockquote>
+<p>Not official manufacturer information: compiled by the OpenAmpere contributors, can be incomplete or wrong. No
+affiliation with go-e or EKD; not legal advice. See the <a href="../index.html">device knowledge README</a>.</p>
+</blockquote>
+<p><strong>Applies to:</strong> go-e Charger wallboxes (HOME, Gemini and later; older hardware only through API v1) · <strong>Sold as:</strong> go-e
+Charger (not sold by EKD) · <strong>OpenAmpere:</strong> wallbox module <code>goe</code> (<code>src/openampere/wallbox/goe.py</code>) · <strong>Support:</strong>
+display only (live view, found by the search in the wallbox setup) · <strong>Confirmed on a real device:</strong> no (built from
+go-e's public API descriptions and the simulator)</p>
+<h2 id="summary">Summary</h2>
+<ul>
+<li>The go-e Charger has a local HTTP API on port 80, without a login. It is <strong>off until the owner switches it on in
+the go-e app</strong>: API v2 on newer hardware, API v1 on all hardware (the only one of the oldest).</li>
+<li>OpenAmpere asks <code>GET /api/status</code> with a filter (API v2) and, if that gives no go-e answer, <code>GET /status</code> (API v1).
+It only sends these two GET requests: no <code>/api/set</code>, no <code>/mqtt</code>, so it never changes the charger.</li>
+<li>It shows the state, the power, current and voltage per phase, the energy and (API v2) the duration of the charge,
+the current offered to the car and the highest current. Only the mode &quot;manual&quot;.</li>
+<li>Modbus TCP, MQTT and OCPP exist as well, but are also off by default; OpenAmpere does not use them yet.</li>
+<li>Control (solar charging) is a separate step with its own issue: it needs the safety rules for writing, and what
+the charger does when OpenAmpere is gone has to be settled first.</li>
+</ul>
+<h2 id="keys-read">Keys read</h2>
+<p>API v2: <code>GET http://&lt;address&gt;/api/status?filter=car,nrg,wh,amp,ama,fwv,cdi</code>. API v1: <code>GET http://&lt;address&gt;/status</code>
+(the whole status, values as strings).</p>
+<div class="table"><table>
+<thead><tr><th>Key</th><th>Meaning</th><th>Unit v2</th><th>Unit v1</th><th>Status</th><th>Source</th></tr></thead>
+<tbody>
+<tr><td><code>car</code></td><td>1 no car, 2 charging, 3 waiting for the car, 4 charge finished (car still connected); v2 also 0 unknown and 5 error</td><td>–</td><td>–</td><td>documented</td><td>go-e API v1 and v2 descriptions</td></tr>
+<tr><td><code>nrg</code> 0–2</td><td>Voltage L1–L3</td><td>V</td><td>V</td><td>documented (v1); derived (v2 unit)</td><td>go-e API descriptions; evcc <code>charger/go-e/types2.go</code></td></tr>
+<tr><td><code>nrg</code> 4–6</td><td>Current L1–L3</td><td>A</td><td>0.1 A</td><td>documented (v1); derived (v2 unit)</td><td>go-e API descriptions; evcc <code>charger/go-e/types2.go</code></td></tr>
+<tr><td><code>nrg</code> 11</td><td>Total power</td><td>W</td><td>0.01 kW</td><td>documented (v1); derived (v2 unit)</td><td>go-e API descriptions; evcc <code>charger/go-e/types2.go</code></td></tr>
+<tr><td><code>wh</code></td><td>Energy since the car was connected</td><td>Wh</td><td>–</td><td>documented</td><td>go-e API v2 description</td></tr>
+<tr><td><code>dws</code></td><td>Energy since the car was connected</td><td>–</td><td>10 Ws</td><td>documented</td><td>go-e API v1 description; cathiele/goecharger</td></tr>
+<tr><td><code>cdi</code></td><td>Duration of the charge: <code>{&quot;type&quot;: 1, &quot;value&quot;: ms}</code>, type 0 without a duration</td><td>ms</td><td>–</td><td>documented (keys); open (behaviour)</td><td>go-e API v2 description</td></tr>
+<tr><td><code>amp</code></td><td>Current offered to the car</td><td>A</td><td>A</td><td>documented</td><td>go-e API descriptions</td></tr>
+<tr><td><code>ama</code></td><td>Highest current set in the charger</td><td>A</td><td>–</td><td>documented</td><td>go-e API v2 description</td></tr>
+<tr><td><code>fwv</code></td><td>Firmware version</td><td>text</td><td>text</td><td>documented</td><td>go-e API descriptions</td></tr>
+<tr><td><code>eto</code></td><td>Total energy</td><td>Wh</td><td>0.1 kWh</td><td>documented; <strong>not read</strong> (an exact counter identifies the owner)</td><td>go-e API descriptions</td></tr>
+</tbody>
+</table></div>
+<h2 id="behaviour">Behaviour</h2>
+<div class="table"><table>
+<thead><tr><th>Fact</th><th>Status</th><th>Source</th></tr></thead>
+<tbody>
+<tr><td>The local HTTP API v2 has to be switched on in the go-e app; where the switch is depends on the app version (named &quot;Internet → Advanced settings&quot; or &quot;Settings → Connection → API settings&quot; in other projects).</td><td>documented (switch); open (menu)</td><td>go-e API v2 description; README of a Homebridge plugin; an installer's guide (2025)</td></tr>
+<tr><td>The local HTTP API v1 has to be switched on in the app too.</td><td>documented</td><td>go-e API v1 description</td></tr>
+<tr><td>No login on the local network.</td><td>documented</td><td>go-e API v1 and v2 descriptions</td></tr>
+<tr><td><code>filter</code> in the query (comma separated) works from firmware 051.4; go-e advises to read the whole status only rarely.</td><td>documented</td><td>go-e API v2 description</td></tr>
+<tr><td>Hardware generations by the name they report over OCPP: V3 &quot;go-eCharger&quot; (HOME), V4 &quot;go-eCharger_V4&quot; (Gemini), V5 &quot;go-eCharger_V5&quot; (Gemini 2.0), &quot;go-eCharger_Pro&quot;. Which generation HOME fix and Gemini flex are is open.</td><td>documented (names); open (variants)</td><td>go-e OCPP description</td></tr>
+<tr><td>API v2 exists from hardware V3 (HOME) on; the older hardware V2 has only API v1 (firmware 033 and later).</td><td>documented (v2 for V3 and newer); derived (V2 only v1)</td><td>go-e API v1 and v2 descriptions; a forum post of a Homey developer</td></tr>
+<tr><td>The charger comes in an 11 kW and a 22 kW variant (API v2 key <code>var</code>): at most 22 kW, which is why OpenAmpere takes a total above 30 kW as a wrong unit.</td><td>documented</td><td>go-e API v2 description</td></tr>
+<tr><td>API v1: go-e recommends at least 5 s between two requests; no rate limit on the local network. OpenAmpere reads every 10 s.</td><td>documented</td><td>go-e API v1 description</td></tr>
+<tr><td>How many HTTP clients may read at the same time is not documented. HTTP holds no connection between requests, so evcc and OpenAmpere reading the same charger should work.</td><td>open</td><td>–</td></tr>
+<tr><td>evcc tells the APIs apart the same way: API v2 if <code>/api/status</code> answers, otherwise API v1.</td><td>derived</td><td>evcc documentation and <code>charger/go-e/</code> (MIT)</td></tr>
+<tr><td>Modbus TCP: off by default, switched on in the app (needs a restart of the charger), port 502, unit id 1, firmware 040 and newer; the unit of the total power differs between go-e's two descriptions (0.01 kW and 0.01 W).</td><td>documented; open (unit)</td><td>go-e Modbus descriptions (v1 and v2)</td></tr>
+<tr><td>V4 announces itself over mDNS as <code>_go-e_go-eCharger_V4._tcp</code> and <code>_http._tcp</code>, host name <code>go-echarger_&lt;serial&gt;</code>. Not used: the search asks the HTTP API instead, which also works in the Home Assistant app.</td><td>derived</td><td>a forum post of a Homey developer</td></tr>
+</tbody>
+</table></div>
+<h2 id="decisions-in-openampere">Decisions in OpenAmpere</h2>
+<div class="table"><table>
+<thead><tr><th>Decision</th><th>Why</th><th>Issue/PR</th></tr></thead>
+<tbody>
+<tr><td>HTTP API (v2, then v1), not Modbus TCP.</td><td>Works on all hardware, needs no restart of the charger, is what owners already switch on for evcc and other tools, and uses only the Python standard library (no new dependency).</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/597">#597</a></td></tr>
+<tr><td>Display only: only GET of the status, only the mode &quot;manual&quot;; its power counts in the house load like any wallbox.</td><td>Nothing confirmed on a real device; control needs its own safety rules first.</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/597">#597</a></td></tr>
+<tr><td>The search in the setup tries port 80 of every address in the local networks and keeps those whose status answer looks like a go-e (keys <code>car</code> and <code>nrg</code>).</td><td>No multicast needed, so it also works in the Home Assistant app; a device without the API switched on is not found, and the app says to switch it on.</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/597">#597</a></td></tr>
+<tr><td>A voltage above 400 V, a current above 80 A, a power above 30 kW or a charge above 200 kWh is not shown; with such a power the state is unknown.</td><td>A wrong unit would give such values: better no value than a wrong one.</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/597">#597</a></td></tr>
+<tr><td>The total energy (<code>eto</code>) and the serial number (<code>sse</code>) are not asked for.</td><td>Not needed for the live view; an exact counter or serial identifies the owner.</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/597">#597</a></td></tr>
+<tr><td>No redirect is followed and no proxy used.</td><td>The charger is in the home network.</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/597">#597</a></td></tr>
+</tbody>
+</table></div>
+<h2 id="open-questions">Open questions</h2>
+<ul>
+<li>The units of API v2 (<code>nrg</code> in V, A, W) on a real charger, and the values while it charges on one phase.</li>
+<li>Whether a charge with &quot;waiting for the car&quot; (<code>car</code> 3) should show as waiting rather than plugged in.</li>
+<li>What <code>cdi</code> holds after a charge ends, and whether <code>wh</code> keeps the last charge after the car is unplugged.</li>
+<li>What firmware before 051.4 answers to the filter (OpenAmpere then falls back to API v1, which has to be on).</li>
+<li>Whether the charger answers reliably to two readers (evcc and OpenAmpere) every 10 s.</li>
+</ul>
+<h2 id="sources">Sources</h2>
+<ul>
+<li>go-e, API descriptions on GitHub: <code>goecharger/go-eCharger-API-v1</code> and <code>goecharger/go-eCharger-API-v2</code> (HTTP,
+Modbus, OCPP; no license given): facts only, in own words.</li>
+<li>evcc-io/evcc, <code>charger/go-e/types2.go</code> and <code>api.go</code> (MIT): the units of API v2; evcc's go-e charger itself
+(<code>charger/go-e.go</code>) is &quot;all rights reserved&quot;: nothing taken from it.</li>
+<li>cathiele/goecharger (MIT): the units of API v1.</li>
+<li>A Homebridge plugin's README and an installer's guide (2025) for the menu path; a Homey forum post for mDNS.</li>
+</ul>
+    </article>
+    <p class="doc-source"><a href="https://github.com/dominiquehartmann/myampere/blob/main/docs/devices/goe/charger.md">View and improve this page on GitHub</a></p>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      <p><a href="../../../impressum.html">Imprint and privacy</a> ·
+        <a href="../../../changelog.html">Changelog</a> ·
+        <a href="../../../docs/devices/">Device knowledge</a> ·
+        <a href="../../../docs/external-api.html">For developers</a> ·
+        <a href="https://github.com/Gr33ndev/OpenAmpere">Source code</a> ·
+        <a href="https://github.com/Gr33ndev/OpenAmpere/blob/main/LICENSE">MIT License</a> ·
+        <a href="https://github.com/Gr33ndev/OpenAmpere/blob/main/SECURITY.md">Security</a></p>
+      <p class="small">Most wallboxes are controlled by <a href="https://evcc.io">evcc</a>, an independent open source project. Thanks to the evcc community!</p>
+      <p class="small">This site sets no cookies and uses no tracking.
+        Font: DM Sans (<a href="../../../../fonts/OFL.txt">SIL Open Font License</a>).</p>
+    </div>
+  </footer>
+</body>
+</html>

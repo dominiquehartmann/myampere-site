@@ -1,0 +1,138 @@
+<!doctype html>
+<!-- SPDX-FileCopyrightText: Copyright the OpenAmpere contributors -->
+<!-- SPDX-License-Identifier: MIT -->
+<!-- A page of the device knowledge (#512) or of the interface for other apps (#588), filled with a Markdown file by
+     scripts/build-site-pages.mjs -->
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Enphase IQ Gateway with IQ Batteries | Device knowledge | OpenAmpere</title>
+  <meta name="description" content="What OpenAmpere knows about inverters, wallboxes and other devices: registers, behaviour and how sure each fact is." />
+  <meta name="theme-color" content="#f4f4f4" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#21262b" media="(prefers-color-scheme: dark)" />
+  <link rel="alternate" hreflang="de" href="https://dominiquehartmann.github.io/myampere/docs/devices/enphase/iq-gateway.html" />
+  <link rel="alternate" hreflang="en" href="https://dominiquehartmann.github.io/myampere/en/docs/devices/enphase/iq-gateway.html" />
+  <link rel="alternate" hreflang="x-default" href="https://dominiquehartmann.github.io/myampere/docs/devices/enphase/iq-gateway.html" />
+  <link rel="icon" href="../../../../icon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="../../../../style.css" />
+</head>
+<body>
+  <header class="top">
+    <div class="wrap top-inner">
+      <a class="brand" href="../../../"><img src="../../../../icon.svg" alt="" width="32" height="32" />OpenAmpere</a>
+      <nav aria-label="Site sections">
+        <a href="../../../#funktionen">Features</a>
+        <a href="../../../#installation">Installation</a>
+        <a href="../../../geraete.html">Devices</a>
+        <a href="../../../faq.html">FAQ</a>
+        <a href="../../../changelog.html">Changelog</a>
+        <a href="../../../../demo/?lang=en">Demo</a>
+        <a href="https://github.com/Gr33ndev/OpenAmpere">GitHub</a>
+        <span class="lang-switch" role="group" aria-label="Language"><a href="../../../../docs/devices/enphase/iq-gateway.html" hreflang="de" lang="de" title="Deutsch" aria-label="Deutsch">DE</a><a href="iq-gateway.html" hreflang="en" lang="en" title="English" aria-label="English" aria-current="page">EN</a></span>
+      </nav>
+    </div>
+  </header>
+
+  <main class="wrap doc-page">
+    <p class="eyebrow doc-crumb"><a href="../../../docs/devices/">Device knowledge</a></p>
+    <p class="doc-note">These pages are technical. They collect what the OpenAmpere contributors have found out about the devices, each fact with its source and how sure it is. They show the latest state of development, which can be ahead of the version you have installed. They are not official manufacturer information. You don't need them to set up OpenAmpere; the app explains everything you need.</p>
+    <article class="doc" lang="en">
+<h1 id="enphase-iq-gateway-with-iq-batteries">Enphase IQ Gateway with IQ Batteries</h1>
+<blockquote>
+<p>Not official manufacturer information: compiled by the OpenAmpere contributors, can be incomplete or wrong. No
+affiliation with Enphase or EKD; not legal advice. See the <a href="../index.html">device knowledge README</a>.</p>
+</blockquote>
+<p><strong>Applies to:</strong> Enphase IQ Gateway (Envoy, software 7 and later) with IQ Batteries and IQ microinverters (or a string
+inverter with only the battery from Enphase) · <strong>Sold as:</strong>
+Enphase IQ Battery (EKD from late 2022) · <strong>OpenAmpere:</strong> driver <code>enphase</code> (<code>src/openampere/drivers/enphase/</code>),
+&quot;register map&quot; <code>enphase_local</code> · <strong>Support:</strong> display only · <strong>Confirmed on a real device:</strong> no (built from Enphase's
+tech brief, open projects and the simulator)</p>
+<h2 id="summary">Summary</h2>
+<ul>
+<li><strong>Not Modbus:</strong> JSON over HTTPS with a self-signed certificate from the IQ Gateway; OpenAmpere pins it when the owner
+enters the token (#539).</li>
+<li><strong>Needs a token from Enphase's cloud:</strong> since gateway software 7 every request needs an access token (JWT). The owner
+gets it once with their Enphase login on entrez.enphaseenergy.com; for an owner account it is valid for <strong>one
+year</strong>. This is the one device in OpenAmpere that needs the manufacturer's cloud, once a year.</li>
+<li>The owner chooses &quot;Enphase&quot; in the setup (advanced settings) and enters the token; detection over Modbus and the
+network scan do not find the gateway.</li>
+<li><strong>No energy history:</strong> there are no lifetime counters for the battery.</li>
+<li>OpenAmpere only reads; newer gateway software does not accept local writes anyway.</li>
+</ul>
+<h2 id="values">Values</h2>
+<div class="table"><table>
+<thead><tr><th>Endpoint / field</th><th>Meaning</th><th>Type, sign</th><th>R/W</th><th>Status</th><th>Source</th></tr></thead>
+<tbody>
+<tr><td><code>/info</code> <code>sn</code>, <code>software</code></td><td>Serial number and software of the gateway (XML, no token needed)</td><td>text</td><td>R</td><td>derived</td><td>pyenphase</td></tr>
+<tr><td><code>/production.json?details=1</code> <code>production[]</code> with <code>measurementType</code> &quot;production&quot; (<code>activeCount</code> ≥ 1), else <code>type</code> &quot;inverters&quot;</td><td>PV power</td><td>W</td><td>R</td><td>derived</td><td>evcc <code>enphase</code>; pyenphase</td></tr>
+<tr><td><code>/production.json?details=1</code> <code>consumption[]</code> &quot;net-consumption&quot; <code>wNow</code></td><td>Grid power, + = import (needs consumption CTs)</td><td>W</td><td>R</td><td>derived</td><td>evcc <code>enphase</code></td></tr>
+<tr><td><code>/production.json?details=1</code> <code>consumption[]</code> &quot;total-consumption&quot; <code>wNow</code></td><td>House consumption (needs consumption CTs)</td><td>W</td><td>R</td><td>derived</td><td>pyenphase</td></tr>
+<tr><td><code>/ivp/livedata/status</code> <code>meters.storage.agg_p_mw</code></td><td>Battery power, + = discharging</td><td>mW</td><td>R</td><td>documented (endpoint), derived (sign)</td><td>Enphase tech brief; evcc <code>enphase</code></td></tr>
+<tr><td><code>/ivp/ensemble/inventory</code> <code>devices[].percentFull</code></td><td>State of charge per battery; OpenAmpere shows the average</td><td>%</td><td>R</td><td>derived</td><td>evcc <code>enphase</code>; pyenphase</td></tr>
+<tr><td><code>/admin/lib/tariff</code></td><td>Battery profile, reserve, charge from grid</td><td>JSON</td><td>W</td><td>derived; not used (refused locally from gateway software 8.2.4225)</td><td>pyenphase; Home Assistant docs</td></tr>
+</tbody>
+</table></div>
+<h2 id="behaviour">Behaviour</h2>
+<div class="table"><table>
+<thead><tr><th>Fact</th><th>Status</th><th>Source</th></tr></thead>
+<tbody>
+<tr><td>From gateway software 7 on, local access needs a JWT as <code>Authorization: Bearer</code>; an owner token is valid for 1 year, an installer token for 12 hours (also a self-installer account unless Enphase support changes it). A new token needs the cloud again. The gateway uses a self-signed certificate.</td><td>documented</td><td>Enphase tech brief &quot;Accessing IQ Gateway local APIs or local UI with token-based authentication&quot; (2023-01)</td></tr>
+<tr><td>The gateway announces itself over mDNS as <code>_enphase-envoy._tcp</code>; its label says &quot;IQ Gateway&quot; (older &quot;Envoy&quot;).</td><td>derived</td><td>Home Assistant manifest; evcc</td></tr>
+<tr><td>No rate limit is documented; Home Assistant polls every 60 s and pyenphase notes that the gateway can be slow to answer.</td><td>derived</td><td>home-assistant/core <code>enphase_envoy</code> (Apache-2.0); pyenphase (MIT)</td></tr>
+<tr><td>On software 7 and later the gateway answers <code>/ivp/livedata/status</code> without IQ Batteries too, with <code>meters.storage.agg_p_mw</code> 0.</td><td>derived</td><td>pyenphase and Home Assistant test fixtures</td></tr>
+<tr><td>EKD systems may have IQ7 or IQ8 microinverters (IQ8 only shipped in Germany from mid-2023), or a string inverter with only the battery from Enphase. With a string inverter and no production CT, the PV power from <code>production.json</code> misses the string inverter.</td><td>open</td><td>research in <a href="https://github.com/Gr33ndev/OpenAmpere/issues/522">#522</a> (pv-magazine.de, 2023-06-26)</td></tr>
+<tr><td>Whether the gateway keeps its self-signed certificate across a firmware update, a reboot or a factory reset. With the pin (#539) a new certificate means the owner enters the token again, usually a new one from entrez.enphaseenergy.com.</td><td>open</td><td>–</td></tr>
+<tr><td>A battery needs an IQ Gateway Metered; EKD's systems most likely have IQ Battery 3T/10T and no backup (System Controller).</td><td>documented (gateway), derived (models)</td><td>Enphase IQ Gateway datasheet; research in <a href="https://github.com/Gr33ndev/OpenAmpere/issues/522">#522</a></td></tr>
+</tbody>
+</table></div>
+<h2 id="decisions-in-openampere">Decisions in OpenAmpere</h2>
+<div class="table"><table>
+<thead><tr><th>Decision</th><th>Why</th><th>Issue/PR</th></tr></thead>
+<tbody>
+<tr><td>Display only: every write method refuses, <code>supports_control</code> is off.</td><td>Nothing confirmed on a device; newer gateway software refuses local writes.</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/522">#522</a></td></tr>
+<tr><td>The token is a setting of its own (<code>inverter.token</code>), stored encrypted and bound to the gateway's address (a new address needs the token again); it is sent only to the gateway. The setup test of the stored address uses the stored token.</td><td>It gives access to the gateway; like every secret in OpenAmpere.</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/522">#522</a></td></tr>
+<tr><td>The app says plainly when the gateway refuses the token, and the diagnostics show how many days it has left (a warning 30 days before), never the date: it would tell the day the owner made the token.</td><td>A token that ran out stops every reading; the owner must get a new one from Enphase.</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/522">#522</a></td></tr>
+<tr><td>The days left are also on &quot;Mehr → Meine Anlage&quot; (a warning from 30 days before, with the way to the setup), in <code>/api/status</code> and the external API (<code>token_days_left</code>), as a diagnostic sensor in Home Assistant, and in one ntfy message 14 days before (with the messages about the connection, again for a new token). In days, as in the diagnostics. The date is not hidden there: the status is open on the home network, and with today's date the days give it; it is a fact about the plant like the others there, and only the shared report must not tell it.</td><td>The owner rarely opens the diagnostics; the token runs out once a year.</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/538">#538</a></td></tr>
+<tr><td>Only when the owner chooses &quot;Enphase&quot;; port 502 (the setup's default) stands for 443, then 80, HTTPS first. The token goes only over HTTPS, never over plain HTTP; a gateway that answers only plain HTTP gets a message of its own, not &quot;token refused&quot;.</td><td>It does not answer on the Modbus port.</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/522">#522</a></td></tr>
+<tr><td>The certificate is pinned on first use: the setup test with a newly typed token records the SHA-256 fingerprint of the certificate it sent the token to, the setup saves it with the token (<code>inverter.cert_sha256</code>, bound to the address like the token, saved only together with a token). The token then goes only to that certificate, checked after the TLS handshake and before anything is sent; another certificate stops every request with a message to enter the token again. A token from <code>config.yaml</code> without a fingerprint trusts the first certificate after each start.</td><td>The certificate is self-signed with nothing to check it against, so someone in the home network who takes over the address (ARP spoofing) could get the token, valid for a year. Unlike Senec (not pinned, #521) the owner can pair again in the app: entering the token again takes the new certificate, e.g. after a replaced gateway.</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/539">#539</a></td></tr>
+<tr><td>Asked at most every 15 s (<code>MIN_POLL_S</code>).</td><td>The gateway is slow to answer; no limit is documented.</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/522">#522</a></td></tr>
+<tr><td>Battery values are optional, each on its own: a gateway without IQ Batteries still shows PV and, with CTs, grid and house; its 0 W from livedata is no battery until the inventory listed one, after that 0 W is an idle battery.</td><td>Not every Enphase system has a battery.</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/522">#522</a></td></tr>
+<tr><td>No search for a new address when the device is unreachable, and the device query (Mehr → Geräteabfrage) does not read it: it says so.</td><td>Both read Modbus registers only; this device has none. A fixed IP address in the router keeps it reachable.</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/547">#547</a></td></tr>
+</tbody>
+</table></div>
+<h2 id="open-questions">Open questions</h2>
+<ul>
+<li>Everything: no owner has tried it yet. Whether an owner can still log in to Enphase after EKD's insolvency and
+whether the token there is valid for a year.</li>
+<li>The signs of net-consumption and <code>storage.agg_p_mw</code> on a real system; whether EKD's systems have consumption CTs.</li>
+<li>Whether the token a newer gateway (software D8) can create locally works without internet.</li>
+</ul>
+<h2 id="sources">Sources</h2>
+<ul>
+<li>Enphase, &quot;Accessing IQ Gateway local APIs or local UI with token-based authentication&quot; (tech brief, 2023-01);
+IQ Gateway datasheet.</li>
+<li>pyenphase/pyenphase (MIT), evcc-io/evcc template <code>enphase</code> (MIT): endpoints, fields and signs. Facts only, see NOTICE.</li>
+<li>home-assistant/core <code>enphase_envoy</code> (Apache-2.0): polling interval, local writes.</li>
+<li>Research comment in <a href="https://github.com/Gr33ndev/OpenAmpere/issues/522">#522</a>.</li>
+</ul>
+    </article>
+    <p class="doc-source"><a href="https://github.com/dominiquehartmann/myampere/blob/main/docs/devices/enphase/iq-gateway.md">View and improve this page on GitHub</a></p>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      <p><a href="../../../impressum.html">Imprint and privacy</a> ·
+        <a href="../../../changelog.html">Changelog</a> ·
+        <a href="../../../docs/devices/">Device knowledge</a> ·
+        <a href="../../../docs/external-api.html">For developers</a> ·
+        <a href="https://github.com/Gr33ndev/OpenAmpere">Source code</a> ·
+        <a href="https://github.com/Gr33ndev/OpenAmpere/blob/main/LICENSE">MIT License</a> ·
+        <a href="https://github.com/Gr33ndev/OpenAmpere/blob/main/SECURITY.md">Security</a></p>
+      <p class="small">Most wallboxes are controlled by <a href="https://evcc.io">evcc</a>, an independent open source project. Thanks to the evcc community!</p>
+      <p class="small">This site sets no cookies and uses no tracking.
+        Font: DM Sans (<a href="../../../../fonts/OFL.txt">SIL Open Font License</a>).</p>
+    </div>
+  </footer>
+</body>
+</html>

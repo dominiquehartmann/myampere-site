@@ -1,0 +1,132 @@
+<!doctype html>
+<!-- SPDX-FileCopyrightText: Copyright the OpenAmpere contributors -->
+<!-- SPDX-License-Identifier: MIT -->
+<!-- A page of the device knowledge (#512) or of the interface for other apps (#588), filled with a Markdown file by
+     scripts/build-site-pages.mjs -->
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>BMW CarData (BMW and MINI cars) | Gerätewissen | OpenAmpere</title>
+  <meta name="description" content="Was OpenAmpere über Wechselrichter, Wallboxen und weitere Geräte weiß: Register, Verhalten und wie sicher jede Angabe ist." />
+  <meta name="theme-color" content="#f4f4f4" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#21262b" media="(prefers-color-scheme: dark)" />
+  <link rel="alternate" hreflang="de" href="https://dominiquehartmann.github.io/myampere/docs/devices/cars/bmw-cardata.html" />
+  <link rel="alternate" hreflang="en" href="https://dominiquehartmann.github.io/myampere/en/docs/devices/cars/bmw-cardata.html" />
+  <link rel="alternate" hreflang="x-default" href="https://dominiquehartmann.github.io/myampere/docs/devices/cars/bmw-cardata.html" />
+  <link rel="icon" href="../../../icon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="../../../style.css" />
+</head>
+<body>
+  <header class="top">
+    <div class="wrap top-inner">
+      <a class="brand" href="../../../"><img src="../../../icon.svg" alt="" width="32" height="32" />OpenAmpere</a>
+      <nav aria-label="Seitenbereiche">
+        <a href="../../../#funktionen">Funktionen</a>
+        <a href="../../../#installation">Installation</a>
+        <a href="../../../geraete.html">Geräte</a>
+        <a href="../../../faq.html">Fragen</a>
+        <a href="../../../changelog.html">Changelog</a>
+        <a href="../../../demo/?lang=de">Demo</a>
+        <a href="https://github.com/Gr33ndev/OpenAmpere">GitHub</a>
+        <span class="lang-switch" role="group" aria-label="Sprache"><a href="bmw-cardata.html" hreflang="de" lang="de" title="Deutsch" aria-label="Deutsch" aria-current="page">DE</a><a href="../../../en/docs/devices/cars/bmw-cardata.html" hreflang="en" lang="en" title="English" aria-label="English">EN</a></span>
+      </nav>
+    </div>
+  </header>
+
+  <main class="wrap doc-page">
+    <p class="eyebrow doc-crumb"><a href="../../../docs/devices/">Gerätewissen</a></p>
+    <p class="doc-note">Diese Seiten sind technisch und auf Englisch. Sie sammeln, was die Mitwirkenden von OpenAmpere über die Geräte herausgefunden haben, jeweils mit Quelle und wie sicher die Angabe ist. Sie zeigen den neuesten Stand der Entwicklung, der manchmal schon über deine installierte Version hinausgeht. Es sind keine offiziellen Angaben der Hersteller. Für die Einrichtung brauchst du sie nicht, die App erklärt dir alles Nötige.</p>
+    <article class="doc" lang="en">
+<h1 id="bmw-cardata-bmw-and-mini-cars">BMW CarData (BMW and MINI cars)</h1>
+<blockquote>
+<p><strong>Not official information.</strong> Compiled by the OpenAmpere contributors; can be incomplete or wrong. No affiliation
+with the BMW Group or its brands, not legal advice. See <a href="../index.html">Device knowledge</a>.</p>
+</blockquote>
+<p><strong>Applies to:</strong> BMW and MINI cars with a &quot;My BMW&quot; or &quot;MINI&quot; account, through BMW CarData, the BMW Group's offer to
+owners to read their car's data (EU Data Act) · <strong>Sold as:</strong> – · <strong>OpenAmpere:</strong> car source <code>bmw_cardata</code>,
+<code>src/openampere/cars/bmw_cardata.py</code> · <strong>Support:</strong> reading state of charge, range, odometer, plug and charging state
+and the charge limit (read-only) · <strong>Confirmed on a real device:</strong> no (built from BMW's public CarData documentation
+and evcc's client; not yet tested with a real car by the maintainers,
+<a href="https://github.com/Gr33ndev/OpenAmpere/issues/595">#595</a>)</p>
+<h2 id="summary">Summary</h2>
+<ul>
+<li>BMW's own app interface is closed to other clients. BMW CarData is the way BMW offers owners their car's data
+without a paid service: a REST interface (50 requests a day) and a live data stream (MQTT).</li>
+<li>The owner does a few one-time steps in the BMW or MINI web portal: create a <strong>client ID</strong>, request access to the
+<strong>CarData API</strong>, and confirm OpenAmpere's login with a code (OAuth device code flow). No password is given to
+OpenAmpere.</li>
+<li>The login gives a refresh token that lasts <strong>two weeks</strong> and is renewed with every use. If OpenAmpere does not run
+for longer than that, the owner has to confirm a new code.</li>
+<li>OpenAmpere reads only the REST interface, about every 40 minutes. The data stream would need an MQTT client
+(a new dependency) and is left for later.</li>
+<li>MINI uses the same CarData service, reached from the MINI portal; the client ID is created there.</li>
+</ul>
+<h2 id="behaviour">Behaviour</h2>
+<div class="table"><table>
+<thead><tr><th>Fact</th><th>Status</th><th>Source</th></tr></thead>
+<tbody>
+<tr><td>CarData is offered in the customer portals of BMW (&quot;My BMW&quot;, e.g. <code>bmw.de/de-de/mybmw/vehicle-overview</code>), MINI (<code>mini.de/de-de/mymini/vehicle-overview</code>), Toyota Supra and Rolls-Royce. The car must be mapped to the account, and only the <strong>primary</strong> user of a car gets its data.</td><td>documented</td><td>BMW CarData public API documentation (<code>bmw-cardata.bmwgroup.com/customer/public/api-documentation</code>); kvanbiesen/bmw-cardata-ha (README)</td></tr>
+<tr><td>The owner creates a client ID in the portal (&quot;Create CarData Client&quot;) and requests access to the CarData API (and, for the stream, CarData Stream). The subscription has to come before the login with the client ID. The portal shows the client ID only right after it was created.</td><td>documented</td><td>BMW CarData documentation; kvanbiesen/bmw-cardata-ha (README)</td></tr>
+<tr><td>Login: OAuth 2.0 device authorization grant with PKCE (S256). <code>POST https://customer.bmwgroup.com/gcdm/oauth/device/code</code> with <code>client_id</code>, <code>response_type=device_code</code>, <code>scope=authenticate_user openid cardata:api:read</code> (plus <code>cardata:streaming:read</code> for the stream), <code>code_challenge</code>, <code>code_challenge_method=S256</code> gives <code>user_code</code>, <code>device_code</code>, <code>verification_uri(_complete)</code>, <code>interval</code>, <code>expires_in</code>. The owner opens the address, logs in and confirms the code.</td><td>documented</td><td>BMW CarData documentation; evcc-io/evcc <code>vehicle/bmw/cardata</code> (oauth2.go)</td></tr>
+<tr><td><code>POST https://customer.bmwgroup.com/gcdm/oauth/token</code> with <code>grant_type=urn:ietf:params:oauth:grant-type:device_code</code>, <code>client_id</code>, <code>device_code</code>, <code>code_verifier</code> gives <code>access_token</code> (1 hour), <code>refresh_token</code> (2 weeks), <code>id_token</code> (1 hour, for the stream) and <code>gcid</code> (the account). Before the confirmation it answers like RFC 8628 (<code>authorization_pending</code>).</td><td>documented</td><td>BMW CarData documentation</td></tr>
+<tr><td><code>grant_type=refresh_token</code> with <code>refresh_token</code> and <code>client_id</code> gives a new set of all three tokens and restarts their lifetimes. After the refresh token expired, or the client ID lost its subscription, the device flow has to be run again.</td><td>documented</td><td>BMW CarData documentation</td></tr>
+<tr><td>The token endpoint sometimes answers HTTP 500 <code>keymanagement.service.invalid_access_token</code> after the owner confirmed the code. Deleting the client ID in the portal and creating a new one helped.</td><td>derived</td><td>evcc-io/evcc#26347</td></tr>
+<tr><td>REST: <code>https://api-cardata.bmwgroup.com</code>, header <code>x-version: v1</code>, <code>Authorization: Bearer &lt;access token&gt;</code>. <strong>50 requests a day</strong> per account (error <code>CU-429</code>); BMW recommends the stream for more.</td><td>documented</td><td>BMW CarData documentation; evcc-io/evcc <code>vehicle/bmw/cardata</code> (api.go, cardata.yaml)</td></tr>
+<tr><td><code>GET /customers/vehicles/mappings</code> lists the cars with <code>vin</code> and <code>mappingType</code> (<code>PRIMARY</code>, <code>SECONDARY</code>).</td><td>documented</td><td>BMW CarData documentation; evcc-io/evcc (api.go, types.go)</td></tr>
+<tr><td>The data is read through a &quot;container&quot; of telematic keys the client creates itself: <code>GET</code>/<code>POST /customers/containers</code> (<code>name</code>, <code>purpose</code>, <code>technicalDescriptors</code>; answer <code>containerId</code>, 13 characters), <code>DELETE /customers/containers/&lt;id&gt;</code>. At most 10 containers per account; a deleted one is inactive and goes after 29 days.</td><td>documented</td><td>BMW CarData documentation; evcc-io/evcc (api.go)</td></tr>
+<tr><td><code>GET /customers/vehicles/&lt;VIN&gt;/telematicData?containerId=&lt;id&gt;</code> gives <code>{&quot;telematicData&quot;: {&lt;key&gt;: {&quot;timestamp&quot;, &quot;unit&quot;, &quot;value&quot;}}}</code>, the last value the car sent for each key, values as text.</td><td>derived</td><td>evcc-io/evcc (api.go, types.go)</td></tr>
+<tr><td>The values are as fresh as the car's last report: the car sends when it is used, charges or is woken up (e.g. by locking it in the app). A parked, sleeping car delivers nothing new.</td><td>derived</td><td>evcc-io/evcc (cardata.yaml); kvanbiesen/bmw-cardata-ha (README)</td></tr>
+<tr><td>State of charge: <code>vehicle.drivetrain.batteryManagement.header</code> (%) or <code>vehicle.powertrain.electric.battery.stateOfCharge.displayed</code>. Charge limit: <code>vehicle.powertrain.electric.battery.stateOfCharge.target</code>. Both keys can come with different time stamps; OpenAmpere takes the newer one.</td><td>derived</td><td>evcc-io/evcc (provider.go)</td></tr>
+<tr><td>Range: <code>vehicle.drivetrain.electricEngine.kombiRemainingElectricRange</code> (km) or <code>vehicle.drivetrain.lastRemainingRange</code>. Odometer: <code>vehicle.vehicle.travelledDistance</code> (km). OpenAmpere takes the newer of the two range keys.</td><td>derived</td><td>evcc-io/evcc (provider.go)</td></tr>
+<tr><td>Plug: <code>vehicle.body.chargingPort.status</code> or <code>…combinedStatus</code> (<code>CONNECTED</code>; OpenAmpere takes the newer of the two). Charging: <code>vehicle.drivetrain.electricEngine.charging.status</code> (<code>CHARGINGACTIVE</code>; plugged in but not charging: <code>INITIALIZATION</code>, <code>CHARGINGPAUSED</code>, <code>CHARGINGENDED</code>), otherwise <code>…charging.hvStatus</code> (<code>CHARGING</code>; <code>WAITING_FOR_CHARGING</code>, <code>FINISHED_FULLY_CHARGED</code>, <code>FINISHED_NOT_FULL</code>). Other values (e.g. <code>NOCHARGING</code> after unplugging, <code>CHARGINGERROR</code>) mean neither charging nor, by themselves, plugged in.</td><td>derived</td><td>evcc-io/evcc (provider.go, #26235 there)</td></tr>
+<tr><td>Stream: MQTT over TLS, <code>customer.streaming-cardata.bmwgroup.com:9000</code>, user <code>gcid</code>, password the <code>id_token</code>, topic <code>&lt;gcid&gt;/+</code>; only the keys chosen in the portal. BMW accepts <strong>one</strong> stream connection per account.</td><td>derived</td><td>evcc-io/evcc (mqtt.go, cardata.yaml); kvanbiesen/bmw-cardata-ha (README)</td></tr>
+<tr><td>Which keys a given model delivers differs; the telematics data catalogue in the portal lists them.</td><td>documented</td><td>BMW CarData documentation</td></tr>
+</tbody>
+</table></div>
+<h2 id="decisions-in-openampere">Decisions in OpenAmpere</h2>
+<div class="table"><table>
+<thead><tr><th>Decision</th><th>Why</th><th>Issue/PR</th></tr></thead>
+<tbody>
+<tr><td>Read BMW CarData at all, as an optional, read-only source, like the Volkswagen group's portal.</td><td>The owner's own data through the channel BMW gives them; an AC wallbox cannot know the state of charge. Same exception to &quot;cloud-free&quot; as <a href="https://github.com/Gr33ndev/OpenAmpere/issues/401">#401</a>.</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/595">#595</a></td></tr>
+<tr><td>Only the REST interface, no stream.</td><td>The stream needs an MQTT client, a new dependency that has to be agreed first; BMW allows one stream per account, which evcc or Home Assistant may already use.</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/595">#595</a></td></tr>
+<tr><td>Look every 40 minutes (36 requests a day), at most once a minute when the owner asks; wait 3 hours after <code>CU-429</code>. Create one container named <code>OpenAmpere</code> once and keep its id.</td><td>Leaves room in the 50 requests for the setup and for asking now; the limit counts for the whole account.</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/595">#595</a></td></tr>
+<tr><td>The 40 minutes are per account, not per car: with two cars of the same login each looks every 80 minutes; an error also waits at least that long.</td><td>BMW counts the 50 requests for the whole account.</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/595">#595</a></td></tr>
+<tr><td>For every value with two keys (state of charge, range, plug) the newer one counts, with the same time stamp the first.</td><td>A model may have sent one key once and now only update the other.</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/595">#595</a></td></tr>
+<tr><td>The charge state comes from the newer of the two keys (with the same time stamp, the one with a known value); any other value counts as &quot;not charging&quot;. Whether the cable is in comes from the plug key; only a charging state newer than it says &quot;plugged in&quot; as well, and a plug key newer than the charge state that says &quot;not connected&quot; also ends a charge.</td><td>Otherwise a car unplugged after a charge would keep showing &quot;charging&quot;, also when BMW sends only the plug change, and a &quot;finished&quot; state sent again after unplugging would show &quot;plugged in&quot;.</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/595">#595</a></td></tr>
+<tr><td>A <code>404</code> for the data looks up the container once more; a second <code>404</code> means the car is no longer in the account: a setup step, looked at again after 6 hours.</td><td>Retrying every half hour would use up the daily limit with a wrong reason.</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/595">#595</a></td></tr>
+<tr><td>Store a value only when the car sent it after the last one OpenAmpere has; values with the same time stamp make one delivery.</td><td>A parked car repeats the same values for hours.</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/595">#595</a></td></tr>
+<tr><td>Keep the refresh token (not a password) encrypted with <code>secret.key</code> like the password of the Volkswagen source, store the new one after every renewal, never show it. The client ID is shown, it is no secret on its own.</td><td>The token is the login; BMW renews it with every use.</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/595">#595</a></td></tr>
+<tr><td>The owner confirms the login in their own browser with the code OpenAmpere shows; OpenAmpere asks the token endpoint at the interval BMW names and stops when the code expires.</td><td>That is BMW's login for such clients; no password goes through OpenAmpere.</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/595">#595</a></td></tr>
+<tr><td>A refused or expired token is not retried by itself (status &quot;auth&quot;); the app asks to confirm a new code.</td><td>Retrying cannot help; it only uses up requests.</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/595">#595</a></td></tr>
+<tr><td>Send requests only to <code>customer.bmwgroup.com</code> and <code>api-cardata.bmwgroup.com</code>, never follow a redirect with the token.</td><td>The token goes nowhere else (<code>outbound.py</code>).</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/595">#595</a></td></tr>
+<tr><td>Take only facts from other projects and BMW's documentation, no code.</td><td>License and own words; credited in <a href="https://github.com/dominiquehartmann/myampere/blob/main/NOTICE">NOTICE</a>.</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/595">#595</a></td></tr>
+</tbody>
+</table></div>
+<h2 id="open-questions">Open questions</h2>
+<ul>
+<li>Nothing above was checked with a real car by the maintainers. A report from a BMW or MINI owner is needed: does
+the login work, which keys does their model deliver, how fresh are the values while the car charges?</li>
+<li>Whether a request that fails (e.g. a 4xx) also counts against the 50 a day.</li>
+<li>Whether the stream is worth a dependency: it would bring values within seconds while the car charges.</li>
+</ul>
+    </article>
+    <p class="doc-source"><a href="https://github.com/dominiquehartmann/myampere/blob/main/docs/devices/cars/bmw-cardata.md">Diese Seite auf GitHub ansehen und verbessern</a></p>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      <p><a href="../../../impressum.html">Impressum und Datenschutz</a> ·
+        <a href="../../../changelog.html">Changelog</a> ·
+        <a href="../../../docs/devices/">Gerätewissen</a> ·
+        <a href="../../../docs/external-api.html">Für Entwickler</a> ·
+        <a href="https://github.com/Gr33ndev/OpenAmpere">Quellcode</a> ·
+        <a href="https://github.com/Gr33ndev/OpenAmpere/blob/main/LICENSE">MIT-Lizenz</a> ·
+        <a href="https://github.com/Gr33ndev/OpenAmpere/blob/main/SECURITY.md">Sicherheit</a></p>
+      <p class="small">Die meisten Wallboxen steuert <a href="https://evcc.io">evcc</a>, ein eigenständiges Open-Source-Projekt. Danke an die evcc-Community!</p>
+      <p class="small">Diese Seite setzt keine Cookies und nutzt kein Tracking.
+        Schrift: DM Sans (<a href="../../../fonts/OFL.txt">SIL Open Font License</a>).</p>
+    </div>
+  </footer>
+</body>
+</html>

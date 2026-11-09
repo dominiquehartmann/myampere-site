@@ -1,0 +1,175 @@
+<!doctype html>
+<!-- SPDX-FileCopyrightText: Copyright the OpenAmpere contributors -->
+<!-- SPDX-License-Identifier: MIT -->
+<!-- A page of the device knowledge (#512) or of the interface for other apps (#588), filled with a Markdown file by
+     scripts/build-site-pages.mjs -->
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Device knowledge | OpenAmpere</title>
+  <meta name="description" content="What OpenAmpere knows about inverters, wallboxes and other devices: registers, behaviour and how sure each fact is." />
+  <meta name="theme-color" content="#f4f4f4" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#21262b" media="(prefers-color-scheme: dark)" />
+  <link rel="alternate" hreflang="de" href="https://dominiquehartmann.github.io/myampere/docs/devices/" />
+  <link rel="alternate" hreflang="en" href="https://dominiquehartmann.github.io/myampere/en/docs/devices/" />
+  <link rel="alternate" hreflang="x-default" href="https://dominiquehartmann.github.io/myampere/docs/devices/" />
+  <link rel="icon" href="../../../icon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="../../../style.css" />
+</head>
+<body>
+  <header class="top">
+    <div class="wrap top-inner">
+      <a class="brand" href="../../"><img src="../../../icon.svg" alt="" width="32" height="32" />OpenAmpere</a>
+      <nav aria-label="Site sections">
+        <a href="../../#funktionen">Features</a>
+        <a href="../../#installation">Installation</a>
+        <a href="../../geraete.html">Devices</a>
+        <a href="../../faq.html">FAQ</a>
+        <a href="../../changelog.html">Changelog</a>
+        <a href="../../../demo/?lang=en">Demo</a>
+        <a href="https://github.com/Gr33ndev/OpenAmpere">GitHub</a>
+        <span class="lang-switch" role="group" aria-label="Language"><a href="../../../docs/devices/" hreflang="de" lang="de" title="Deutsch" aria-label="Deutsch">DE</a><a href="./" hreflang="en" lang="en" title="English" aria-label="English" aria-current="page">EN</a></span>
+      </nav>
+    </div>
+  </header>
+
+  <main class="wrap doc-page">
+    <p class="eyebrow doc-crumb"><a href="../../docs/devices/">Device knowledge</a></p>
+    <p class="doc-note">These pages are technical. They collect what the OpenAmpere contributors have found out about the devices, each fact with its source and how sure it is. They show the latest state of development, which can be ahead of the version you have installed. They are not official manufacturer information. You don't need them to set up OpenAmpere; the app explains everything you need.</p>
+    <article class="doc" lang="en">
+<h1 id="device-knowledge">Device knowledge</h1>
+<p>What OpenAmpere knows about the devices it talks to: registers, behaviour, differences between types and firmware,
+and how OpenAmpere treats them. Every fact says how sure it is and where it comes from, so nobody has to search
+through hundreds of issues again. The website shows these pages too, linked from the app
+(<a href="https://gr33ndev.github.io/OpenAmpere/en/docs/devices/">Device knowledge</a>,
+<a href="https://github.com/Gr33ndev/OpenAmpere/issues/512">#512</a>), built from <code>main</code>, so they can describe behaviour that is not
+released yet. Keep links relative; the build reports a link to a file or heading that does not exist.</p>
+<blockquote>
+<p><strong>Not official manufacturer information.</strong> These pages are compiled by the OpenAmpere contributors from public
+manufacturer documents, community projects and reports of owners. They can be incomplete or wrong. Changing
+settings of an inverter can affect its warranty and the rules of the grid connection. OpenAmpere has no
+affiliation with the manufacturers named here or with EKD; names are used only to describe compatibility.
+Nothing here is legal advice.</p>
+</blockquote>
+<h2 id="pages">Pages</h2>
+<div class="table"><table>
+<thead><tr><th>Device</th><th>Page</th></tr></thead>
+<tbody>
+<tr><td>FoxESS H3, H3 Smart, H3 Pro (sold as &quot;Ampere.StoragePro E3&quot;)</td><td><a href="foxess/h3.html">foxess/h3.md</a></td></tr>
+<tr><td>FoxESS H3, register map of newer firmware</td><td><a href="foxess/h3-new-map.html">foxess/h3-new-map.md</a></td></tr>
+<tr><td>FoxESS H3, register map of older firmware</td><td><a href="foxess/h3-legacy-map.html">foxess/h3-legacy-map.md</a></td></tr>
+<tr><td>FoxESS AC EV Charger (read-only wallbox check)</td><td><a href="foxess/ac-charger.html">foxess/ac-charger.md</a></td></tr>
+<tr><td>Portable dé wallbox over Tuya LAN (display and control)</td><td><a href="tuya/de-portable.html">tuya/de-portable.md</a></td></tr>
+<tr><td>Weidmüller AC SMART (sold as &quot;AMPERE.Charge&quot;, display only)</td><td><a href="weidmueller/ac-smart.html">weidmueller/ac-smart.md</a></td></tr>
+<tr><td>go-e Charger over its local HTTP API (display only)</td><td><a href="goe/charger.html">goe/charger.md</a></td></tr>
+<tr><td>SAJ H2, HS2, AS2 (sold as &quot;Ampere.StoragePro&quot;)</td><td><a href="saj/h2-family.html">saj/h2-family.md</a></td></tr>
+<tr><td>SAJ type code 0x005E, &quot;3P-X E2&quot;</td><td><a href="saj/0x005e-3p-x-e2.html">saj/0x005e-3p-x-e2.md</a></td></tr>
+<tr><td>Solarmax MAX.STORAGE (sold as &quot;AMPERE.Storage&quot;, display only)</td><td><a href="solarmax/max-storage.html">solarmax/max-storage.md</a></td></tr>
+<tr><td>Senec.Home V3 and V2.1 over their web interface (display only)</td><td><a href="senec/home-v3.html">senec/home-v3.md</a></td></tr>
+<tr><td>Enphase IQ Gateway with IQ Batteries (display only, needs a token)</td><td><a href="enphase/iq-gateway.html">enphase/iq-gateway.md</a></td></tr>
+<tr><td>M-TEC Energy-Butler GEN3 (display only)</td><td><a href="mtec/energy-butler.html">mtec/energy-butler.md</a></td></tr>
+<tr><td>my-PV AC ELWA heating rod</td><td><a href="mypv/elwa.html">mypv/elwa.md</a></td></tr>
+<tr><td>Netze BW meter portal</td><td><a href="gridmeter/netze-bw.html">gridmeter/netze-bw.md</a></td></tr>
+<tr><td>Cars of the Volkswagen group through the EU Data Act portal</td><td><a href="cars/vw-eu-data-act.html">cars/vw-eu-data-act.md</a></td></tr>
+<tr><td>BMW and MINI cars through BMW CarData</td><td><a href="cars/bmw-cardata.html">cars/bmw-cardata.md</a></td></tr>
+<tr><td>Previous EKD smartbox (&quot;IQ box&quot;) and the EKD cloud</td><td><a href="topics/iq-box.html">topics/iq-box.md</a></td></tr>
+<tr><td>Sales names and manufacturer models, hardware sold by EKD since 2018</td><td><a href="topics/names.html">topics/names.md</a></td></tr>
+<tr><td>Modbus connections, proxies and what all inverters share</td><td><a href="topics/modbus.html">topics/modbus.md</a></td></tr>
+<tr><td>Relays, smart plugs, SG Ready</td><td><a href="topics/consumers.html">topics/consumers.md</a></td></tr>
+<tr><td>Wallboxes through evcc, OCPP and directly</td><td><a href="topics/wallboxes.html">topics/wallboxes.md</a></td></tr>
+</tbody>
+</table></div>
+<p><a href="https://github.com/dominiquehartmann/myampere/blob/main/docs/devices.md">devices.md</a> is the short support overview, <a href="https://github.com/dominiquehartmann/myampere/blob/main/docs/registers.md">registers.md</a> an index of the register
+tables on these pages.</p>
+<h2 id="status-of-a-fact">Status of a fact</h2>
+<div class="table"><table>
+<thead><tr><th>Status</th><th>Meaning</th></tr></thead>
+<tbody>
+<tr><td>documented</td><td>In a document of the manufacturer (protocol, manual, datasheet).</td></tr>
+<tr><td>derived</td><td>From another project or the community, not checked on a device by us.</td></tr>
+<tr><td>confirmed</td><td>Seen on a real device: a diagnostics report, an owner's test or observation.</td></tr>
+<tr><td>open</td><td>Unverified, an assumption, contradicted or still to check. Says what is missing.</td></tr>
+</tbody>
+</table></div>
+<p>A fact can move up when new evidence arrives; then its source gets the new evidence added, the old one stays.
+Decisions of OpenAmpere (how it treats a device, and why) are not facts: they are listed with a link to the issue or
+pull request that made them.</p>
+<h2 id="sources">Sources</h2>
+<ul>
+<li><strong>Allowed:</strong> public manufacturer documents (named, not copied into the repository), projects with a compatible
+license (credited in <a href="https://github.com/dominiquehartmann/myampere/blob/main/NOTICE">NOTICE</a>), diagnostics reports and tests in our issues, and owners' reports.</li>
+<li><strong>Not public, but handed to owners</strong> (e.g. a protocol the manufacturer's support sends on request, marked &quot;all
+rights reserved&quot;): only the facts (register addresses, meanings, units), in own words. The document is named, but
+never quoted, never added to the repository and never passed on.</li>
+<li><strong>Not allowed:</strong> documents under NDA or meant only for partners, anything from the Ampere.IQ app or its decompiled
+code, projects whose license does not allow reuse.</li>
+<li><strong>In own words:</strong> register addresses and their meaning are facts; text, tables and the structure of a manufacturer
+document are not copied. Only the registers OpenAmpere needs, in our own layout.</li>
+<li><strong>How to cite:</strong> an issue or pull request of OpenAmpere as a link, e.g. <a href="https://github.com/Gr33ndev/OpenAmpere/issues/334">#334</a>;
+another project as <code>owner/repo</code> (with <code>owner/repo#N</code> for its issues) and, where it matters, the commit; a document
+by its title and date.</li>
+<li><strong>Private sources</strong> (e.g. a message or screenshot an owner sent the maintainer) are described, never linked:
+&quot;an owner's report, 2026-10&quot;. Ask the owner whether the information may be used, without their name.</li>
+</ul>
+<h2 id="privacy">Privacy</h2>
+<p>Nothing that identifies a person or an installation: no names, addresses, serial numbers (also shortened ones), host
+names, exact system size (kWp, kWh) or rated power of an owner's system, the exact model and firmware of an owner's
+device, energy figures, dates and times of an owner's actions or outages. Settings of an owner's device are not
+quoted either; &quot;matched the manufacturer's app&quot; is enough. Round example values (&quot;about 10 kW&quot;, &quot;a FoxESS H3&quot;) are
+fine.</p>
+<h2 id="keeping-it-current">Keeping it current</h2>
+<p>New knowledge about a device goes onto its page in the same pull request as the code or the issue that brought it:
+a new register, a behaviour seen on a device, a confirmation, a correction. Add the status and the source; mark
+facts that turned out wrong as such instead of deleting them silently.</p>
+<p>The short status (supported, confirmed, planned) of every device, and the list of what EKD sold, is kept in
+<a href="https://github.com/dominiquehartmann/myampere/blob/main/docs/devices/support.json">support.json</a> (<a href="https://github.com/Gr33ndev/OpenAmpere/issues/526">#526</a>): the READMEs,
+<a href="https://github.com/dominiquehartmann/myampere/blob/main/docs/devices.md">devices.md</a> (the table &quot;Confirmed on a real system&quot;), <a href="topics/names.html">topics/names.md</a> and the website
+are generated from it. When a confirmation on a device page changes
+that status, change it there too and run <code>node scripts/device-support.mjs</code>.</p>
+<h2 id="layout-of-a-page">Layout of a page</h2>
+<pre><code># &lt;Device&gt;
+
+&gt; Not official manufacturer information … (the note from this README, shortened, with a link to it)
+
+**Applies to:** … · **Sold as:** … · **OpenAmpere:** driver `…`, register map `…` · **Support:** display/control ·
+**Confirmed on a real device:** yes/no/partly
+
+## Summary
+3–6 bullets: what is special about this device.
+
+## Registers
+| Register | Meaning | Type, scale, sign | R/W | Status | Source |
+
+## Behaviour
+| Fact | Status | Source |
+
+## Decisions in OpenAmpere
+| Decision | Why | Issue/PR |
+
+## Open questions
+- … (source)
+
+## Sources
+Documents, projects (license) and issues used on this page.
+</code></pre>
+    </article>
+    <p class="doc-source"><a href="https://github.com/dominiquehartmann/myampere/blob/main/docs/devices/README.md">View and improve this page on GitHub</a></p>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      <p><a href="../../impressum.html">Imprint and privacy</a> ·
+        <a href="../../changelog.html">Changelog</a> ·
+        <a href="../../docs/devices/">Device knowledge</a> ·
+        <a href="../../docs/external-api.html">For developers</a> ·
+        <a href="https://github.com/Gr33ndev/OpenAmpere">Source code</a> ·
+        <a href="https://github.com/Gr33ndev/OpenAmpere/blob/main/LICENSE">MIT License</a> ·
+        <a href="https://github.com/Gr33ndev/OpenAmpere/blob/main/SECURITY.md">Security</a></p>
+      <p class="small">Most wallboxes are controlled by <a href="https://evcc.io">evcc</a>, an independent open source project. Thanks to the evcc community!</p>
+      <p class="small">This site sets no cookies and uses no tracking.
+        Font: DM Sans (<a href="../../../fonts/OFL.txt">SIL Open Font License</a>).</p>
+    </div>
+  </footer>
+</body>
+</html>

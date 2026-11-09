@@ -1,0 +1,237 @@
+<!doctype html>
+<!-- SPDX-FileCopyrightText: Copyright the OpenAmpere contributors -->
+<!-- SPDX-License-Identifier: MIT -->
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Frequently asked questions | OpenAmpere</title>
+  <meta name="description" content="Answers for owners of systems with Ampere.StoragePro and anyone else interested: devices, setup, safety, warranty and insolvency." />
+  <meta name="theme-color" content="#f4f4f4" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#21262b" media="(prefers-color-scheme: dark)" />
+  <link rel="alternate" hreflang="de" href="https://dominiquehartmann.github.io/myampere/faq.html" />
+  <link rel="alternate" hreflang="en" href="https://dominiquehartmann.github.io/myampere/en/faq.html" />
+  <link rel="alternate" hreflang="x-default" href="https://dominiquehartmann.github.io/myampere/faq.html" />
+  <link rel="icon" href="../icon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="../style.css" />
+</head>
+<body>
+  <header class="top">
+    <div class="wrap top-inner">
+      <a class="brand" href="./"><img src="../icon.svg" alt="" width="32" height="32" />OpenAmpere</a>
+      <nav aria-label="Site sections">
+        <a href="./#funktionen">Features</a>
+        <a href="./#installation">Installation</a>
+        <a href="geraete.html">Devices</a>
+        <a href="faq.html">FAQ</a>
+        <a href="changelog.html">Changelog</a>
+        <a href="../demo/?lang=en">Demo</a>
+        <a href="https://github.com/Gr33ndev/OpenAmpere">GitHub</a>
+        <span class="lang-switch" role="group" aria-label="Language"><a href="../faq.html" hreflang="de" lang="de" title="Deutsch" aria-label="Deutsch">DE</a><a href="faq.html" hreflang="en" lang="en" title="English" aria-label="English" aria-current="page">EN</a></span>
+      </nav>
+    </div>
+  </header>
+
+  <main class="wrap faq-page">
+    <div class="faq-head">
+      <p class="eyebrow">Questions and answers</p>
+      <h1>Frequently asked questions</h1>
+      <p class="lead">Most questions come from owners of a system bought from Energiekonzepte Deutschland GmbH (EKD). OpenAmpere is an independent project by affected owners and has nothing to do with EKD, the insolvency administration or the manufacturers.</p>
+      <ul class="topics" aria-label="Topics">
+        <li><a href="#allgemein">General</a></li>
+        <li><a href="#anlage">My system</a></li>
+        <li><a href="#sicherheit">Safety</a></li>
+        <li><a href="#garantie">Warranty and insolvency</a></li>
+        <li><a href="#hilfe">Help</a></li>
+      </ul>
+    </div>
+
+    <section id="allgemein">
+      <h2>General</h2>
+      <div class="faq-list">
+        <details class="faq">
+          <summary>What is OpenAmpere?</summary>
+          <div class="answer">
+            <p>A free app that reads the values of your solar system and battery directly from the inverter, without a cloud and without an account. It runs on a small computer in your home, for example a Raspberry Pi, or on an old Android tablet, and you open it in the browser or on your phone. The <a href="../demo/?lang=en">demo</a> shows what it looks like.</p>
+          </div>
+        </details>
+        <details class="faq">
+          <summary>Is this an app by EKD, or a replacement on EKD's behalf?</summary>
+          <div class="answer">
+            <p>No. OpenAmpere is a private open source project. It was neither commissioned, authorized nor supported by EKD, the insolvency administration, FoxESS, SAJ or Kiwigrid.</p>
+          </div>
+        </details>
+        <details class="faq">
+          <summary>What does OpenAmpere cost?</summary>
+          <div class="answer">
+            <p>Nothing. There are no subscriptions, no ads and no donations. All you need is a computer that runs permanently in your home network. A Raspberry Pi with power supply and memory card costs about 80 to 120 euros. An old Android tablet will do as well.</p>
+          </div>
+        </details>
+        <details class="faq">
+          <summary>I have no computer for it. Will an old tablet do?</summary>
+          <div class="answer">
+            <p>Yes. An Android tablet with Android 7.0 or newer can run OpenAmpere itself; the app brings everything along. It then stays at home in the Wi-Fi and always on the charger; the screen may be off. Phones and computers open OpenAmpere in the browser as usual. How it works is under <a href="../#android">Installation</a> and in the <a href="https://github.com/Gr33ndev/OpenAmpere/blob/main/docs/android.md">guide for the tablet</a>.</p>
+          </div>
+        </details>
+        <details class="faq">
+          <summary>Where does my data go?</summary>
+          <div class="answer">
+            <p>The values of your system stay on your computer at home. OpenAmpere collects no usage data. Only the update check is switched on from the start: every 6 hours, OpenAmpere asks GitHub whether there is a new version. No data from your system is sent. You can switch this off in the app under More → About OpenAmpere with the switch “Check for updates”. Everything else only goes out if you set it up yourself: spot-market electricity prices for a dynamic tariff, notifications to your phone, remote access, importing your history from the Ampere.IQ cloud and fetching meter readings from your grid operator.</p>
+          </div>
+        </details>
+      </div>
+    </section>
+
+    <section id="anlage">
+      <h2>My system</h2>
+      <div class="faq-list">
+        <details class="faq">
+          <summary>Does OpenAmpere work with my battery?</summary>
+          <div class="answer">
+            <p>The batteries sold as “Ampere.StoragePro E3” are based on the FoxESS H3: monitoring and control. The older “Ampere.StoragePro” are based on SAJ H2 or HS2: monitoring and control as well. OpenAmpere detects which device you have during setup. What is already confirmed on a real system is in the <a href="geraete.html">overview of EKD devices</a>. You can help confirm the rest with a <a href="https://github.com/Gr33ndev/OpenAmpere/issues/new?template=device_report.yml">device report</a>.</p>
+          </div>
+        </details>
+        <details class="faq">
+          <summary>My battery is not an Ampere.StoragePro. Does OpenAmpere work anyway?</summary>
+          <div class="answer">
+            <p>Before the Ampere.StoragePro, EKD sold batteries of other makers, such as Senec, Solarmax (“AMPERE.Storage”), M-TEC and Enphase. Which of them OpenAmpere can already show and what is being worked on is in the <a href="geraete.html">overview of EKD devices</a>. Which device you have is on the type plate of the battery or the inverter.</p>
+            <p>In September 2025, EKD switched off the storage function of the “AMPERE.Storage” remotely and released it again where an installer fitted a part. If your battery is still switched off, OpenAmpere will not switch it on later either. Only a qualified installer can tell whether the part has been fitted on your system.</p>
+          </div>
+        </details>
+        <details class="faq">
+          <summary>What happens if the EKD cloud stops being available at some point?</summary>
+          <div class="answer">
+            <p>Whether and when that happens is open. Should it happen, OpenAmpere simply keeps running, because it needs no server from EKD. The inverter and battery work on site anyway and keep their last settings. What you lose without the cloud is the Ampere.IQ app and its history.</p>
+          </div>
+        </details>
+        <details class="faq">
+          <summary>Can I keep my history from Ampere.IQ?</summary>
+          <div class="answer">
+            <p>Yes, as long as the EKD cloud is available. In OpenAmpere, go to More → Data &amp; backup and enter the API key from the Ampere.IQ app (found there under Mehr → Konfiguration API-Zugang). The import runs in the background and takes a few hours, because the cloud only allows about one request per minute.</p>
+          </div>
+        </details>
+        <details class="faq">
+          <summary>Do I need to change anything on the inverter?</summary>
+          <div class="answer">
+            <p>OpenAmpere talks to the inverter via Modbus TCP. This is already enabled on the batteries sold as “Ampere.StoragePro”. The inverter must be connected to your home network, usually with a network cable.</p>
+          </div>
+        </details>
+        <details class="faq">
+          <summary>What about the Smartbox?</summary>
+          <div class="answer">
+            <p>The Smartbox can keep running alongside OpenAmpere. However, it regularly fetches target values from the cloud and thereby overwrites changes you make in OpenAmpere. How to deal with this is described in the <a href="https://github.com/Gr33ndev/OpenAmpere/blob/main/README.md#the-previous-smartbox-resets-settings">README</a>.</p>
+            <p>Before you disconnect the Smartbox from the internet or unplug it: find out whether it belongs to you and whether it is needed for something else, such as control by the grid operator. How to check this is in the <a href="https://github.com/Gr33ndev/OpenAmpere/blob/main/README.md#before-disconnecting-does-the-grid-operator-need-the-box">README</a>.</p>
+          </div>
+        </details>
+        <details class="faq">
+          <summary>Can I access my data on the go?</summary>
+          <div class="answer">
+            <p>Yes. The easiest way is Tailscale: answer “yes” when the installer asks whether you want to use it on the go, then tap Set up under More → Remote access in the app and sign in to Tailscale. On your phone, sign in to the Tailscale app with the same account, and you're done. Tailscale is a service of a US company and free for personal use.</p>
+            <p>Without a third party, you can use the VPN of a FRITZ!Box. Please never expose the app directly to the internet through port forwarding. If you open OpenAmpere on your home network under a domain of your own, for example through a reverse proxy, enter the name in the app under More → Access protection → Own addresses. The proxy must pass on the host name and WebSocket connections; the <a href="https://github.com/Gr33ndev/OpenAmpere/blob/main/README.md#behind-a-reverse-proxy">guide</a> has an example for nginx.</p>
+          </div>
+        </details>
+      </div>
+    </section>
+
+    <section id="sicherheit">
+      <h2>Safety</h2>
+      <div class="faq-list">
+        <details class="faq">
+          <summary>Can I break something with OpenAmpere?</summary>
+          <div class="answer">
+            <p>After installation, OpenAmpere only reads. It only changes settings on the inverter once you explicitly unlock control, and even then first in test mode, where nothing is sent. Every value written is checked, read back and logged.</p>
+            <p>Still: write down the previous values before you change anything, and only change what you understand.</p>
+          </div>
+        </details>
+        <details class="faq">
+          <summary>Am I allowed to change the export limit?</summary>
+          <div class="answer">
+            <p>Only within what applies to your system: 60 % or 70 % of the module power, or the value from your grid connection approval. The app does not allow more. You may only raise a fixed value set by your grid operator with their written consent. As the operator of the system, you are responsible for this.</p>
+          </div>
+        </details>
+      </div>
+    </section>
+
+    <section id="garantie">
+      <h2>Warranty and insolvency</h2>
+      <p class="notice">These are the questions we hear most often. We cannot answer them for your individual case, and we are not lawyers. Here you find what applies in general and where to get a binding answer. <strong>Not legal advice.</strong></p>
+      <div class="faq-list">
+        <details class="faq">
+          <summary>Will I lose my warranty because of OpenAmpere?</summary>
+          <div class="answer">
+            <p>Only reading values does not interfere with the device. OpenAmpere uses the same interface as other energy managers for this. If you change settings, you stay within the limits the inverter itself allows.</p>
+            <p>We cannot guarantee that a warrantor will not object anyway. That is why control is off by default, and the log shows at any time what was changed and when.</p>
+          </div>
+        </details>
+        <details class="faq">
+          <summary>Statutory warranty, guarantee, manufacturer's warranty: what is the difference?</summary>
+          <div class="answer">
+            <ul>
+              <li><strong>Statutory warranty</strong> (Gewährleistung) is required by law and is a claim against your contractual partner, i.e. the company you bought from.</li>
+              <li><strong>Guarantee</strong> (Garantie) is a voluntary promise. Who gives it is stated in your guarantee documents.</li>
+              <li><strong>Manufacturer's warranty</strong> (Herstellergarantie) is given by the actual manufacturer of the device, here FoxESS or SAJ, if it grants one.</li>
+            </ul>
+          </div>
+        </details>
+        <details class="faq">
+          <summary>What is a guarantee from a company in insolvency still worth?</summary>
+          <div class="answer">
+            <p>Honestly: often little. If your documents name one of the companies in insolvency proceedings (see <a href="./#hintergrund">background</a>), claims from the time before the proceedings were opened usually become insolvency claims. In the end these are only paid at a rate (quota) that is often low.</p>
+            <p>Whether the business or a buyer voluntarily continues to honor guarantees is open and will become clear in the proceedings.</p>
+          </div>
+        </details>
+        <details class="faq">
+          <summary>What can I do now?</summary>
+          <div class="answer">
+            <ul>
+              <li><strong>Keep your documents safe:</strong> purchase contract, invoices, guarantee documents, commissioning report and the serial numbers of the inverter and battery. Ideally also photos of the type plates.</li>
+              <li><strong>Save your history:</strong> import the history from Ampere.IQ while the cloud is still available.</li>
+              <li><strong>Report defects in writing:</strong> if something already does not work, report it in writing and keep a copy.</li>
+              <li><strong>Ask the manufacturer:</strong> ask FoxESS or SAJ, giving the serial number, whether there is a manufacturer's warranty for your device.</li>
+              <li><strong>Follow the official notices:</strong> <a href="https://neu.insolvenzbekanntmachungen.de/ap/suche.jsf">insolvenzbekanntmachungen.de</a> shows when proceedings are opened. Only after that can claims be filed with the insolvency administrator; the deadline is stated in the opening decision.</li>
+              <li><strong>Get advice:</strong> the consumer advice center (Verbraucherzentrale) of your federal state helps with questions about contracts, guarantees and filing claims. For larger amounts, a lawyer is worth it.</li>
+            </ul>
+          </div>
+        </details>
+      </div>
+    </section>
+
+    <section id="hilfe">
+      <h2>Help and getting involved</h2>
+      <div class="faq-list">
+        <details class="faq">
+          <summary>Where can I get help with the setup?</summary>
+          <div class="answer">
+            <p>The most common setup problems and how to solve them are in the guide under <a href="https://github.com/Gr33ndev/OpenAmpere/blob/main/README.md#troubleshooting">Troubleshooting</a>. You can report bugs and questions about the app on <a href="https://github.com/Gr33ndev/OpenAmpere/issues">GitHub</a>. A diagnostics report from the app (More → Diagnostics) helps most. We cannot answer individual questions about warranties, contracts or the insolvency proceedings.</p>
+          </div>
+        </details>
+        <details class="faq">
+          <summary>How do I back up my data, move to a new computer or uninstall OpenAmpere?</summary>
+          <div class="answer">
+            <p>You download a backup in the app under More → Data &amp; backup. How to restore a backup, move to a new computer or remove OpenAmpere again is described step by step in the guide under <a href="https://github.com/Gr33ndev/OpenAmpere/blob/main/README.md#backup-and-restore">Backup and restore</a>. Settings that OpenAmpere changed on the inverter stay active after uninstalling.</p>
+          </div>
+        </details>
+      </div>
+      <div class="actions">
+        <a class="btn primary" href="../demo/?lang=en">Try the demo</a>
+        <a class="btn secondary" href="./#installation">Go to installation</a>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      <p><a href="impressum.html">Imprint and privacy</a> ·
+        <a href="changelog.html">Changelog</a> ·
+        <a href="docs/devices/">Device knowledge</a> ·
+        <a href="docs/external-api.html">For developers</a> ·
+        <a href="https://github.com/Gr33ndev/OpenAmpere">Source code</a> ·
+        <a href="https://github.com/Gr33ndev/OpenAmpere/blob/main/LICENSE">MIT License</a> ·
+        <a href="https://github.com/Gr33ndev/OpenAmpere/blob/main/SECURITY.md">Security</a></p>
+      <p class="small">Most wallboxes are controlled by <a href="https://evcc.io">evcc</a>, an independent open source project. Thanks to the evcc community!</p>
+      <p class="small">This site sets no cookies and uses no tracking.
+        Font: DM Sans (<a href="../fonts/OFL.txt">SIL Open Font License</a>).</p>
+    </div>
+  </footer>
+</body>
+</html>

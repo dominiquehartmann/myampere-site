@@ -1,0 +1,172 @@
+<!doctype html>
+<!-- SPDX-FileCopyrightText: Copyright the OpenAmpere contributors -->
+<!-- SPDX-License-Identifier: MIT -->
+<!-- A page of the device knowledge (#512) or of the interface for other apps (#588), filled with a Markdown file by
+     scripts/build-site-pages.mjs -->
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Weidmüller AC SMART (&quot;AMPERE.Charge&quot;) | Device knowledge | OpenAmpere</title>
+  <meta name="description" content="What OpenAmpere knows about inverters, wallboxes and other devices: registers, behaviour and how sure each fact is." />
+  <meta name="theme-color" content="#f4f4f4" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#21262b" media="(prefers-color-scheme: dark)" />
+  <link rel="alternate" hreflang="de" href="https://dominiquehartmann.github.io/myampere/docs/devices/weidmueller/ac-smart.html" />
+  <link rel="alternate" hreflang="en" href="https://dominiquehartmann.github.io/myampere/en/docs/devices/weidmueller/ac-smart.html" />
+  <link rel="alternate" hreflang="x-default" href="https://dominiquehartmann.github.io/myampere/docs/devices/weidmueller/ac-smart.html" />
+  <link rel="icon" href="../../../../icon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="../../../../style.css" />
+</head>
+<body>
+  <header class="top">
+    <div class="wrap top-inner">
+      <a class="brand" href="../../../"><img src="../../../../icon.svg" alt="" width="32" height="32" />OpenAmpere</a>
+      <nav aria-label="Site sections">
+        <a href="../../../#funktionen">Features</a>
+        <a href="../../../#installation">Installation</a>
+        <a href="../../../geraete.html">Devices</a>
+        <a href="../../../faq.html">FAQ</a>
+        <a href="../../../changelog.html">Changelog</a>
+        <a href="../../../../demo/?lang=en">Demo</a>
+        <a href="https://github.com/Gr33ndev/OpenAmpere">GitHub</a>
+        <span class="lang-switch" role="group" aria-label="Language"><a href="../../../../docs/devices/weidmueller/ac-smart.html" hreflang="de" lang="de" title="Deutsch" aria-label="Deutsch">DE</a><a href="ac-smart.html" hreflang="en" lang="en" title="English" aria-label="English" aria-current="page">EN</a></span>
+      </nav>
+    </div>
+  </header>
+
+  <main class="wrap doc-page">
+    <p class="eyebrow doc-crumb"><a href="../../../docs/devices/">Device knowledge</a></p>
+    <p class="doc-note">These pages are technical. They collect what the OpenAmpere contributors have found out about the devices, each fact with its source and how sure it is. They show the latest state of development, which can be ahead of the version you have installed. They are not official manufacturer information. You don't need them to set up OpenAmpere; the app explains everything you need.</p>
+    <article class="doc" lang="en">
+<h1 id="weidmüller-ac-smart-amperecharge">Weidmüller AC SMART (&quot;AMPERE.Charge&quot;)</h1>
+<blockquote>
+<p>Not official manufacturer information: compiled by the OpenAmpere contributors, can be incomplete or wrong. No
+affiliation with Weidmüller or EKD; not legal advice. See the <a href="../index.html">device knowledge README</a>.</p>
+</blockquote>
+<p><strong>Applies to:</strong> Weidmüller AC SMART ECO, VALUE and ADVANCED wallboxes · <strong>Sold as:</strong> &quot;AMPERE.Charge&quot; (EKD, the VALUE
+with 11 kW, about 2023–2024) · <strong>OpenAmpere:</strong> wallbox module <code>weidmueller_ac_smart</code> (<code>src/openampere/wallbox/weidmueller.py</code>)
+· <strong>Support:</strong> display only (live view and the read-only check of the setup) · <strong>Confirmed on a real device:</strong> no
+(built from Weidmüller's register document and the simulator)</p>
+<h2 id="summary">Summary</h2>
+<ul>
+<li>Modbus TCP is on at delivery: port 502, unit id 255, holding registers (FC03). It accepts <strong>only one Modbus client
+at a time</strong>: while evcc or the previous smartbox holds the connection, OpenAmpere gets none.</li>
+<li>Values of 4 bytes come with the <strong>low word first</strong>; the document does not say so, evcc found it on real devices.</li>
+<li>OpenAmpere only shows the wallbox: state, power, current and voltage per phase, the energy of the charge, its limits.
+It never writes; the only mode is &quot;manual&quot;.</li>
+<li>Control would work as a satellite box (a load management current renewed within a timeout). When the controller
+goes away, the wallbox charges on with its fallback current, like the FoxESS charger
+(<a href="../foxess/ac-charger.html">foxess/ac-charger.md</a>): control needs the same safety rules and a confirmation on a real
+device first (<a href="https://github.com/Gr33ndev/OpenAmpere/issues/523">#523</a>).</li>
+</ul>
+<h2 id="registers">Registers</h2>
+<p>All holding registers (FC03), unit id 255. &quot;4 bytes&quot; = two registers, low word first.</p>
+<div class="table"><table>
+<thead><tr><th>Register</th><th>Meaning</th><th>Type, scale, sign</th><th>R/W</th><th>Status</th><th>Source</th></tr></thead>
+<tbody>
+<tr><td>300</td><td>Current offered to the car</td><td>U16, A</td><td>R</td><td>documented</td><td>Weidmüller document</td></tr>
+<tr><td>301</td><td>Vehicle state, letter A–F in the low byte (A no car, B connected, C/D charging, E/F error)</td><td>ASCII</td><td>R</td><td>documented</td><td>Weidmüller document</td></tr>
+<tr><td>302</td><td>State of the charge controller, 0–15 (3 waiting for authorisation, 11 charging, 12 paused, 14/15 error)</td><td>U16</td><td>R</td><td>documented</td><td>Weidmüller document</td></tr>
+<tr><td>303, 304</td><td>Relay on, PWM to the car on</td><td>U16</td><td>R</td><td>documented; read, not used</td><td>Weidmüller document</td></tr>
+<tr><td>305–306</td><td>Duration of the charge since the authorisation</td><td>4 bytes, s</td><td>R</td><td>documented</td><td>Weidmüller document</td></tr>
+<tr><td>307–311</td><td>Available / maintenance, cable current limit (INT, −1 = error), lock closed, charge released, cable or socket</td><td>U16</td><td>R</td><td>documented; read, not used</td><td>Weidmüller document</td></tr>
+<tr><td>317</td><td>Phases: 0 = one, 1 = three (stored)</td><td>U16</td><td>R/W</td><td>documented; which one a satellite follows is open</td><td>Weidmüller document</td></tr>
+<tr><td>318</td><td>Phases set by the load management (not stored)</td><td>U16</td><td>R/W</td><td>documented</td><td>Weidmüller document</td></tr>
+<tr><td>319</td><td>Installed phases (enum, 0 = one phase)</td><td>U16</td><td>R</td><td>documented</td><td>Weidmüller document</td></tr>
+<tr><td>400–405</td><td>Voltage L1–L3 (RMS)</td><td>4 bytes each, mV</td><td>R</td><td>documented</td><td>Weidmüller document</td></tr>
+<tr><td>406–411</td><td>Current L1–L3 (RMS)</td><td>4 bytes each, mA</td><td>R</td><td>documented</td><td>Weidmüller document</td></tr>
+<tr><td>412–417</td><td>Average current L1–L3</td><td>4 bytes each, mA</td><td>R</td><td>documented; read, not used</td><td>Weidmüller document</td></tr>
+<tr><td>418–419</td><td>Active power, sum</td><td>4 bytes, mW</td><td>R</td><td>documented</td><td>Weidmüller document</td></tr>
+<tr><td>420–429</td><td>Reactive and apparent power, power factor, frequency, energy of the last charge in Ws</td><td>4 bytes each</td><td>R</td><td>documented; read by the check, not used</td><td>Weidmüller document</td></tr>
+<tr><td>430–431</td><td>Energy of the last (current) charge</td><td>4 bytes, Wh</td><td>R</td><td>documented</td><td>Weidmüller document</td></tr>
+<tr><td>432</td><td>Temperature of the sensor</td><td>INT, unit not stated</td><td>R</td><td>documented, open (unit)</td><td>Weidmüller document</td></tr>
+<tr><td>457–460</td><td>Total energy</td><td>8 bytes, Wh</td><td>R</td><td>documented; stays 0 on ECO and VALUE (derived)</td><td>Weidmüller document; evcc-io/evcc#35118</td></tr>
+<tr><td>700</td><td>Current limit of the wallbox</td><td>U16, A</td><td>R</td><td>documented</td><td>Weidmüller document</td></tr>
+<tr><td>701</td><td>Current limit set at installation (stored)</td><td>U16, A</td><td>R/W</td><td>documented</td><td>Weidmüller document</td></tr>
+<tr><td>702</td><td>Current limit of the user (stored)</td><td>U16, A</td><td>R/W</td><td>documented</td><td>Weidmüller document</td></tr>
+<tr><td>704</td><td>Plug and charge (charging without authorisation)</td><td>U16</td><td>R/W</td><td>documented</td><td>Weidmüller document</td></tr>
+<tr><td>705</td><td>External charge release (not stored)</td><td>U16</td><td>R/W</td><td>documented</td><td>Weidmüller document</td></tr>
+<tr><td>846–851</td><td>Firmware version</td><td>ASCII, 12 bytes</td><td>R</td><td>documented</td><td>Weidmüller document</td></tr>
+<tr><td>7132–7133</td><td>OCPP server port (stored)</td><td>4 bytes</td><td>R/W</td><td>documented; not used</td><td>Weidmüller document</td></tr>
+<tr><td>7209</td><td>OCPP on (stored, needs a restart)</td><td>U16</td><td>R/W</td><td>documented; not used</td><td>Weidmüller document</td></tr>
+<tr><td>995</td><td>Modbus over 0 = Ethernet, 1 = WLAN (stored, needs a restart)</td><td>U16</td><td>R/W</td><td>documented</td><td>Weidmüller document</td></tr>
+<tr><td>11000 / 11001</td><td>Satellite box / control box (stored)</td><td>U16</td><td>R/W</td><td>documented</td><td>Weidmüller document</td></tr>
+<tr><td>11050–11051</td><td>Timeout of the satellite box (not stored)</td><td>4 bytes, ms</td><td>R/W</td><td>documented</td><td>Weidmüller document; application note</td></tr>
+<tr><td>11052</td><td>Current from the load management, 0 or 6–32 (not stored)</td><td>U16, A</td><td>R/W</td><td>documented</td><td>Weidmüller document; application note</td></tr>
+<tr><td>11053</td><td>Error of the control box that stops charging</td><td>U16</td><td>R/W</td><td>documented</td><td>Weidmüller document</td></tr>
+<tr><td>11054</td><td><strong>Fallback current</strong>: the current it charges with when the control box is gone (not stored)</td><td>U16, A</td><td>R/W</td><td>documented</td><td>Weidmüller document</td></tr>
+</tbody>
+</table></div>
+<p>&quot;Weidmüller document&quot; is &quot;AC SMART ECO / VALUE / ADVANCED Modbus-Register&quot;, Dok.-Nr. 2933050000 Rev. 02 (2023-06),
+public on Weidmüller's website. It warns not to write the stored (non-volatile) registers cyclically. It lists no
+registers at 312–316, 433 and 703; OpenAmpere reads no block across them.</p>
+<h2 id="behaviour">Behaviour</h2>
+<div class="table"><table>
+<thead><tr><th>Fact</th><th>Status</th><th>Source</th></tr></thead>
+<tbody>
+<tr><td>Modbus TCP is preconfigured at delivery (port 502, unit id 255) and allows only one Modbus client; Modbus over WLAN instead of LAN is a setting that needs a restart.</td><td>documented; derived (owners confirm the one-client limit)</td><td>operating manual &quot;AC SMART ECO/VALUE/ADVANCED&quot;; <a href="https://www.photovoltaikforum.com/thread/227016-ampere-charge-weidm%C3%BCller-wallbox-energiekonzepte-deutschland-ampere-storage-pro/">photovoltaikforum.com thread 227016</a> (2024)</td></tr>
+<tr><td>32-bit values come with the low word first.</td><td>derived</td><td>evcc-io/evcc#15261, evcc-io/evcc#35118 and evcc-io/evcc#35123 (behaviour seen on devices; evcc's <code>charger/weidmüller.go</code> is not MIT, nothing taken from it)</td></tr>
+<tr><td>Control as a satellite box: write 11052, then set 11050 again before it runs out (the application note's example: 60 s).</td><td>documented</td><td>application note &quot;Einbindung der AC Smart in Lade-/Lastmanagement&quot; (2023-05, attached in evcc-io/evcc#15261)</td></tr>
+<tr><td>Without its control box a satellite charges at the minimum of 6 A (manual); evcc saw it fall back about 65 s after evcc stopped. It charges on, it does not stop.</td><td>documented (manual), derived (evcc)</td><td>operating manual; evcc-io/evcc#35123</td></tr>
+<tr><td>A factory reset sets 11000 back to 0 but keeps 702; with 11000 = 1 and 702 = 0 the wallbox does not charge at all.</td><td>derived</td><td>evcc-io/evcc#35118, evcc-io/evcc#35123</td></tr>
+<tr><td>The wallbox can itself read a meter or inverter over Modbus TCP (registers 495, 5606–5677); EKD owners entered inverter addresses there, so it may hold one of the inverter's Modbus connections.</td><td>documented (registers), derived (EKD use)</td><td>Weidmüller document; photovoltaikforum.com thread 227016</td></tr>
+<tr><td>EKD's &quot;AMPERE.Charge&quot; is type CH-W-S-A11-P7.5-V (VALUE, 11 kW, 7.5 m cable); the type plate does not print &quot;VALUE&quot;, the last letter gives the variant (E/V/A).</td><td>documented (type), derived (letters)</td><td>EKD datasheets &quot;AMPERE.Charge&quot; (2023-04, 2023-12)</td></tr>
+<tr><td>Weidmüller's &quot;AC SMART App&quot; works over Bluetooth, WLAN or LAN without a cloud account.</td><td>documented</td><td>App Store listing</td></tr>
+<tr><td>No Home Assistant, ioBroker or openWB module for the AC SMART was found; one ioBroker owner uses the generic Modbus adapter.</td><td>derived</td><td>research in <a href="https://github.com/Gr33ndev/OpenAmpere/issues/523">#523</a>; evcc-io/evcc#15064</td></tr>
+<tr><td>At delivery the wallbox has the fixed address 192.168.0.8 with DHCP off; its local web interface has an admin role (electrician) and a user role, and load management and OCPP are set there.</td><td>documented</td><td>operating manual</td></tr>
+<tr><td>The type plate shows the article number (2911240000 for EKD's type); an RFID field on the front means VALUE or ADVANCED, an energy display ADVANCED.</td><td>documented (variants), derived (article number)</td><td>operating manual; EKD datasheets</td></tr>
+<tr><td>The article is said to be discontinued (orderable until about 2025-04), while the AC SMART line goes on.</td><td>open</td><td>search snippet of Weidmüller's datasheet page (page itself not reachable)</td></tr>
+</tbody>
+</table></div>
+<h2 id="decisions-in-openampere">Decisions in OpenAmpere</h2>
+<div class="table"><table>
+<thead><tr><th>Decision</th><th>Why</th><th>Issue/PR</th></tr></thead>
+<tbody>
+<tr><td>Display only: never written, only the mode &quot;manual&quot;; its power counts in the house load like any wallbox.</td><td>Nothing confirmed on a real device; when OpenAmpere stops, the wallbox would charge on with its fallback current.</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/523">#523</a></td></tr>
+<tr><td>One short connection per read, closed right away.</td><td>The wallbox takes only one Modbus client; holding it would lock out the owner's app and other tools.</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/523">#523</a>; <code>wallbox/modbus.py</code></td></tr>
+<tr><td>A voltage above 400 V, a current above 80 A, a power above 30 kW, a charge above 200 kWh or longer than a week are not shown; with such a power the state is unknown.</td><td>That is what the other word order would give: better no value than a wrong one.</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/523">#523</a></td></tr>
+<tr><td>The check keeps the total energy (457–460) out of the report, only whether it is plausible.</td><td>An exact counter identifies the owner.</td><td><a href="https://github.com/Gr33ndev/OpenAmpere/issues/523">#523</a></td></tr>
+</tbody>
+</table></div>
+<h2 id="open-questions">Open questions</h2>
+<ul>
+<li>The word order on an EKD unit, and which firmware they run.</li>
+<li>What 11054 holds after power-up and whether it can be 0; what the wallbox does when 11050 runs out.</li>
+<li>Which phase register a satellite follows, 317 or 318.</li>
+<li>Whether something else (the previous smartbox, evcc) still holds its Modbus connection on EKD systems.</li>
+<li>The unit of the temperature (432).</li>
+<li>Whether the wallbox reads the inverter itself on EKD systems (495, 5606) and so holds one of its Modbus connections.</li>
+<li>Whether the AC SMART App works without the internet.</li>
+<li>Whether it measures the voltages behind its contactor: then an idle wallbox would show one phase, and the live view
+should take the installed phases from 319 instead.</li>
+</ul>
+<h2 id="sources">Sources</h2>
+<ul>
+<li>Weidmüller, &quot;AC SMART ECO / VALUE / ADVANCED Modbus-Register&quot;, 2933050000 Rev. 02, 2023-06 (public); operating
+manual &quot;AC SMART ECO/VALUE/ADVANCED&quot;; application note &quot;Einbindung der AC Smart in Lade-/Lastmanagement&quot; (2023-05).
+Facts only, in own words.</li>
+<li>evcc-io/evcc#15261, evcc-io/evcc#35118 and evcc-io/evcc#35123: behaviour seen on devices (the module <code>charger/weidmüller.go</code> is
+&quot;all rights reserved&quot;: nothing taken from it).</li>
+<li>EKD datasheets &quot;AMPERE.Charge&quot; (2023-04 and 2023-12).</li>
+<li>Research comment in <a href="https://github.com/Gr33ndev/OpenAmpere/issues/523">#523</a>.</li>
+</ul>
+    </article>
+    <p class="doc-source"><a href="https://github.com/dominiquehartmann/myampere/blob/main/docs/devices/weidmueller/ac-smart.md">View and improve this page on GitHub</a></p>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      <p><a href="../../../impressum.html">Imprint and privacy</a> ·
+        <a href="../../../changelog.html">Changelog</a> ·
+        <a href="../../../docs/devices/">Device knowledge</a> ·
+        <a href="../../../docs/external-api.html">For developers</a> ·
+        <a href="https://github.com/Gr33ndev/OpenAmpere">Source code</a> ·
+        <a href="https://github.com/Gr33ndev/OpenAmpere/blob/main/LICENSE">MIT License</a> ·
+        <a href="https://github.com/Gr33ndev/OpenAmpere/blob/main/SECURITY.md">Security</a></p>
+      <p class="small">Most wallboxes are controlled by <a href="https://evcc.io">evcc</a>, an independent open source project. Thanks to the evcc community!</p>
+      <p class="small">This site sets no cookies and uses no tracking.
+        Font: DM Sans (<a href="../../../../fonts/OFL.txt">SIL Open Font License</a>).</p>
+    </div>
+  </footer>
+</body>
+</html>
