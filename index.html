@@ -5,11 +5,11 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>OpenAmpere: Solaranlage und Speicher ohne Hersteller-Cloud</title>
-  <meta name="description" content="Kostenlose Open-Source-App für Solaranlagen mit Batteriespeicher (FoxESS H3, SAJ H2). Läuft im eigenen Heimnetz, ohne Konto beim Hersteller." />
+  <title>myAmpere: Solaranlage und Speicher ohne Hersteller-Cloud</title>
+  <meta name="description" content="Lokale App für Solaranlagen mit Batteriespeicher (FoxESS H3, SAJ H2). Läuft im eigenen Heimnetz, speichert alles lokal und braucht keine Cloud." />
   <meta name="theme-color" content="#f4f4f4" media="(prefers-color-scheme: light)" />
   <meta name="theme-color" content="#21262b" media="(prefers-color-scheme: dark)" />
-  <meta property="og:title" content="OpenAmpere" />
+  <meta property="og:title" content="myAmpere" />
   <meta property="og:description" content="Solaranlage und Speicher im eigenen Heimnetz verwalten, ohne Hersteller-Cloud." />
   <meta property="og:type" content="website" />
   <link rel="alternate" hreflang="de" href="https://dominiquehartmann.github.io/myampere/" />
@@ -21,7 +21,7 @@
 <body>
   <header class="top">
     <div class="wrap top-inner">
-      <a class="brand" href="./"><img src="icon.svg" alt="" width="32" height="32" />OpenAmpere</a>
+      <a class="brand" href="./"><img src="icon.svg" alt="" width="32" height="32" />myAmpere</a>
       <nav aria-label="Seitenbereiche">
         <a href="./#funktionen">Funktionen</a>
         <a href="./#installation">Installation</a>
@@ -29,7 +29,7 @@
         <a href="faq.html">Fragen</a>
         <a href="changelog.html">Changelog</a>
         <a href="demo/?lang=de">Demo</a>
-        <a href="https://github.com/Gr33ndev/OpenAmpere">GitHub</a>
+        <a href="https://github.com/dominiquehartmann/myampere">GitHub</a>
         <span class="lang-switch" role="group" aria-label="Sprache"><a href="./" hreflang="de" lang="de" title="Deutsch" aria-label="Deutsch" aria-current="page">DE</a><a href="en/" hreflang="en" lang="en" title="English" aria-label="English">EN</a></span>
       </nav>
     </div>
@@ -41,21 +41,21 @@
         <div class="hero-text">
           <p class="eyebrow">Open Source unter MIT-Lizenz</p>
           <h1>Solaranlage und Speicher im Blick, auch ohne Hersteller-Cloud.</h1>
-          <p class="lead">OpenAmpere liest die Werte direkt vom Wechselrichter in deinem Heimnetz. Ein Konto oder ein Server des Herstellers ist dafür nicht nötig. Die App läuft auf einem kleinen Rechner bei dir zu Hause, zum Beispiel auf einem Raspberry Pi oder einem alten Android-Tablet.</p>
+          <p class="lead">myAmpere liest die Werte direkt vom Wechselrichter in deinem Heimnetz und speichert sie auf deinem eigenen Rechner. Ein Konto oder ein Server des Herstellers ist nicht nötig. Auf dem Smartphone legst du die Seite auf den Startbildschirm, dann verhält sie sich wie eine App.</p>
           <div class="actions">
             <a class="btn primary" href="demo/?lang=de">Demo ansehen</a>
-            <a class="btn secondary" href="https://github.com/Gr33ndev/OpenAmpere">Quellcode auf GitHub</a>
+            <a class="btn secondary" href="https://github.com/dominiquehartmann/myampere">Quellcode auf GitHub</a>
           </div>
           <p class="small">Die Demo zeigt eine erfundene Anlage und läuft nur in deinem Browser.</p>
         </div>
         <div class="phone" aria-hidden="true">
-          <iframe src="demo/?lang=de" title="OpenAmpere Demo" loading="lazy" tabindex="-1"></iframe>
+          <iframe src="demo/?lang=de" title="myAmpere Demo" loading="lazy" tabindex="-1"></iframe>
         </div>
       </div>
     </section>
 
     <section class="wrap" id="fuer-wen">
-      <h2>Für wen ist OpenAmpere?</h2>
+      <h2>Für wen ist myAmpere?</h2>
       <div class="cards two">
         <div class="card">
           <h3>Unterstützte Geräte</h3>
@@ -74,14 +74,13 @@
 <li><strong>go-e Charger:</strong> nur Anzeige. Noch nicht bestätigt.</li>
 <li><strong>Mobile dé-Wallbox (Tuya-WLAN):</strong> Anzeige und Steuerung im Heimnetz. Anzeige bestätigt; Steuerung noch nicht bestätigt.</li>
 <li><strong>Wallbox über evcc:</strong> Anzeige und Bedienung über evcc. Noch nicht bestätigt.</li>
-            <li><strong>Noch nicht:</strong> ältere Speicher, die EKD vor den Ampere.StoragePro verkauft hat. Welche das sind und was geplant ist, steht in der <a href="geraete.html">Übersicht der EKD-Geräte</a></li>
           </ul>
-          <p class="small">Welches Gerät du hast, erkennt die App beim Einrichten selbst. Die Verbindung läuft über Modbus TCP. „Noch nicht bestätigt“ heißt: nach Unterlagen der Hersteller oder der Community gebaut und mit Tests geprüft, aber noch von keiner echten Anlage gemeldet. Hast du so ein Gerät, hilft ein <a href="https://github.com/Gr33ndev/OpenAmpere/issues/new?template=device_report.yml">Gerätebericht</a> mit der Diagnose aus der App. Alle Einzelheiten stehen in der <a href="https://github.com/Gr33ndev/OpenAmpere/blob/main/docs/devices.de.md">Geräteliste</a>.</p>
+          <p class="small">Welches Gerät du hast, erkennt die App beim Einrichten selbst. Die Verbindung läuft über Modbus TCP. Welche Geräte bestätigt sind, steht in der Gerätedokumentation auf GitHub.</p>
         </div>
         <div class="card">
           <h3>Einrichtung</h3>
-          <p>Du startest OpenAmpere einmal mit Docker. Danach sucht ein Assistent den Wechselrichter, und alle Einstellungen machst du in der App. Konfigurationsdateien musst du nicht bearbeiten.</p>
-          <p class="small">Deine bisherige App funktioniert nur über die Cloud des Herstellers? Dann lies den <a href="#hintergrund">Hintergrund</a> und die <a href="faq.html">häufigen Fragen</a>.</p>
+          <p>Du startest myAmpere einmal mit Docker. Danach führt dich die App durch die Einrichtung: Wechselrichter suchen, Speicher und Tarif eintragen, Diagnose ausführen.</p>
+          <p class="small">Für die Installation brauchst du einen Rechner, der den ganzen Tag im Heimnetz läuft, zum Beispiel einen Raspberry Pi, einen kleinen Server oder eine virtuelle Maschine auf Proxmox.</p>
         </div>
       </div>
     </section>
@@ -89,129 +88,74 @@
     <section class="wrap" id="funktionen">
       <h2>Funktionen</h2>
       <div class="cards">
-        <div class="card"><h3>Live-Ansicht</h3><p>Was das Dach gerade liefert, was das Haus verbraucht, ob der Speicher lädt und ob Strom ins Netz geht.</p></div>
-        <div class="card"><h3>Auswertung</h3><p>Verlauf pro Tag, Woche, Monat und Jahr mit Autarkie, Eigenverbrauch und geschätzter Ersparnis.</p></div>
-        <div class="card"><h3>Modulfelder und Temperaturen</h3><p>Ertrag je Dachseite getrennt. Dazu die Temperaturen von Wechselrichter und Speicher.</p></div>
-        <div class="card"><h3>Speicher und Notstrom</h3><p>Notstrom-Reserve, Ladegrenzen und Betriebsmodus einstellen. Neue Werte kannst du vorher im Testmodus ausprobieren.</p></div>
-        <div class="card"><h3>Einspeisebegrenzung</h3><p>Du gibst an, welche Regel für deine Anlage gilt: 60 %, 70 % oder ein Wert vom Netzbetreiber. Mehr lässt die App nicht zu.</p></div>
-        <div class="card"><h3>Stromtarife</h3><p>Festpreis oder Börsenstrom. Mit dynamischem Tarif kann der Speicher zur günstigsten Zeit laden. Diese Funktion ist noch experimentell.</p></div>
-        <div class="card"><h3>Heizstab und Wärmepumpe</h3><p>Ein Heizstab von my-PV nimmt genau so viel Strom, wie gerade übrig ist. Wärmepumpe oder andere Geräte schaltet die App über ein Shelly-Relais.</p></div>
-        <div class="card"><h3>Wallbox mit evcc oder direkt</h3><p>Das Auto mit Sonnenstrom laden. Die meisten Wallboxen steuert <a href="https://evcc.io">evcc</a>, bedienen kannst du sie direkt in OpenAmpere. Für viele Wallboxen verlangt evcc ein Sponsortoken, das Geld kostet (<a href="https://docs.evcc.io/de/chargers">Liste</a>). Die mobile Wallbox von dé steuert OpenAmpere selbst, ohne evcc und ohne Cloud. Bei Autos von Volkswagen, Audi, Škoda, SEAT, CUPRA, BMW und MINI zeigt OpenAmpere auf Wunsch auch Ladestand, Reichweite und Kilometerstand, abgerufen beim Hersteller (EU-Data-Act-Portal des Volkswagen-Konzerns, BMW CarData).</p></div>
-        <div class="card"><h3>Home Assistant</h3><p>Alle Werte live in Home Assistant, auch im Energie-Dashboard, und auf Wunsch den Speicher von dort steuern. <a href="#installation">Mehr dazu</a></p></div>
-        <div class="card"><h3>Hinweise, Diagnose, Export</h3><p>Nachricht aufs Handy über ntfy oder per E-Mail, wenn etwas nicht stimmt. Eine Diagnose prüft, ob die App dein Gerät richtig liest. Alle Werte gibt es als CSV-Datei.</p></div>
+        <div class="card"><h3>Live-Ansicht</h3><p>Was die Solarmodule gerade liefern, was das Haus verbraucht, ob der Speicher lädt oder entlädt und wie viel Strom ins Netz geht. Dazu Wallbox und Heizstab.</p></div>
+        <div class="card"><h3>Auswertung</h3><p>Leistungskurve über den Tag, Energie je Viertelstunde, Stunde, Tag, Woche, Monat und Jahr, Ertrag je Dachfläche, Temperaturverlauf und CSV-Export. Mit Autarkie, Eigenverbrauch und geschätzter Ersparnis.</p></div>
+        <div class="card"><h3>Speicher und Gesundheit</h3><p>Notstrom-Reserve, Ladegrenzen und Betriebsmodus einstellen. Vollzyklen, Wirkungsgrad und Zelltemperaturen zeigen den Zustand des Speichers.</p></div>
+        <div class="card"><h3>Laden aus dem Netz</h3><p>Der Speicher lädt in den günstigsten Viertelstunden, in einem festen Zeitfenster oder mit Prognose aus Strompreisen, Solarvorhersage und üblichem Verbrauch. Dazu Schnellladung und das Halten des Speichers in günstigen Zeiten.</p></div>
+        <div class="card"><h3>Tarife und Prognose</h3><p>Festpreis oder dynamischer Tarif mit Börsen- oder Tibber-Preisen. Solarprognose von Forecast.Solar für bis zu vier Dachflächen, verglichen mit der gemessenen Erzeugung. Abschläge und ihr Stand.</p></div>
+        <div class="card"><h3>Heizung und Wärmepumpe</h3><p>Vorheizen, wenn Strom günstig ist, absenken, wenn er teuer ist. Eine Wärmepumpe mit EEBus zeigt Leistung und Bereitschaft direkt in der App.</p></div>
+        <div class="card"><h3>Wallbox und Auto</h3><p>Wallboxen über evcc steuern, Ladeplan mit Wiederholung, Restzeit bis zum Ziel. Die tragbare 11-kW-Wallbox „dé“ lässt sich lokal bedienen. Fahrzeugdaten für VW-Konzern, BMW und MINI, je nach Anbindung.</p></div>
+        <div class="card"><h3>Home Assistant und Schnittstelle</h3><p>Als App in der Seitenleiste von Home Assistant oder über die Integration per HACS. Eine verschlüsselte Schnittstelle für andere Apps, mit einem Zugangstoken je App.</p></div>
+        <div class="card"><h3>Hinweise und Diagnose</h3><p>Benachrichtigungen per ntfy, E-Mail oder Web-Push, zum Beispiel wenn der Wechselrichter nicht erreichbar ist oder der Speicher voll ist. Eine Diagnose prüft Register und Verbindung und erstellt einen Bericht zum Teilen.</p></div>
+        <div class="card"><h3>Zugriffsschutz</h3><p>Passwort, Zwei-Faktor-Anmeldung mit einer Authenticator-App, Liste der angemeldeten Geräte, Anmeldeprotokoll und eine Grenze für wiederholte Fehlversuche. Zugriff von unterwegs über dein eigenes Tailscale-Netz.</p></div>
       </div>
     </section>
 
     <section class="wrap" id="so-gehts">
       <h2>So funktioniert es</h2>
-      <svg class="diagram" viewBox="0 0 760 170" role="img" aria-label="Der Wechselrichter ist per Modbus TCP mit dem Rechner verbunden, auf dem OpenAmpere läuft. Handy oder Browser öffnen die App im Heimnetz oder per VPN.">
+      <svg class="diagram" viewBox="0 0 760 170" role="img" aria-label="Der Wechselrichter ist per Modbus TCP mit dem Rechner verbunden, auf dem myAmpere läuft.">
         <g class="node"><rect x="10" y="45" width="190" height="80" rx="16" /><text x="105" y="80">Wechselrichter</text><text x="105" y="102" class="sub">mit Speicher</text></g>
-        <g class="node accent"><rect x="285" y="45" width="190" height="80" rx="16" /><text x="380" y="80">OpenAmpere</text><text x="380" y="102" class="sub">Docker im Heimnetz</text></g>
+        <g class="node accent"><rect x="285" y="45" width="190" height="80" rx="16" /><text x="380" y="80">myAmpere</text><text x="380" y="102" class="sub">Docker im Heimnetz</text></g>
         <g class="node"><rect x="560" y="45" width="190" height="80" rx="16" /><text x="655" y="80">Handy oder Browser</text><text x="655" y="102" class="sub">zu Hause oder per VPN</text></g>
         <g class="link"><line x1="200" y1="85" x2="285" y2="85" /><text x="242" y="72">Modbus TCP</text></g>
         <g class="link"><line x1="475" y1="85" x2="560" y2="85" /><text x="517" y="72">Web-App</text></g>
-        <text x="380" y="155" class="note">Die Messwerte werden auf dem Rechner bei dir zu Hause gespeichert.</text>
+        <text x="380" y="155" class="note">Die Messwerte werden auf deinem Rechner zu Hause gespeichert.</text>
       </svg>
     </section>
 
     <section class="wrap" id="installation">
       <h2>Installation</h2>
-      <p>OpenAmpere läuft auf einem von drei Wegen. Entscheide dich für einen, denn es darf nur ein OpenAmpere mit dem Wechselrichter sprechen:</p>
-      <ul class="ways">
-        <li><a href="#standalone"><strong>Weg 1: eigenständig</strong></a> auf einem Linux-Rechner mit Docker, zum Beispiel einem Raspberry Pi, NAS oder Proxmox-Server. Nutzt du Home Assistant, verbindest du es bei Bedarf über die Integration (HACS).</li>
-        <li><a href="#home-assistant-app"><strong>Weg 2: als Home-Assistant-App</strong></a>, wenn bei dir Home Assistant OS läuft. OpenAmpere läuft dann in Home Assistant und öffnet sich in der Seitenleiste.</li>
-        <li><a href="#android"><strong>Weg 3: auf einem Android-Tablet</strong></a>, wenn du keinen Linux-Rechner hast. Das Tablet bleibt zu Hause am Ladegerät und ist dein Server.</li>
-      </ul>
-
-      <h3 class="way" id="vergleich">Was kann welcher Weg?</h3>
-      <p>Alle drei Wege sind dasselbe OpenAmpere aus demselben Release, mit denselben Funktionen. Sie unterscheiden sich darin, worauf es läuft und wie es sich aktualisiert.</p>
-      <div class="matrix-wrap" role="region" aria-label="Die drei Wege im Vergleich" tabindex="0">
-        <table class="matrix compare">
-          <thead>
-            <tr><td></td><th scope="col">Weg 1: Linux-Rechner</th><th scope="col">Weg 2: Home-Assistant-App</th><th scope="col">Weg 3: Android-Tablet</th></tr>
-          </thead>
-          <tbody>
-            <tr><th scope="row">Läuft auf</th><td data-way="Weg 1: Linux-Rechner">Linux-Rechner mit 64 Bit im Heimnetz, zum Beispiel Raspberry Pi 4 oder 5, NAS oder Proxmox</td><td data-way="Weg 2: Home-Assistant-App">Home Assistant OS (64 Bit)</td><td data-way="Weg 3: Android-Tablet">Tablet mit Android 7.0 oder neuer</td></tr>
-            <tr><th scope="row">Funktionen</th><td colspan="3">Bei allen drei gleich: Live-Werte, Auswertung, Stromtarif, Steuerung, Wallbox, Home Assistant, Push-Nachrichten</td></tr>
-            <tr><th scope="row">Öffnen</th><td data-way="Weg 1: Linux-Rechner">Im Browser von Handy und Computer</td><td data-way="Weg 2: Home-Assistant-App">In der Seitenleiste von Home Assistant, mit einem Passwort auch direkt im Browser</td><td data-way="Weg 3: Android-Tablet">Auf dem Tablet und im Browser von Handy und Computer</td></tr>
-            <tr><th scope="row">Home Assistant</th><td data-way="Weg 1: Linux-Rechner">Über die Integration (HACS)</td><td data-way="Weg 2: Home-Assistant-App">Kommt automatisch mit, ohne HACS</td><td data-way="Weg 3: Android-Tablet">Über die Integration (HACS)</td></tr>
-            <tr><th scope="row">Updates</th><td data-way="Weg 1: Linux-Rechner">Per Knopf in der App oder nachts von selbst</td><td data-way="Weg 2: Home-Assistant-App">Über Home Assistant</td><td data-way="Weg 3: Android-Tablet">Die App installiert sie selbst, auf Wunsch nachts</td></tr>
-            <tr><th scope="row">Von unterwegs</th><td data-way="Weg 1: Linux-Rechner">Tailscale, richtet das Install-Script mit ein</td><td data-way="Weg 2: Home-Assistant-App">Über den Fernzugriff von Home Assistant</td><td data-way="Weg 3: Android-Tablet">Mit der App Tailscale auf Tablet und Handy</td></tr>
-            <tr><th scope="row">Worauf achten</th><td data-way="Weg 1: Linux-Rechner">Der Rechner läuft rund um die Uhr</td><td data-way="Weg 2: Home-Assistant-App">Home Assistant läuft rund um die Uhr. Die App ist neu und noch als experimentell gekennzeichnet</td><td data-way="Weg 3: Android-Tablet">Die App ist neu. Das Tablet bleibt immer zu Hause am Ladegerät und im WLAN. War es aus, fehlen für diese Zeit Messwerte, und die Lücke zählt nicht als Stromausfall</td></tr>
-          </tbody>
-        </table>
-      </div>
-
-      <h3 class="way" id="standalone">Weg 1: eigenständig mit Docker</h3>
+      <p>myAmpere wird aus dem Quellcode dieses Repositorys mit Docker Compose installiert. Die Schritte stehen genauso in der README.</p>
       <ol class="steps">
         <li>
           <h3>Rechner vorbereiten</h3>
-          <p>Du brauchst einen Linux-Rechner im selben Netz wie der Wechselrichter, zum Beispiel einen Raspberry Pi mit 64-Bit-System, ein NAS oder einen Proxmox-Server. Am Wechselrichter muss Modbus TCP eingeschaltet sein. Bei den von EKD verkauften Ampere.StoragePro-Speichern ist das schon der Fall, sonst kann es der Installationsbetrieb erledigen.</p>
+          <p>Du brauchst einen Rechner mit Linux, Docker und Docker Compose, der im selben Netz wie der Wechselrichter läuft. Der Wechselrichter muss Modbus TCP aktiviert haben.</p>
         </li>
         <li>
-          <h3>Installieren</h3>
-          <p>Diesen Befehl im Terminal des Rechners ausführen:</p>
+          <h3>Quellcode holen</h3>
+          <p>Im Terminal des Rechners das Repository holen und in den Ordner wechseln:</p>
           <div class="command">
-            <pre><code id="install-command">curl -fsSL https://gr33ndev.github.io/OpenAmpere/install.sh | bash</code></pre>
-            <button class="copy" type="button" data-copy="install-command" data-copied="Kopiert">Kopieren</button>
+            <pre><code id="clone-command">git clone https://github.com/dominiquehartmann/myampere.git &amp;&amp; cd myampere</code></pre>
+            <button class="copy" type="button" data-copy="clone-command" data-copied="Kopiert">Kopieren</button>
           </div>
-          <p>Das Script installiert bei Bedarf Docker und fragt, ob du eine Wallbox hast. Dann richtet es <a href="https://evcc.io">evcc</a> gleich mit ein. Willst du OpenAmpere auch von unterwegs nutzen, richtet es Tailscale mit ein. Neue Versionen zeigt die App an und installiert sie auf Knopfdruck, auf Wunsch auch nachts von selbst.</p>
+        </li>
+        <li>
+          <h3>Starten</h3>
+          <p>Im Ordner myampere den Container bauen und starten:</p>
+          <div class="command">
+            <pre><code id="run-command">docker compose up -d --build</code></pre>
+            <button class="copy" type="button" data-copy="run-command" data-copied="Kopiert">Kopieren</button>
+          </div>
+          <p>Der erste Build dauert einige Minuten. Danach ist die App unter http://&lt;Server-IP&gt;:8090 erreichbar.</p>
         </li>
         <li>
           <h3>Im Browser einrichten</h3>
-          <p>Die Adresse öffnen, die das Script am Ende anzeigt, und ein Passwort festlegen. Der Assistent sucht dann den Wechselrichter. Einen Heizstab fügst du unter Mehr → Verbindung hinzu, die Wallbox verbindest du dort Schritt für Schritt mit evcc oder direkt. Auf dem iPhone kannst du die Seite zum Home-Bildschirm hinzufügen.</p>
+          <p>Ein Administrator-Passwort festlegen, die Adresse des Wechselrichters unter Mehr → Verbindung eintragen, unter Mehr → Diagnose einmal die Diagnose ausführen und die Speicherkapazität unter Mehr → Meine Anlage angeben. Den Hauptschalter lässt du zunächst auf „Nur ansehen“.</p>
         </li>
       </ol>
-      <p class="small">Installation von Hand und Zugriff von unterwegs stehen im <a href="https://github.com/Gr33ndev/OpenAmpere/blob/main/README.de.md#installation">README auf GitHub</a>.</p>
+      <p class="small">Ausführlich mit Ordnern, Rechten, Konfiguration und Fehlersuche: README im Repository (Englisch) und README.de.md (Deutsch).</p>
 
-      <h4 class="sub" id="home-assistant">Home Assistant verbinden (optional)</h4>
-      <p>Optional. Mit der Integration <strong>OpenAmpere</strong> siehst du Leistung, Energie und Ladestand live in Home Assistant, passend fürs Energie-Dashboard. Wenn du es erlaubst, steuerst du von dort Speicher, Laden aus dem Netz und Heizstab, etwa in Automationen. Die Integration verbindet sich mit dem laufenden OpenAmpere, nur OpenAmpere spricht mit dem Wechselrichter.</p>
-      <ol class="steps">
-        <li>
-          <h3>Über HACS installieren</h3>
-          <p>Der Button öffnet das Repository in deinem Home Assistant (dafür muss <a href="https://hacs.xyz">HACS</a> installiert sein). Dort herunterladen und Home Assistant neu starten.</p>
-          <p><a class="ha-badge" href="https://my.home-assistant.io/redirect/hacs_repository/?owner=Gr33ndev&amp;repository=OpenAmpere&amp;category=integration"><img src="badges/hacs_repository.svg" alt="In Home Assistant öffnen (HACS)" height="40"></a></p>
-        </li>
-        <li>
-          <h3>Koppeln</h3>
-          <p>In Home Assistant die Integration OpenAmpere hinzufügen und die Adresse von OpenAmpere eingeben. Beide zeigen denselben 6-stelligen Code. Du vergleichst ihn in OpenAmpere unter Mehr → Verbundene Apps und erlaubst die Verbindung, nur lesen oder auch steuern.</p>
-          <p><a class="ha-badge" href="https://my.home-assistant.io/redirect/config_flow_start/?domain=openampere"><img src="badges/config_flow_start.svg" alt="Integration in Home Assistant einrichten" height="40"></a></p>
-        </li>
-      </ol>
-      <p class="small">Die Verbindung ist verschlüsselt, jede App bekommt einen eigenen Zugang, den du jederzeit entfernen kannst. Hauptschalter, Testmodus und Einspeisebegrenzung bleiben in OpenAmpere.
-        <a href="https://github.com/Gr33ndev/OpenAmpere/blob/main/docs/homeassistant.de.md">Anleitung und Details</a></p>
-
-      <h3 class="way" id="home-assistant-app">Weg 2: als Home-Assistant-App</h3>
-      <div class="notice">
-        <p>Für Home Assistant OS, zum Beispiel auf einem Home Assistant Green oder einem Raspberry Pi. Einen eigenen Rechner brauchst du nicht. Die App ist neu und noch als experimentell gekennzeichnet.</p>
-        <p><a class="ha-badge" href="https://my.home-assistant.io/redirect/supervisor_add_addon_repository/?repository_url=https%3A%2F%2Fgithub.com%2FGr33ndev%2FOpenAmpere"><img src="badges/supervisor_add_addon_repository.svg" alt="Repository in Home Assistant hinzufügen" height="40"></a></p>
-        <p>Der Button öffnet in deinem Home Assistant den Dialog zum Hinzufügen des Repositorys. Danach die App OpenAmpere installieren, „In der Seitenleiste anzeigen“ einschalten und starten. In der Seitenleiste sucht der Assistent den Wechselrichter.</p>
-        <p class="small">Ohne Button: In Home Assistant <strong>Einstellungen → Apps → App installieren → ⋮ → Repositorys</strong> öffnen, <code>https://github.com/Gr33ndev/OpenAmpere</code> eintragen und <strong>Hinzufügen</strong>.</p>
-        <p class="small"><a href="https://github.com/Gr33ndev/OpenAmpere/blob/main/docs/homeassistant-app.de.md">Anleitung für die App</a>, auch zum Umzug einer bestehenden Installation.</p>
+      <h3 class="way" id="konfiguration">Konfiguration</h3>
+      <p>Die meisten Einstellungen machst du in der App unter Mehr. Eine Konfigurationsdatei ist optional: config.example.yaml nach data/config.yaml kopieren und anpassen. Jeder Wert lässt sich auch über eine Umgebungsvariable setzen.</p>
+      <h3 class="way" id="updates">Updates</h3>
+      <p>Updates kommen aus dem Repository. Im Ordner myampere einfach aktualisieren und neu bauen:</p>
+      <div class="command">
+        <pre><code id="update-command">git pull &amp;&amp; docker compose up -d --build</code></pre>
+        <button class="copy" type="button" data-copy="update-command" data-copied="Kopiert">Kopieren</button>
       </div>
 
-      <h4 class="sub">Sensoren und Steuerung in Home Assistant</h4>
-      <p>Die App bringt die Integration OpenAmpere in ihrer Version mit und installiert sie selbst, HACS brauchst du nicht. Damit siehst du Leistung, Energie und Ladestand live in Home Assistant, auch im Energie-Dashboard, und steuerst auf Wunsch Speicher, Laden aus dem Netz und Heizstab. Nach dem ersten Start der App bittet Home Assistant um einen Neustart. Danach steht unter Einstellungen → Geräte & Dienste „Entdeckt: OpenAmpere“: bestätigen, dann zeigen beide denselben 6-stelligen Code. Du vergleichst ihn in OpenAmpere unter Mehr → Verbundene Apps und erlaubst die Verbindung, nur lesen oder auch steuern.</p>
-      <p class="small">Die Verbindung ist verschlüsselt, jede App bekommt einen eigenen Zugang, den du jederzeit entfernen kannst. Hauptschalter, Testmodus und Einspeisebegrenzung bleiben in OpenAmpere.</p>
-
-      <h3 class="way" id="android">Weg 3: auf einem Android-Tablet</h3>
-      <ol class="steps">
-        <li>
-          <h3>Tablet vorbereiten</h3>
-          <p>Du brauchst ein Tablet mit Android 7.0 oder neuer, das immer zu Hause im WLAN und am Ladegerät bleibt. Der Bildschirm darf aus sein. Am Wechselrichter muss Modbus TCP eingeschaltet sein, wie bei Weg 1.</p>
-        </li>
-        <li>
-          <h3>App installieren</h3>
-          <p>Öffne diese Seite auf dem Tablet und tippe auf den Knopf. Lade unter „Assets“ die Datei herunter, die auf .apk endet, tippe sie an und erlaube dem Browser, Apps zu installieren. Die App gibt es nur hier, nicht bei Google Play. Warnt Google Play Protect, steht in der Anleitung unten, was zu tun ist.</p>
-          <p><a class="btn secondary" href="https://github.com/Gr33ndev/OpenAmpere/releases/latest">Neueste Version herunterladen</a></p>
-        </li>
-        <li>
-          <h3>Einrichten</h3>
-          <p>OpenAmpere öffnen und erlauben, dass es Benachrichtigungen zeigt und vom Energiesparen ausgenommen ist. Dann ein Passwort festlegen; der Assistent sucht den Wechselrichter. Handy und Computer öffnen OpenAmpere danach im Browser unter der Adresse des Tablets mit Port 8080. Neue Versionen lädst und installierst du genauso; die App zeigt an, wenn eine da ist.</p>
-        </li>
-      </ol>
-      <p class="small">Die App ist mit dem Schlüssel des Projekts signiert. SHA-256-Fingerabdruck des Zertifikats: <code class="fingerprint">26952e8da7f7093cf8ea99622d1576c88d075896b851e8ba4ff792f109854886</code></p>
-      <p class="small"><a href="https://github.com/Gr33ndev/OpenAmpere/blob/main/docs/android.de.md">Anleitung für das Tablet</a>: was es braucht, wie es durchläuft, Updates, Umzug und Sicherung.</p>
+      <h3 class="way" id="home-assistant">Home Assistant</h3>
+      <p>Zwei Wege: myAmpere als App in der Seitenleiste von Home Assistant, oder die Integration über HACS. Die Integration funktioniert nur, solange ein myAmpere-Server läuft, und spricht nie direkt mit dem Wechselrichter. Anleitungen stehen im Repository unter docs/homeassistant-app.de.md und docs/homeassistant.md.</p>
     </section>
 
     <section class="wrap" id="sicherheit">
@@ -219,32 +163,30 @@
       <div class="cards two">
         <div class="card">
           <h3>Steuern ist zuerst ausgeschaltet</h3>
-          <p>Nach der Installation liest OpenAmpere nur. Willst du Einstellungen ändern, schaltest du die Steuerung frei und probierst sie im Testmodus aus. Die App prüft Werte vor dem Schreiben, liest sie danach zurück und schreibt jede Änderung ins Protokoll.</p>
+          <p>Nach der Installation liest myAmpere nur. Willst du Einstellungen am Wechselrichter ändern, schaltest du den Hauptschalter auf „Testen“ oder „Aktiv“. Im Testmodus wird nur protokolliert, was passieren würde.</p>
         </div>
         <div class="card">
           <h3>Zugriff</h3>
-          <p>Im Heimnetz kann jeder die Werte ansehen. Ändern geht nur mit Passwort. Von unterwegs erreichst du die App über Tailscale, eingerichtet mit einem Tipp in der App, oder über ein VPN wie das der FRITZ!Box. Eine Portfreigabe ins Internet solltest du nicht einrichten. Apps wie Home Assistant verbinden sich verschlüsselt mit einem eigenen Zugang, den du jederzeit entfernen kannst. OpenAmpere sammelt keine Nutzungsdaten.</p>
+          <p>Im Heimnetz kann jeder die Werte ansehen. Ändern geht nur mit Passwort. Von unterwegs erreichst du die App nur über dein eigenes Tailscale-Netz. Öffne die App nicht direkt im Internet.</p>
         </div>
       </div>
     </section>
 
     <section class="wrap" id="mitmachen">
       <h2>Mitmachen</h2>
-      <p>Du kannst auch ohne Programmierkenntnisse helfen. Am meisten bringt ein <a href="https://github.com/Gr33ndev/OpenAmpere/issues/new?template=device_report.yml">Gerätebericht</a> mit der Diagnose aus der App, weil sich damit weitere Modelle unterstützen und bestätigen lassen. Fehler und Ideen kannst du als Issue melden.</p>
+      <p>Fehler, Wünsche und Rückmeldungen zu den Geräten sind willkommen. Am meisten hilft ein Issue mit einer kurzen Beschreibung und, bei Geräten, einem Diagnosebericht.</p>
       <div class="actions">
-        <a class="btn secondary" href="https://github.com/Gr33ndev/OpenAmpere/issues/new/choose">Issue öffnen</a>
-        <a class="btn secondary" href="https://github.com/Gr33ndev/OpenAmpere/blob/main/CONTRIBUTING.md">Anleitung zum Mitmachen</a>
+        <a class="btn secondary" href="https://github.com/dominiquehartmann/myampere/issues/new/choose">Issue öffnen</a>
+        <a class="btn secondary" href="https://github.com/dominiquehartmann/myampere/blob/main/CONTRIBUTING.md">Anleitung zum Mitmachen</a>
       </div>
     </section>
 
-    <section class="wrap legal" id="hintergrund">
-      <h2>Hintergrund und rechtliche Hinweise</h2>
-      <p>Die Energiekonzepte Deutschland GmbH (EKD) und weitere Gesellschaften der Gruppe haben Anfang Oktober 2026 Insolvenz beantragt. Die Verfahren laufen beim Amtsgericht Leipzig, die amtlichen Bekanntmachungen findest du unter <a href="https://neu.insolvenzbekanntmachungen.de/ap/suche.jsf">insolvenzbekanntmachungen.de</a> (Gericht Leipzig, Aktenzeichen eingeben): Energiekonzepte Deutschland GmbH 401 IN 2082/26, AMPERE German Electric Innovation GmbH 401 IN 2085/26, EKD Montage GmbH 401 IN 2100/26, Energiekonzepte Deutschland Holding GmbH 401 IN 2101/26, Investorenholding 401 IN 2107/26, PV-Montage GmbH 401 IN 2110/26 und ES Energiesysteme GmbH 401 IN 2111/26. Damit sind alle sieben Gesellschaften amtlich veröffentlicht, die laut <a href="https://www.handelsblatt.com/unternehmen/energie/solarenergie-solarspezialist-energiekonzepte-deutschland-meldet-insolvenz-an/100258988.html">Handelsblatt</a> betroffen sein sollen (Stand 6. Oktober 2026). Laut EKD läuft der Geschäftsbetrieb uneingeschränkt weiter, Anlaufstelle für Kunden bleibt der Kundenservice (<a href="https://www.pv-magazine.de/2026/10/02/energiekonzepte-deutschland-stellt-insolvenzantrag/">pv magazine</a>).</p>
-      <p>Die App „Ampere.IQ“ funktioniert nur über Server von EKD. Wie es damit weitergeht, ist offen. Sollte das Insolvenzverfahren dazu führen, dass diese Server abgeschaltet werden, läuft OpenAmpere einfach weiter: Es spricht direkt im Heimnetz mit dem Wechselrichter und braucht keinen Server von EKD. OpenAmpere ist als lokale Alternative von Betroffenen entstanden. Die als „Ampere.StoragePro E3“ verkauften Speicher basieren auf der FoxESS-H3-Serie, ältere „Ampere.StoragePro“ auf SAJ H2 und HS2.</p>
-      <p><strong>Keine Verbindung zu EKD oder den Herstellern:</strong> OpenAmpere ist ein unabhängiges, inoffizielles Projekt. Es hat nichts mit der Energiekonzepte Deutschland GmbH, ihrer Insolvenzverwaltung, FoxESS, SAJ oder Kiwigrid zu tun und wurde von ihnen weder beauftragt noch autorisiert.</p>
-      <p><strong>Keine Verbindung zu Home Assistant:</strong> OpenAmpere, seine Home-Assistant-Integration und seine Home-Assistant-App haben nichts mit Home Assistant, der Open Home Foundation oder Nabu Casa zu tun. Sie nutzen nur die öffentlichen Schnittstellen von Home Assistant.</p>
-      <p><strong>Marken:</strong> „AMPERE“, „Ampere.IQ“, „Ampere.StoragePro“ und alle anderen genannten Produkt- und Firmennamen gehören ihren Inhabern. Sie stehen hier nur, um zu beschreiben, mit welchen Geräten OpenAmpere funktioniert. Der Projektname bezieht sich auf die physikalische Einheit Ampere. OpenAmpere enthält keinen Code, keine Grafiken und keine Texte der Ampere.IQ-App.</p>
-      <p><strong>Nutzung auf eigene Verantwortung:</strong> OpenAmpere ist kostenlos und ohne Gewähr. Es ersetzt keinen Elektrofachbetrieb. Wer Einstellungen am Wechselrichter ändert, ist selbst dafür verantwortlich, dass die Netzanschlussbedingungen eingehalten werden. Die Hinweise sind keine Rechtsberatung.</p>
+    <section class="wrap legal" id="herkunft">
+      <h2>Herkunft und rechtliche Hinweise</h2>
+      <p>myAmpere ist ein persönlicher Fork des Community-Projekts OpenAmpere von Gr33ndev (MIT-Lizenz). Die Erweiterungen liegen in eigenen Modulen, damit Updates des Originals übernommen werden können.</p>
+      <p>myAmpere ist ein unabhängiges Projekt ohne Verbindung zum Original-Projekt OpenAmpere, zu EKD, zur App „Ampere.IQ“ oder zu Herstellern von Wechselrichtern, Speichern oder Wallboxen. Produktnamen dienen nur der Beschreibung der Kompatibilität.</p>
+      <p>Marken gehören ihren jeweiligen Inhabern. Angaben zu Geräten und Schnittstellen beruhen auf Herstellerunterlagen und eigenen Messungen.</p>
+      <p>Die Software ist kostenlos und wird ohne Gewähr bereitgestellt. Nutzung auf eigene Verantwortung. Hinweise zu Netz, Einspeisung und Tarifen sind keine Rechtsberatung.</p>
     </section>
   </main>
 
@@ -254,9 +196,9 @@
         <a href="changelog.html">Changelog</a> ·
         <a href="docs/devices/">Gerätewissen</a> ·
         <a href="docs/external-api.html">Für Entwickler</a> ·
-        <a href="https://github.com/Gr33ndev/OpenAmpere">Quellcode</a> ·
-        <a href="https://github.com/Gr33ndev/OpenAmpere/blob/main/LICENSE">MIT-Lizenz</a> ·
-        <a href="https://github.com/Gr33ndev/OpenAmpere/blob/main/SECURITY.md">Sicherheit</a></p>
+        <a href="https://github.com/dominiquehartmann/myampere">Quellcode</a> ·
+        <a href="https://github.com/dominiquehartmann/myampere/blob/main/LICENSE">MIT-Lizenz</a> ·
+        <a href="https://github.com/dominiquehartmann/myampere/blob/main/SECURITY.md">Sicherheit</a></p>
       <p class="small">Die meisten Wallboxen steuert <a href="https://evcc.io">evcc</a>, ein eigenständiges Open-Source-Projekt. Danke an die evcc-Community!</p>
       <p class="small">Diese Seite setzt keine Cookies und nutzt kein Tracking.
         Schrift: DM Sans (<a href="fonts/OFL.txt">SIL Open Font License</a>).</p>

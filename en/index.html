@@ -5,12 +5,12 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>OpenAmpere: solar system and battery without the manufacturer's cloud</title>
-  <meta name="description" content="Free open source app for solar systems with a home battery (FoxESS H3, SAJ H2). Runs in your own home network, without an account with the manufacturer." />
+  <title>myAmpere: Solar and battery storage without a manufacturer cloud</title>
+  <meta name="description" content="Local app for solar systems with battery storage (FoxESS H3, SAJ H2). Runs on your home network, keeps all data locally and needs no cloud." />
   <meta name="theme-color" content="#f4f4f4" media="(prefers-color-scheme: light)" />
   <meta name="theme-color" content="#21262b" media="(prefers-color-scheme: dark)" />
-  <meta property="og:title" content="OpenAmpere" />
-  <meta property="og:description" content="Manage your solar system and battery in your own home network, without the manufacturer's cloud." />
+  <meta property="og:title" content="myAmpere" />
+  <meta property="og:description" content="Manage solar and battery storage on your own home network, without a manufacturer cloud." />
   <meta property="og:type" content="website" />
   <link rel="alternate" hreflang="de" href="https://dominiquehartmann.github.io/myampere/" />
   <link rel="alternate" hreflang="en" href="https://dominiquehartmann.github.io/myampere/en/" />
@@ -21,7 +21,7 @@
 <body>
   <header class="top">
     <div class="wrap top-inner">
-      <a class="brand" href="./"><img src="../icon.svg" alt="" width="32" height="32" />OpenAmpere</a>
+      <a class="brand" href="./"><img src="../icon.svg" alt="" width="32" height="32" />myAmpere</a>
       <nav aria-label="Site sections">
         <a href="./#funktionen">Features</a>
         <a href="./#installation">Installation</a>
@@ -29,7 +29,7 @@
         <a href="faq.html">FAQ</a>
         <a href="changelog.html">Changelog</a>
         <a href="../demo/?lang=en">Demo</a>
-        <a href="https://github.com/Gr33ndev/OpenAmpere">GitHub</a>
+        <a href="https://github.com/dominiquehartmann/myampere">GitHub</a>
         <span class="lang-switch" role="group" aria-label="Language"><a href="../" hreflang="de" lang="de" title="Deutsch" aria-label="Deutsch">DE</a><a href="./" hreflang="en" lang="en" title="English" aria-label="English" aria-current="page">EN</a></span>
       </nav>
     </div>
@@ -39,23 +39,23 @@
     <section class="hero">
       <div class="wrap hero-inner">
         <div class="hero-text">
-          <p class="eyebrow">Open source under the MIT License</p>
-          <h1>Keep an eye on your solar system and battery, even without the manufacturer's cloud.</h1>
-          <p class="lead">OpenAmpere reads the values directly from the inverter in your home network. You don't need an account or a server from the manufacturer. The app runs on a small computer in your home, for example a Raspberry Pi or an old Android tablet.</p>
+          <p class="eyebrow">Open source under the MIT license</p>
+          <h1>Solar and battery storage at a glance, without a manufacturer cloud.</h1>
+          <p class="lead">myAmpere reads the values directly from the inverter on your home network and stores them on your own computer. No account and no manufacturer server are needed. On a smartphone you add the page to the home screen, and it then behaves like an app.</p>
           <div class="actions">
-            <a class="btn primary" href="../demo/?lang=en">Try the demo</a>
-            <a class="btn secondary" href="https://github.com/Gr33ndev/OpenAmpere">Source code on GitHub</a>
+            <a class="btn primary" href="../demo/?lang=en">View demo</a>
+            <a class="btn secondary" href="https://github.com/dominiquehartmann/myampere">Source code on GitHub</a>
           </div>
-          <p class="small">The demo shows a made-up system and runs only in your browser.</p>
+          <p class="small">The demo shows an invented system and runs only in your browser.</p>
         </div>
         <div class="phone" aria-hidden="true">
-          <iframe src="../demo/?lang=en" title="OpenAmpere demo" loading="lazy" tabindex="-1"></iframe>
+          <iframe src="../demo/?lang=en" title="myAmpere demo" loading="lazy" tabindex="-1"></iframe>
         </div>
       </div>
     </section>
 
     <section class="wrap" id="fuer-wen">
-      <h2>Who is OpenAmpere for?</h2>
+      <h2>Who is myAmpere for?</h2>
       <div class="cards two">
         <div class="card">
           <h3>Supported devices</h3>
@@ -74,14 +74,13 @@
 <li><strong>go-e Charger:</strong> monitoring only. Not yet confirmed.</li>
 <li><strong>Portable dé wallbox (Tuya Wi-Fi):</strong> monitoring and control in the home network. Monitoring confirmed; control not yet confirmed.</li>
 <li><strong>Wallbox through evcc:</strong> monitoring and operation through evcc. Not yet confirmed.</li>
-            <li><strong>Not yet:</strong> older batteries EKD sold before the Ampere.StoragePro. Which ones they are and what is planned is in the <a href="geraete.html">overview of EKD devices</a></li>
           </ul>
-          <p class="small">The app detects which device you have during setup. It connects via Modbus TCP. “Not yet confirmed” means: built from manufacturer or community documentation and checked with tests, but not yet reported from a real system. If you have such a device, a <a href="https://github.com/Gr33ndev/OpenAmpere/issues/new?template=device_report.yml">device report</a> with the diagnostics from the app helps. All details are in the <a href="https://github.com/Gr33ndev/OpenAmpere/blob/main/docs/devices.md">device list</a>.</p>
+          <p class="small">The app detects which device you have during setup. The connection uses Modbus TCP. Which devices are confirmed is described in the device documentation on GitHub.</p>
         </div>
         <div class="card">
           <h3>Setup</h3>
-          <p>You start OpenAmpere once with Docker. A wizard then finds the inverter, and you make all settings in the app. There are no configuration files to edit.</p>
-          <p class="small">Your current app only works through the manufacturer's cloud? Then read the <a href="#hintergrund">background</a> and the <a href="faq.html">frequently asked questions</a>.</p>
+          <p>You start myAmpere once with Docker. The app then guides you through setup: find the inverter, enter the battery and tariff, run the diagnostics.</p>
+          <p class="small">For the installation you need a computer that runs all day on the home network, for example a Raspberry Pi, a small server or a virtual machine on Proxmox.</p>
         </div>
       </div>
     </section>
@@ -89,162 +88,105 @@
     <section class="wrap" id="funktionen">
       <h2>Features</h2>
       <div class="cards">
-        <div class="card"><h3>Live view</h3><p>What the roof is producing right now, what the house is using, whether the battery is charging and whether power is going to the grid.</p></div>
-        <div class="card"><h3>Report</h3><p>History per day, week, month and year with self-sufficiency, self-consumption and estimated savings.</p></div>
-        <div class="card"><h3>Module strings and temperatures</h3><p>Yield for each side of the roof separately, plus the temperatures of the inverter and the battery.</p></div>
-        <div class="card"><h3>Battery and backup power</h3><p>Set the backup reserve, charge limits and operating mode. You can try new values in test mode first.</p></div>
-        <div class="card"><h3>Export limit</h3><p>You state which rule applies to your system: 60 %, 70 % or a value set by your grid operator. The app does not allow more.</p></div>
-        <div class="card"><h3>Electricity tariffs</h3><p>Fixed price or dynamic spot-market price. With a dynamic tariff the battery can charge when power is cheapest. This feature is still experimental.</p></div>
-        <div class="card"><h3>Immersion heater and heat pump</h3><p>An immersion heater from my-PV takes exactly as much power as is left over. The app switches a heat pump or other devices via a Shelly relay.</p></div>
-        <div class="card"><h3>Wallbox with evcc or directly</h3><p>Charge your car with solar power. <a href="https://evcc.io">evcc</a> controls most wallboxes, and you can operate them directly in OpenAmpere. For many wallboxes evcc requires a sponsor token, which costs money (<a href="https://docs.evcc.io/en/chargers">list</a>). The portable dé wallbox OpenAmpere controls itself, without evcc and without a cloud. For cars from Volkswagen, Audi, Škoda, SEAT, CUPRA, BMW and MINI, OpenAmpere can also show state of charge, range and odometer, fetched from the manufacturer (the Volkswagen group's EU Data Act portal, BMW CarData).</p></div>
-        <div class="card"><h3>Home Assistant</h3><p>All values live in Home Assistant, including the energy dashboard, and control of the battery from there if you want. <a href="#installation">Learn more</a></p></div>
-        <div class="card"><h3>Alerts, diagnostics, export</h3><p>A message on your phone via ntfy or by e-mail when something is wrong. A diagnostics check tests whether the app reads your device correctly. All values are available as a CSV file.</p></div>
+        <div class="card"><h3>Live view</h3><p>What the solar modules deliver now, what the house uses, whether the battery is charging or discharging and how much goes to the grid. Also wallbox and immersion heater.</p></div>
+        <div class="card"><h3>Report</h3><p>Power curve over the day, energy per 15 minutes, hour, day, week, month and year, yield per module array, temperature history and CSV export, with self-sufficiency, self-consumption and estimated savings.</p></div>
+        <div class="card"><h3>Battery and health</h3><p>Set the backup reserve, charge limits and operating mode. Full cycles, efficiency and cell temperatures show the condition of the battery.</p></div>
+        <div class="card"><h3>Charging from the grid</h3><p>The battery charges in the cheapest quarter hours, in a fixed time window, or with a forecast from electricity prices, solar forecast and usual consumption. Also quick charge and holding the battery in cheap times.</p></div>
+        <div class="card"><h3>Tariffs and forecast</h3><p>Fixed or dynamic tariff with exchange or Tibber prices. Solar forecast from Forecast.Solar for up to four roof planes, compared with the measured generation. Advance payments and their status.</p></div>
+        <div class="card"><h3>Heating and heat pump</h3><p>Pre-heat when power is cheap, set back when it is expensive. A heat pump with EEBus shows its power and readiness in the app.</p></div>
+        <div class="card"><h3>Wallbox and car</h3><p>Wallboxes through evcc, charging plans with repetition, time to target. The portable 11 kW wallbox "dé" can be operated locally. Car data for the Volkswagen group, BMW and MINI, depending on the connection.</p></div>
+        <div class="card"><h3>Home Assistant and interface</h3><p>As an app in the Home Assistant sidebar, or through the integration via HACS. An encrypted interface for other apps, with an access token for each app.</p></div>
+        <div class="card"><h3>Notifications and diagnostics</h3><p>Notifications via ntfy, e-mail or web push, for example when the inverter is unreachable or the battery is full. A diagnostics run checks registers and connection and creates a report to share.</p></div>
+        <div class="card"><h3>Access protection</h3><p>Password, two-factor sign-in with an authenticator app, list of signed-in devices, sign-in log and a limit on repeated failed attempts. Access from outside through your own Tailscale network.</p></div>
       </div>
     </section>
 
     <section class="wrap" id="so-gehts">
       <h2>How it works</h2>
-      <svg class="diagram" viewBox="0 0 760 170" role="img" aria-label="The inverter is connected via Modbus TCP to the computer that runs OpenAmpere. A phone or browser opens the app in the home network or via VPN.">
+      <svg class="diagram" viewBox="0 0 760 170" role="img" aria-label="The inverter is connected to the computer running myAmpere via Modbus TCP.">
         <g class="node"><rect x="10" y="45" width="190" height="80" rx="16" /><text x="105" y="80">Inverter</text><text x="105" y="102" class="sub">with battery</text></g>
-        <g class="node accent"><rect x="285" y="45" width="190" height="80" rx="16" /><text x="380" y="80">OpenAmpere</text><text x="380" y="102" class="sub">Docker in your home network</text></g>
+        <g class="node accent"><rect x="285" y="45" width="190" height="80" rx="16" /><text x="380" y="80">myAmpere</text><text x="380" y="102" class="sub">Docker on the home network</text></g>
         <g class="node"><rect x="560" y="45" width="190" height="80" rx="16" /><text x="655" y="80">Phone or browser</text><text x="655" y="102" class="sub">at home or via VPN</text></g>
         <g class="link"><line x1="200" y1="85" x2="285" y2="85" /><text x="242" y="72">Modbus TCP</text></g>
         <g class="link"><line x1="475" y1="85" x2="560" y2="85" /><text x="517" y="72">Web app</text></g>
-        <text x="380" y="155" class="note">The readings are stored on the computer in your home.</text>
+        <text x="380" y="155" class="note">The measured values are stored on your computer at home.</text>
       </svg>
     </section>
 
     <section class="wrap" id="installation">
       <h2>Installation</h2>
-      <p>OpenAmpere runs in one of three ways. Choose one of them, because only one OpenAmpere may talk to the inverter:</p>
-      <ul class="ways">
-        <li><a href="#standalone"><strong>Way 1: standalone</strong></a> on a Linux computer with Docker, for example a Raspberry Pi, NAS or Proxmox server. If you use Home Assistant, you can connect it through the integration (HACS) when you like.</li>
-        <li><a href="#home-assistant-app"><strong>Way 2: as a Home Assistant app</strong></a>, if you run Home Assistant OS. OpenAmpere then runs inside Home Assistant and opens in its sidebar.</li>
-        <li><a href="#android"><strong>Way 3: on an Android tablet</strong></a>, if you have no Linux computer. The tablet stays at home on the charger and is your server.</li>
-      </ul>
-
-      <h3 class="way" id="vergleich">What does each way offer?</h3>
-      <p>All three ways are the same OpenAmpere from the same release, with the same features. They differ in what it runs on and how it updates.</p>
-      <div class="matrix-wrap" role="region" aria-label="The three ways compared" tabindex="0">
-        <table class="matrix compare">
-          <thead>
-            <tr><td></td><th scope="col">Way 1: Linux computer</th><th scope="col">Way 2: Home Assistant app</th><th scope="col">Way 3: Android tablet</th></tr>
-          </thead>
-          <tbody>
-            <tr><th scope="row">Runs on</th><td data-way="Way 1: Linux computer">A 64-bit Linux computer on the home network, for example a Raspberry Pi 4 or 5, a NAS or Proxmox</td><td data-way="Way 2: Home Assistant app">Home Assistant OS (64-bit)</td><td data-way="Way 3: Android tablet">A tablet with Android 7.0 or newer</td></tr>
-            <tr><th scope="row">Features</th><td colspan="3">The same on all three: live values, analysis, electricity tariff, control, wallbox, Home Assistant, push notifications</td></tr>
-            <tr><th scope="row">Open</th><td data-way="Way 1: Linux computer">In the browser of phone and computer</td><td data-way="Way 2: Home Assistant app">In the Home Assistant sidebar, with a password also directly in the browser</td><td data-way="Way 3: Android tablet">On the tablet and in the browser of phone and computer</td></tr>
-            <tr><th scope="row">Home Assistant</th><td data-way="Way 1: Linux computer">Through the integration (HACS)</td><td data-way="Way 2: Home Assistant app">Comes along automatically, without HACS</td><td data-way="Way 3: Android tablet">Through the integration (HACS)</td></tr>
-            <tr><th scope="row">Updates</th><td data-way="Way 1: Linux computer">With a button in the app or by itself at night</td><td data-way="Way 2: Home Assistant app">Through Home Assistant</td><td data-way="Way 3: Android tablet">The app installs them itself, at night if you like</td></tr>
-            <tr><th scope="row">On the go</th><td data-way="Way 1: Linux computer">Tailscale, set up by the install script</td><td data-way="Way 2: Home Assistant app">Through the remote access of Home Assistant</td><td data-way="Way 3: Android tablet">With the Tailscale app on tablet and phone</td></tr>
-            <tr><th scope="row">Keep in mind</th><td data-way="Way 1: Linux computer">The computer runs around the clock</td><td data-way="Way 2: Home Assistant app">Home Assistant runs around the clock. The app is new and still marked as experimental</td><td data-way="Way 3: Android tablet">The app is new. The tablet always stays at home on the charger and on the Wi-Fi. While it was off, readings are missing, and the gap does not count as a power cut</td></tr>
-          </tbody>
-        </table>
-      </div>
-
-      <h3 class="way" id="standalone">Way 1: standalone with Docker</h3>
+      <p>myAmpere is installed from the source code of this repository with Docker Compose. The same steps are in the README.</p>
       <ol class="steps">
         <li>
-          <h3>Prepare a computer</h3>
-          <p>You need a Linux computer on the same network as the inverter, for example a Raspberry Pi with a 64-bit system, a NAS or a Proxmox server. Modbus TCP must be enabled on the inverter. This is already the case for the Ampere.StoragePro batteries sold by EKD; otherwise your installer can enable it.</p>
+          <h3>Prepare the computer</h3>
+          <p>You need a computer with Linux, Docker and Docker Compose that runs on the same network as the inverter. The inverter must have Modbus TCP switched on.</p>
         </li>
         <li>
-          <h3>Install</h3>
-          <p>Run this command in the computer's terminal:</p>
+          <h3>Get the source code</h3>
+          <p>In a terminal on the computer, get the repository and change into the folder:</p>
           <div class="command">
-            <pre><code id="install-command">curl -fsSL https://gr33ndev.github.io/OpenAmpere/install.sh | bash</code></pre>
-            <button class="copy" type="button" data-copy="install-command" data-copied="Copied">Copy</button>
+            <pre><code id="clone-command">git clone https://github.com/dominiquehartmann/myampere.git &amp;&amp; cd myampere</code></pre>
+            <button class="copy" type="button" data-copy="clone-command" data-copied="Copied">Copy</button>
           </div>
-          <p>The script installs Docker if needed and asks whether you have a wallbox. If so, it sets up <a href="https://evcc.io">evcc</a> as well. If you also want to use OpenAmpere on the go, it sets up Tailscale too. The app shows new versions and installs them at the push of a button, or automatically at night if you like.</p>
+        </li>
+        <li>
+          <h3>Start</h3>
+          <p>In the myampere folder, build and start the container:</p>
+          <div class="command">
+            <pre><code id="run-command">docker compose up -d --build</code></pre>
+            <button class="copy" type="button" data-copy="run-command" data-copied="Copied">Copy</button>
+          </div>
+          <p>The first build takes a few minutes. Afterwards the app is reachable at http://&lt;server-IP&gt;:8090.</p>
         </li>
         <li>
           <h3>Set up in the browser</h3>
-          <p>Open the address the script shows at the end and choose a password. The wizard then looks for the inverter. You add an immersion heater under More → Connection, and connect the wallbox there step by step with evcc or directly. On an iPhone you can add the page to your home screen.</p>
+          <p>Set an administrator password, enter the inverter's address under More → Connection, run the diagnostics once under More → Diagnostics and enter the battery capacity under More → My system. Leave the master switch on "View only" at first.</p>
         </li>
       </ol>
-      <p class="small">Manual installation and remote access are described in the <a href="https://github.com/Gr33ndev/OpenAmpere/blob/main/README.md#installation">README on GitHub</a>.</p>
+      <p class="small">Detailed steps with folders, permissions, configuration and troubleshooting: README in the repository (English) and README.de.md (German).</p>
 
-      <h4 class="sub" id="home-assistant">Connect Home Assistant (optional)</h4>
-      <p>Optional. With the <strong>OpenAmpere</strong> integration you see power, energy and state of charge live in Home Assistant, suitable for the Energy dashboard. If you allow it, you control the battery, charging from the grid and the immersion heater from there, for example in automations. The integration connects to the running OpenAmpere; only OpenAmpere talks to the inverter.</p>
-      <ol class="steps">
-        <li>
-          <h3>Install via HACS</h3>
-          <p>The button opens the repository in your Home Assistant (<a href="https://hacs.xyz">HACS</a> must be installed). Download it there and restart Home Assistant.</p>
-          <p><a class="ha-badge" href="https://my.home-assistant.io/redirect/hacs_repository/?owner=Gr33ndev&amp;repository=OpenAmpere&amp;category=integration"><img src="../badges/hacs_repository.svg" alt="Open in Home Assistant (HACS)" height="40"></a></p>
-        </li>
-        <li>
-          <h3>Pair</h3>
-          <p>In Home Assistant, add the OpenAmpere integration and enter the address of OpenAmpere. Both show the same 6-digit code. You compare it in OpenAmpere under More → Connected apps and allow the connection, either read-only or with control.</p>
-          <p><a class="ha-badge" href="https://my.home-assistant.io/redirect/config_flow_start/?domain=openampere"><img src="../badges/config_flow_start.svg" alt="Set up the integration in Home Assistant" height="40"></a></p>
-        </li>
-      </ol>
-      <p class="small">The connection is encrypted, and each app gets its own access that you can remove at any time. The main switch, test mode and export limit stay in OpenAmpere.
-        <a href="https://github.com/Gr33ndev/OpenAmpere/blob/main/docs/homeassistant.md">Guide and details</a></p>
-
-      <h3 class="way" id="home-assistant-app">Way 2: as a Home Assistant app</h3>
-      <div class="notice">
-        <p>For Home Assistant OS, for example on a Home Assistant Green or a Raspberry Pi. You need no extra computer. The app is new and still marked as experimental.</p>
-        <p><a class="ha-badge" href="https://my.home-assistant.io/redirect/supervisor_add_addon_repository/?repository_url=https%3A%2F%2Fgithub.com%2FGr33ndev%2FOpenAmpere"><img src="../badges/supervisor_add_addon_repository.svg" alt="Add the repository in Home Assistant" height="40"></a></p>
-        <p>The button opens the dialog for adding the repository in your Home Assistant. Then install the app OpenAmpere, turn on “Show in sidebar” and start it. In the sidebar, the wizard searches for the inverter.</p>
-        <p class="small">Without the button: in Home Assistant open <strong>Settings → Apps → Install app → ⋮ → Repositories</strong>, enter <code>https://github.com/Gr33ndev/OpenAmpere</code> and click <strong>Add</strong>.</p>
-        <p class="small"><a href="https://github.com/Gr33ndev/OpenAmpere/blob/main/ha-app/DOCS.md">Guide for the app</a>, also for moving an existing installation.</p>
+      <h3 class="way" id="konfiguration">Configuration</h3>
+      <p>Most settings are made in the app under More. A configuration file is optional: copy config.example.yaml to data/config.yaml and adapt it. Every value can also be set with an environment variable.</p>
+      <h3 class="way" id="updates">Updates</h3>
+      <p>Updates come from the repository. In the myampere folder, update and rebuild:</p>
+      <div class="command">
+        <pre><code id="update-command">git pull &amp;&amp; docker compose up -d --build</code></pre>
+        <button class="copy" type="button" data-copy="update-command" data-copied="Copied">Copy</button>
       </div>
 
-      <h4 class="sub">Sensors and control in Home Assistant</h4>
-      <p>The app brings the OpenAmpere integration of its version along and installs it itself; you need no HACS. With it you see power, energy and state of charge live in Home Assistant, also in the Energy dashboard, and if you like you control the battery, charging from the grid and the immersion heater. After the first start of the app, Home Assistant asks for a restart. Then Settings → Devices & services shows “Discovered: OpenAmpere”: confirm it, then both show the same 6-digit code. Compare it in OpenAmpere under More → Connected apps and allow the connection, read only or with control.</p>
-      <p class="small">The connection is encrypted, and each app gets its own access that you can remove at any time. The main switch, test mode and export limit stay in OpenAmpere.</p>
-
-      <h3 class="way" id="android">Way 3: on an Android tablet</h3>
-      <ol class="steps">
-        <li>
-          <h3>Prepare the tablet</h3>
-          <p>You need a tablet with Android 7.0 or newer that always stays at home in the Wi-Fi and on the charger. The screen may be off. Modbus TCP must be switched on at the inverter, as for way 1.</p>
-        </li>
-        <li>
-          <h3>Install the app</h3>
-          <p>Open this page on the tablet and tap the button. Under "Assets", download the file that ends in .apk, tap it and allow the browser to install apps. The app is only available here, not on Google Play. If Google Play Protect warns, the guide below says what to do.</p>
-          <p><a class="btn secondary" href="https://github.com/Gr33ndev/OpenAmpere/releases/latest">Download the latest version</a></p>
-        </li>
-        <li>
-          <h3>Set up</h3>
-          <p>Open OpenAmpere and allow it to show notifications and to be left out of battery optimisation. Then choose a password; the assistant looks for the inverter. Phones and computers then open OpenAmpere in the browser at the tablet's address with port 8080. New versions are downloaded and installed the same way; the app shows when one is out.</p>
-        </li>
-      </ol>
-      <p class="small">The app is signed with the project's key. SHA-256 fingerprint of the certificate: <code class="fingerprint">26952e8da7f7093cf8ea99622d1576c88d075896b851e8ba4ff792f109854886</code></p>
-      <p class="small"><a href="https://github.com/Gr33ndev/OpenAmpere/blob/main/docs/android.md">Guide for the tablet</a>: what it needs, keeping it running, updates, moving and backup.</p>
+      <h3 class="way" id="home-assistant">Home Assistant</h3>
+      <p>Two ways: myAmpere as an app in the Home Assistant sidebar, or the integration through HACS. The integration only works while a myAmpere server runs and never talks to the inverter directly. Guides are in the repository at docs/homeassistant-app.de.md and docs/homeassistant.md.</p>
     </section>
 
     <section class="wrap" id="sicherheit">
       <h2>Security</h2>
       <div class="cards two">
         <div class="card">
-          <h3>Control is off at first</h3>
-          <p>After installation, OpenAmpere only reads. If you want to change settings, you unlock control and try it out in test mode. The app checks values before writing, reads them back afterwards and records every change in the log.</p>
+          <h3>Control is switched off at first</h3>
+          <p>After installation myAmpere only reads. To change settings on the inverter, switch the master switch to "Test" or "Active". In test mode it only logs what would happen.</p>
         </div>
         <div class="card">
           <h3>Access</h3>
-          <p>Anyone in your home network can view the values. Changing anything requires the password. On the go, you reach the app via Tailscale, set up with one tap in the app, or via a VPN such as the one in a FRITZ!Box. You should not set up port forwarding to the internet. Apps such as Home Assistant connect encrypted with their own access that you can remove at any time. OpenAmpere collects no usage data.</p>
+          <p>On the home network anyone can view the values. Changes need a password. From outside you reach the app only through your own Tailscale network. Do not expose the app directly to the internet.</p>
         </div>
       </div>
     </section>
 
     <section class="wrap" id="mitmachen">
-      <h2>Get involved</h2>
-      <p>You can help even without programming skills. A <a href="https://github.com/Gr33ndev/OpenAmpere/issues/new?template=device_report.yml">device report</a> with the diagnostics from the app helps most, because it makes it possible to support and confirm more models. You can report bugs and ideas as an issue.</p>
+      <h2>Contribute</h2>
+      <p>Bug reports, requests and device feedback are welcome. A short issue description helps most, and for devices a diagnostics report.</p>
       <div class="actions">
-        <a class="btn secondary" href="https://github.com/Gr33ndev/OpenAmpere/issues/new/choose">Open an issue</a>
-        <a class="btn secondary" href="https://github.com/Gr33ndev/OpenAmpere/blob/main/CONTRIBUTING.md">How to contribute</a>
+        <a class="btn secondary" href="https://github.com/dominiquehartmann/myampere/issues/new/choose">Open an issue</a>
+        <a class="btn secondary" href="https://github.com/dominiquehartmann/myampere/blob/main/CONTRIBUTING.md">Contributing guide</a>
       </div>
     </section>
 
-    <section class="wrap legal" id="hintergrund">
-      <h2>Background and legal notes</h2>
-      <p>Energiekonzepte Deutschland GmbH (EKD) and other companies of the group filed for insolvency in early October 2026. The proceedings are before the Local Court (Amtsgericht) of Leipzig; you can find the official notices at <a href="https://neu.insolvenzbekanntmachungen.de/ap/suche.jsf">insolvenzbekanntmachungen.de</a> (court Leipzig, enter the case number): Energiekonzepte Deutschland GmbH 401 IN 2082/26, AMPERE German Electric Innovation GmbH 401 IN 2085/26, EKD Montage GmbH 401 IN 2100/26, Energiekonzepte Deutschland Holding GmbH 401 IN 2101/26, Investorenholding 401 IN 2107/26, PV-Montage GmbH 401 IN 2110/26 and ES Energiesysteme GmbH 401 IN 2111/26. This means all seven companies that, according to <a href="https://www.handelsblatt.com/unternehmen/energie/solarenergie-solarspezialist-energiekonzepte-deutschland-meldet-insolvenz-an/100258988.html">Handelsblatt</a> (in German), are said to be affected have been officially published (as of 6 October 2026). According to EKD, business operations continue without restriction, and customer service remains the point of contact for customers (<a href="https://www.pv-magazine.de/2026/10/02/energiekonzepte-deutschland-stellt-insolvenzantrag/">pv magazine</a>, in German).</p>
-      <p>The “Ampere.IQ” app only works through EKD's servers. What happens to it is open. Should the insolvency proceedings lead to these servers being shut down, OpenAmpere simply keeps running: it talks directly to the inverter in your home network and needs no server from EKD. OpenAmpere was created by affected owners as a local alternative. The batteries sold as “Ampere.StoragePro E3” are based on the FoxESS H3 series, the older “Ampere.StoragePro” on SAJ H2 and HS2.</p>
-      <p><strong>No affiliation with EKD or the manufacturers:</strong> OpenAmpere is an independent, unofficial project. It has nothing to do with Energiekonzepte Deutschland GmbH, its insolvency administration, FoxESS, SAJ or Kiwigrid, and was neither commissioned nor authorized by them.</p>
-      <p><strong>No affiliation with Home Assistant:</strong> OpenAmpere, its Home Assistant integration and its Home Assistant app are not affiliated with Home Assistant, the Open Home Foundation or Nabu Casa. They only use the public interfaces of Home Assistant.</p>
-      <p><strong>Trademarks:</strong> “AMPERE”, “Ampere.IQ”, “Ampere.StoragePro” and all other product and company names mentioned belong to their respective owners. They appear here only to describe which devices OpenAmpere works with. The project name refers to the ampere, the physical unit. OpenAmpere contains no code, graphics or text from the Ampere.IQ app.</p>
-      <p><strong>Use at your own risk:</strong> OpenAmpere is free of charge and comes without any warranty. It does not replace a qualified electrician. Anyone who changes settings on the inverter is responsible for complying with the grid connection requirements. These notes are not legal advice.</p>
+    <section class="wrap legal" id="herkunft">
+      <h2>Origin and legal notes</h2>
+      <p>myAmpere is a personal fork of the community project OpenAmpere by Gr33ndev (MIT license). Its extensions live in separate modules so that updates of the original can be merged in.</p>
+      <p>myAmpere is an independent project. It has no affiliation with the original OpenAmpere project, with EKD, with the app "Ampere.IQ" or with manufacturers of inverters, storage systems or wallboxes. Product names are used only to describe compatibility.</p>
+      <p>Trademarks belong to their respective owners. Information about devices and interfaces is based on manufacturer documents and our own measurements.</p>
+      <p>The software is free and provided without warranty. Use at your own risk. Notes on the grid, feed-in and tariffs are not legal advice.</p>
     </section>
   </main>
 
@@ -254,9 +196,9 @@
         <a href="changelog.html">Changelog</a> ·
         <a href="docs/devices/">Device knowledge</a> ·
         <a href="docs/external-api.html">For developers</a> ·
-        <a href="https://github.com/Gr33ndev/OpenAmpere">Source code</a> ·
-        <a href="https://github.com/Gr33ndev/OpenAmpere/blob/main/LICENSE">MIT License</a> ·
-        <a href="https://github.com/Gr33ndev/OpenAmpere/blob/main/SECURITY.md">Security</a></p>
+        <a href="https://github.com/dominiquehartmann/myampere">Source code</a> ·
+        <a href="https://github.com/dominiquehartmann/myampere/blob/main/LICENSE">MIT License</a> ·
+        <a href="https://github.com/dominiquehartmann/myampere/blob/main/SECURITY.md">Security</a></p>
       <p class="small">Most wallboxes are controlled by <a href="https://evcc.io">evcc</a>, an independent open source project. Thanks to the evcc community!</p>
       <p class="small">This site sets no cookies and uses no tracking.
         Font: DM Sans (<a href="../fonts/OFL.txt">SIL Open Font License</a>).</p>
