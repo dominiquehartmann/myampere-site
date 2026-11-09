@@ -5,20 +5,20 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>Häufige Fragen | OpenAmpere</title>
-  <meta name="description" content="Antworten für Besitzer von Anlagen mit Ampere.StoragePro und andere Interessierte: Geräte, Einrichtung, Sicherheit, Garantie und Insolvenz." />
+  <title>Häufige Fragen | myAmpere</title>
+  <meta name="description" content="Antworten zu Geräten, Einrichtung, Zugriff von unterwegs, Sicherheit und Hilfe für myAmpere." />
   <meta name="theme-color" content="#f4f4f4" media="(prefers-color-scheme: light)" />
   <meta name="theme-color" content="#21262b" media="(prefers-color-scheme: dark)" />
-  <link rel="alternate" hreflang="de" href="https://dominiquehartmann.github.io/myampere/faq.html" />
-  <link rel="alternate" hreflang="en" href="https://dominiquehartmann.github.io/myampere/en/faq.html" />
-  <link rel="alternate" hreflang="x-default" href="https://dominiquehartmann.github.io/myampere/faq.html" />
+  <link rel="alternate" hreflang="de" href="https://dominiquehartmann.github.io/myampere-site/faq.html" />
+  <link rel="alternate" hreflang="en" href="https://dominiquehartmann.github.io/myampere-site/en/faq.html" />
+  <link rel="alternate" hreflang="x-default" href="https://dominiquehartmann.github.io/myampere-site/faq.html" />
   <link rel="icon" href="icon.svg" type="image/svg+xml" />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <header class="top">
     <div class="wrap top-inner">
-      <a class="brand" href="./"><img src="icon.svg" alt="" width="32" height="32" />OpenAmpere</a>
+      <a class="brand" href="./"><img src="icon.svg" alt="" width="32" height="32" />myAmpere</a>
       <nav aria-label="Seitenbereiche">
         <a href="./#funktionen">Funktionen</a>
         <a href="./#installation">Installation</a>
@@ -26,57 +26,50 @@
         <a href="faq.html">Fragen</a>
         <a href="changelog.html">Changelog</a>
         <a href="demo/?lang=de">Demo</a>
-        <a href="https://github.com/Gr33ndev/OpenAmpere">GitHub</a>
+        <a href="https://github.com/dominiquehartmann/myampere">GitHub</a>
         <span class="lang-switch" role="group" aria-label="Sprache"><a href="faq.html" hreflang="de" lang="de" title="Deutsch" aria-label="Deutsch" aria-current="page">DE</a><a href="en/faq.html" hreflang="en" lang="en" title="English" aria-label="English">EN</a></span>
       </nav>
     </div>
   </header>
 
-  <main class="wrap faq-page">
-    <div class="faq-head">
+  <main>
+    <section class="faq-head wrap">
       <p class="eyebrow">Fragen und Antworten</p>
       <h1>Häufige Fragen</h1>
-      <p class="lead">Die meisten Fragen kommen von Besitzern einer Anlage, die bei der Energiekonzepte Deutschland GmbH (EKD) gekauft wurde. OpenAmpere ist ein unabhängiges Projekt von Betroffenen und hat nichts mit EKD, der Insolvenzverwaltung oder den Herstellern zu tun.</p>
+      <p class="lead">Die wichtigsten Fragen zu myAmpere, zu Geräten, zur Einrichtung und zur Sicherheit.</p>
       <ul class="topics" aria-label="Themen">
         <li><a href="#allgemein">Allgemein</a></li>
         <li><a href="#anlage">Meine Anlage</a></li>
         <li><a href="#sicherheit">Sicherheit</a></li>
-        <li><a href="#garantie">Garantie und Insolvenz</a></li>
         <li><a href="#hilfe">Hilfe</a></li>
       </ul>
-    </div>
+    </section>
 
     <section id="allgemein">
       <h2>Allgemein</h2>
       <div class="faq-list">
         <details class="faq">
-          <summary>Was ist OpenAmpere?</summary>
+          <summary>Was ist myAmpere?</summary>
           <div class="answer">
-            <p>Eine kostenlose App, die die Werte deiner Solaranlage und deines Speichers direkt vom Wechselrichter liest, ohne Cloud und ohne Konto. Sie läuft auf einem kleinen Rechner bei dir zu Hause, zum Beispiel einem Raspberry Pi, oder auf einem alten Android-Tablet, und du öffnest sie im Browser oder auf dem Handy. Wie das aussieht, zeigt die <a href="demo/?lang=de">Demo</a>.</p>
+            <p>Eine kostenlose, lokale App, die die Werte deiner Solaranlage und deines Speichers direkt vom Wechselrichter liest. Sie läuft auf deinem eigenen Rechner im Heimnetz und zeigt die Werte im Browser oder als App auf dem Smartphone.</p>
           </div>
         </details>
         <details class="faq">
-          <summary>Ist das eine App von EKD oder ein Ersatz im Auftrag von EKD?</summary>
+          <summary>Was kostet myAmpere?</summary>
           <div class="answer">
-            <p>Nein. OpenAmpere ist ein privates Open-Source-Projekt. Es wurde von EKD, der Insolvenzverwaltung, FoxESS, SAJ oder Kiwigrid weder beauftragt noch autorisiert oder unterstützt.</p>
-          </div>
-        </details>
-        <details class="faq">
-          <summary>Was kostet OpenAmpere?</summary>
-          <div class="answer">
-            <p>Nichts. Es gibt keine Abos, keine Werbung und keine Spenden. Du brauchst nur einen Rechner, der dauerhaft im Heimnetz läuft. Ein Raspberry Pi kostet mit Netzteil und Speicherkarte etwa 80 bis 120 Euro. Ein altes Android-Tablet tut es auch.</p>
-          </div>
-        </details>
-        <details class="faq">
-          <summary>Ich habe keinen Rechner dafür. Geht auch ein altes Tablet?</summary>
-          <div class="answer">
-            <p>Ja. Ein Android-Tablet mit Android 7.0 oder neuer kann OpenAmpere selbst ausführen, die App bringt alles mit. Es bleibt dann zu Hause im WLAN und immer am Ladegerät, der Bildschirm darf aus sein. Handy und Computer öffnen OpenAmpere wie sonst im Browser. Wie es geht, steht unter <a href="#android">Installation</a> und in der <a href="https://github.com/Gr33ndev/OpenAmpere/blob/main/docs/android.de.md">Anleitung für das Tablet</a>.</p>
+            <p>Nichts. Es gibt keine Abos und keine Werbung. Du brauchst nur einen Rechner, der im Heimnetz läuft.</p>
           </div>
         </details>
         <details class="faq">
           <summary>Wohin gehen meine Daten?</summary>
           <div class="answer">
-            <p>Die Werte deiner Anlage bleiben auf deinem Rechner zu Hause. OpenAmpere sammelt keine Nutzungsdaten. Ab Werk eingeschaltet ist nur die Suche nach Updates: Alle 6 Stunden fragt OpenAmpere bei GitHub nach, ob es eine neue Version gibt. Dabei werden keine Daten deiner Anlage gesendet. Du kannst das in der App unter Mehr → Über OpenAmpere mit dem Schalter „Nach Updates suchen“ ausschalten. Alles andere geht nur nach außen, wenn du es selbst einrichtest: Börsenstrompreise für einen dynamischen Tarif, Benachrichtigungen aufs Handy, der Zugriff von unterwegs, die Übernahme des Verlaufs aus der Ampere.IQ-Cloud und das Abholen der Zählerwerte beim Netzbetreiber.</p>
+            <p>Die Werte deiner Anlage bleiben auf deinem Rechner zu Hause. myAmpere sendet keine Nutzungsdaten an den Entwickler und braucht kein Konto.</p>
+          </div>
+        </details>
+        <details class="faq">
+          <summary>Auf welchem Gerät läuft myAmpere?</summary>
+          <div class="answer">
+            <p>Auf einem Rechner mit Linux, Docker und Docker Compose, zum Beispiel einem Raspberry Pi, einem kleinen Server oder einer virtuellen Maschine. Die Einrichtung ist auf der Startseite beschrieben.</p>
           </div>
         </details>
       </div>
@@ -86,48 +79,28 @@
       <h2>Meine Anlage</h2>
       <div class="faq-list">
         <details class="faq">
-          <summary>Funktioniert OpenAmpere mit meinem Speicher?</summary>
+          <summary>Welche Geräte werden unterstützt?</summary>
           <div class="answer">
-            <p>Die als „Ampere.StoragePro E3“ verkauften Speicher basieren auf dem FoxESS H3: Anzeige und Steuerung. Die älteren „Ampere.StoragePro“ basieren auf SAJ H2 oder HS2: ebenfalls Anzeige und Steuerung. Welches Gerät du hast, erkennt OpenAmpere beim Einrichten selbst. Was davon schon an einer echten Anlage bestätigt ist, steht in der <a href="geraete.html">Übersicht der EKD-Geräte</a>. Mit einem <a href="https://github.com/Gr33ndev/OpenAmpere/issues/new?template=device_report.yml">Gerätebericht</a> hilfst du, die übrigen zu bestätigen.</p>
-          </div>
-        </details>
-        <details class="faq">
-          <summary>Mein Speicher ist kein Ampere.StoragePro. Geht OpenAmpere trotzdem?</summary>
-          <div class="answer">
-            <p>Bevor es die Ampere.StoragePro gab, hat EKD Speicher anderer Hersteller verkauft, etwa von Senec, Solarmax („AMPERE.Storage“), M-TEC und Enphase. Welche davon OpenAmpere schon anzeigen kann und woran gearbeitet wird, zeigt die <a href="geraete.html">Übersicht der EKD-Geräte</a>. Welches Gerät du hast, steht auf dem Typenschild am Speicher oder am Wechselrichter.</p>
-            <p>EKD hat im September 2025 die Speicherfunktion des „AMPERE.Storage“ aus der Ferne abgeschaltet und sie dort wieder freigegeben, wo ein Fachbetrieb ein Bauteil nachgerüstet hat. Ist dein Speicher noch abgeschaltet, schaltet OpenAmpere ihn auch später nicht ein. Ob das Bauteil bei dir eingebaut ist, kann nur ein Fachbetrieb klären.</p>
-          </div>
-        </details>
-        <details class="faq">
-          <summary>Was passiert, wenn die EKD-Cloud irgendwann nicht mehr erreichbar ist?</summary>
-          <div class="answer">
-            <p>Ob und wann das passiert, ist offen. Sollte es so kommen, läuft OpenAmpere einfach weiter, weil es keinen Server von EKD braucht. Wechselrichter und Speicher arbeiten ohnehin vor Ort und behalten ihre zuletzt eingestellten Werte. Was ohne Cloud fehlt, ist die Ampere.IQ-App mit ihrem Verlauf.</p>
-          </div>
-        </details>
-        <details class="faq">
-          <summary>Kann ich meinen bisherigen Verlauf aus Ampere.IQ behalten?</summary>
-          <div class="answer">
-            <p>Ja, solange die EKD-Cloud erreichbar ist. In OpenAmpere unter Mehr → Daten &amp; Sicherung den API-Schlüssel aus der Ampere.IQ-App eintragen (dort unter Mehr → Konfiguration API-Zugang). Der Import läuft im Hintergrund und dauert einige Stunden, weil die Cloud nur etwa eine Abfrage pro Minute erlaubt.</p>
+            <p>Der FoxESS H3 und die SAJ-Speicher H2 und HS2 werden unterstützt. Welche Geräte bestätigt sind und was jedes liest und steuert, steht auf der Geräteseite.</p>
           </div>
         </details>
         <details class="faq">
           <summary>Muss ich am Wechselrichter etwas einstellen?</summary>
           <div class="answer">
-            <p>OpenAmpere spricht über Modbus TCP mit dem Wechselrichter. Bei den als „Ampere.StoragePro“ verkauften Speichern ist das schon eingeschaltet. Der Wechselrichter muss im Heimnetz hängen, meist per Netzwerkkabel.</p>
-          </div>
-        </details>
-        <details class="faq">
-          <summary>Was ist mit der Smartbox?</summary>
-          <div class="answer">
-            <p>Die Smartbox kann neben OpenAmpere weiterlaufen. Sie holt sich aber regelmäßig Soll-Werte aus der Cloud und überschreibt damit Änderungen, die du in OpenAmpere machst. Wie man damit umgeht, steht im <a href="https://github.com/Gr33ndev/OpenAmpere/blob/main/README.de.md#die-bisherige-smartbox-setzt-einstellungen-zur%C3%BCck">README</a>.</p>
-            <p>Bevor du die Smartbox vom Internet trennst oder abklemmst: Kläre, ob sie dir gehört und ob sie für etwas anderes gebraucht wird, etwa für die Steuerung durch den Netzbetreiber. Wie du das prüfst, steht im <a href="https://github.com/Gr33ndev/OpenAmpere/blob/main/README.de.md#vor-dem-abklemmen-braucht-der-netzbetreiber-die-box">README</a>.</p>
+            <p>Modbus TCP muss eingeschaltet sein und der Wechselrichter muss im Heimnetz erreichbar sein. Die Geräteadresse findest du in den Einstellungen des Wechselrichters. Bei FoxESS ist sie meist 247.</p>
           </div>
         </details>
         <details class="faq">
           <summary>Komme ich auch von unterwegs an meine Daten?</summary>
           <div class="answer">
-            <p>Ja. Am einfachsten mit Tailscale: Beim Installieren die Frage „von unterwegs nutzen?“ mit Ja beantworten, dann in der App unter Mehr → Zugriff von unterwegs auf Einrichten tippen und bei Tailscale anmelden. Auf dem Handy die Tailscale-App mit demselben Konto anmelden, fertig. Tailscale ist ein Dienst eines US-Anbieters und für private Nutzung kostenlos.</p>
-            <p>Ohne Drittanbieter geht es über das VPN der FRITZ!Box. Bitte die App nie per Portfreigabe direkt ins Internet stellen. Öffnest du OpenAmpere im Heimnetz unter einer eigenen Domain, etwa über einen Reverse-Proxy, trägst du den Namen in der App unter Mehr → Zugriffsschutz → Eigene Adressen ein. Der Proxy muss dabei den Hostnamen und WebSocket-Verbindungen weiterreichen; ein Beispiel für nginx steht in der <a href="https://github.com/Gr33ndev/OpenAmpere/blob/main/README.de.md#hinter-einem-reverse-proxy">Anleitung</a>.</p>
+            <p>Ja, über dein eigenes Tailscale-Netz. Der Zugriff ist in der App unter Mehr → Zugriff von unterwegs eingerichtet.</p>
+            <p>Öffne die App nie per Portfreigabe direkt im Internet. Nutze Tailscale oder ein VPN deines Routers.</p>
+          </div>
+        </details>
+        <details class="faq">
+          <summary>Wie sichere ich meine Daten oder ziehe auf einen neuen Rechner um?</summary>
+          <div class="answer">
+            <p>Unter Mehr → Daten & Sicherung lädst du eine Sicherung herunter, die du auch mit einem Passwort verschlüsseln kannst. Auf dem neuen Rechner stellst du sie über dieselbe Seite wieder her.</p>
           </div>
         </details>
       </div>
@@ -137,60 +110,22 @@
       <h2>Sicherheit</h2>
       <div class="faq-list">
         <details class="faq">
-          <summary>Kann ich mit OpenAmpere etwas kaputt machen?</summary>
+          <summary>Kann ich mit myAmpere etwas kaputt machen?</summary>
           <div class="answer">
-            <p>Nach der Installation liest OpenAmpere nur. Einstellungen am Wechselrichter ändert es erst, wenn du die Steuerung ausdrücklich freigibst, und auch dann zuerst im Testmodus, in dem nichts gesendet wird. Jeder geschriebene Wert wird geprüft, zurückgelesen und protokolliert.</p>
-            <p>Trotzdem gilt: Notiere dir die bisherigen Werte, bevor du etwas änderst, und ändere nur, was du verstehst.</p>
+            <p>Nach der Installation liest myAmpere nur. Änderungen am Wechselrichter sind erst möglich, wenn du den Hauptschalter auf Testen oder Aktiv stellst. Im Testmodus wird nur protokolliert.</p>
+            <p>Notiere dir die bisherigen Werte, bevor du etwas änderst, und ändere nur, was du verstehst.</p>
           </div>
         </details>
         <details class="faq">
           <summary>Darf ich die Einspeisebegrenzung ändern?</summary>
           <div class="answer">
-            <p>Nur im Rahmen dessen, was für deine Anlage gilt: 60 % oder 70 % der Modulleistung oder der Wert aus deiner Netzanschlusszusage. Mehr lässt die App nicht zu. Einen festen Wert vom Netzbetreiber darfst du nur mit dessen schriftlicher Zustimmung erhöhen. Verantwortlich dafür bist du als Anlagenbetreiber.</p>
-          </div>
-        </details>
-      </div>
-    </section>
-
-    <section id="garantie">
-      <h2>Garantie und Insolvenz</h2>
-      <p class="notice">Diese Fragen hören wir am häufigsten. Wir können sie nicht für deinen Einzelfall beantworten und sind keine Anwälte. Hier steht, was allgemein gilt und wo du verbindliche Auskunft bekommst. <strong>Keine Rechtsberatung.</strong></p>
-      <div class="faq-list">
-        <details class="faq">
-          <summary>Verliere ich durch OpenAmpere meine Garantie?</summary>
-          <div class="answer">
-            <p>Nur Werte lesen ist kein Eingriff ins Gerät. OpenAmpere nutzt dafür dieselbe Schnittstelle wie andere Energiemanager. Wenn du Einstellungen änderst, bleibst du in den Grenzen, die der Wechselrichter selbst erlaubt.</p>
-            <p>Ob ein Garantiegeber das trotzdem einwendet, können wir nicht zusichern. Deshalb ist die Steuerung ab Werk aus, und das Protokoll zeigt jederzeit, was wann geändert wurde.</p>
+            <p>Nur im Rahmen dessen, was für deine Anlage gilt. Welche Regel gilt, entscheidet dein Netzbetreiber beziehungsweise die gesetzliche Lage. Bei Fragen hilft der Netzbetreiber.</p>
           </div>
         </details>
         <details class="faq">
-          <summary>Gewährleistung, Garantie, Herstellergarantie: Was ist der Unterschied?</summary>
+          <summary>Ist die Nutzung kostenlos und ohne Gewähr?</summary>
           <div class="answer">
-            <ul>
-              <li><strong>Gewährleistung</strong> ist gesetzlich und richtet sich gegen deinen Vertragspartner, also die Firma, bei der du gekauft hast.</li>
-              <li><strong>Garantie</strong> ist ein freiwilliges Versprechen. Wer sie gibt, steht in deinen Garantieunterlagen.</li>
-              <li><strong>Herstellergarantie</strong> gibt der eigentliche Hersteller des Geräts, hier FoxESS oder SAJ, falls er eine gewährt.</li>
-            </ul>
-          </div>
-        </details>
-        <details class="faq">
-          <summary>Was ist eine Garantie von einem Unternehmen in der Insolvenz noch wert?</summary>
-          <div class="answer">
-            <p>Ehrlich gesagt: oft wenig. Steht in deinen Unterlagen eine der Gesellschaften, die im Insolvenzverfahren sind (siehe <a href="./#hintergrund">Hintergrund</a>), werden Ansprüche aus der Zeit vor der Eröffnung des Verfahrens in der Regel zu Insolvenzforderungen. Diese werden am Ende nur mit einer Quote bezahlt, die häufig gering ist.</p>
-            <p>Ob der Betrieb oder ein Käufer Garantien freiwillig weiter bedient, ist offen und wird sich im Verfahren zeigen.</p>
-          </div>
-        </details>
-        <details class="faq">
-          <summary>Was kann ich jetzt tun?</summary>
-          <div class="answer">
-            <ul>
-              <li><strong>Unterlagen sichern:</strong> Kaufvertrag, Rechnungen, Garantieunterlagen, Inbetriebnahmeprotokoll und die Seriennummern von Wechselrichter und Speicher. Am besten auch Fotos der Typenschilder.</li>
-              <li><strong>Verlauf sichern:</strong> Den Verlauf aus Ampere.IQ übernehmen, solange die Cloud erreichbar ist.</li>
-              <li><strong>Mängel schriftlich melden:</strong> Wenn schon jetzt etwas nicht funktioniert, melde es schriftlich und bewahre eine Kopie auf.</li>
-              <li><strong>Beim Hersteller nachfragen:</strong> FoxESS oder SAJ mit der Seriennummer fragen, ob für dein Gerät eine Herstellergarantie besteht.</li>
-              <li><strong>Bekanntmachungen verfolgen:</strong> Auf <a href="https://neu.insolvenzbekanntmachungen.de/ap/suche.jsf">insolvenzbekanntmachungen.de</a> steht, wann ein Verfahren eröffnet wird. Erst danach kann man Forderungen beim Insolvenzverwalter anmelden, die Frist steht im Eröffnungsbeschluss.</li>
-              <li><strong>Beraten lassen:</strong> Die Verbraucherzentrale deines Bundeslandes hilft bei Fragen zu Verträgen, Garantie und Forderungsanmeldung. Bei größeren Beträgen lohnt sich ein Anwalt.</li>
-            </ul>
+            <p>Ja. Die Software steht unter der MIT-Lizenz und wird ohne Gewähr bereitgestellt. Hinweise zu Netz, Einspeisung und Tarifen sind keine Rechtsberatung.</p>
           </div>
         </details>
       </div>
@@ -202,19 +137,28 @@
         <details class="faq">
           <summary>Wo bekomme ich Hilfe bei der Einrichtung?</summary>
           <div class="answer">
-            <p>Die häufigsten Probleme beim Einrichten und ihre Lösung stehen in der Anleitung unter <a href="https://github.com/Gr33ndev/OpenAmpere/blob/main/README.de.md#fehlerbehebung">Fehlerbehebung</a>. Fehler und Fragen zur App kannst du auf <a href="https://github.com/Gr33ndev/OpenAmpere/issues">GitHub</a> melden. Am meisten hilft ein Diagnosebericht aus der App (Mehr → Diagnose). Zu Garantie, Verträgen und dem Insolvenzverfahren können wir keine Einzelfragen beantworten.</p>
+            <p>Die Schritte und die Fehlersuche stehen in der README im Repository, auf Deutsch in README.de.md. Die Diagnose in der App hilft bei Verbindungsproblemen.</p>
           </div>
         </details>
         <details class="faq">
-          <summary>Wie sichere ich meine Daten, ziehe auf einen neuen Rechner um oder deinstalliere OpenAmpere?</summary>
+          <summary>Wie aktualisiere ich myAmpere?</summary>
           <div class="answer">
-            <p>Eine Sicherung lädst du in der App unter Mehr → Daten &amp; Sicherung herunter. Wie du eine Sicherung zurückspielst, auf einen neuen Rechner umziehst oder OpenAmpere wieder entfernst, steht Schritt für Schritt in der Anleitung unter <a href="https://github.com/Gr33ndev/OpenAmpere/blob/main/README.de.md#sichern-und-wiederherstellen">Sichern und Wiederherstellen</a>. Einstellungen, die OpenAmpere am Wechselrichter geändert hat, bleiben auch nach dem Deinstallieren aktiv.</p>
+            <p>Im Ordner myampere mit git pull holen und dann docker compose up -d --build ausführen. Danach die Diagnose einmal laufen lassen.</p>
+          </div>
+        </details>
+        <details class="faq">
+          <summary>Wo melde ich einen Fehler oder einen Wunsch?</summary>
+          <div class="answer">
+            <p>Als Issue im Repository auf GitHub. Bei Geräten hilft ein Diagnosebericht aus der App, persönliche Daten sind darin maskiert.</p>
           </div>
         </details>
       </div>
+    </section>
+
+    <section class="wrap">
       <div class="actions">
         <a class="btn primary" href="demo/?lang=de">Demo ansehen</a>
-        <a class="btn secondary" href="./#installation">Zur Installation</a>
+        <a class="btn secondary" href="index.html#installation">Zur Installation</a>
       </div>
     </section>
   </main>
@@ -225,9 +169,9 @@
         <a href="changelog.html">Changelog</a> ·
         <a href="docs/devices/">Gerätewissen</a> ·
         <a href="docs/external-api.html">Für Entwickler</a> ·
-        <a href="https://github.com/Gr33ndev/OpenAmpere">Quellcode</a> ·
-        <a href="https://github.com/Gr33ndev/OpenAmpere/blob/main/LICENSE">MIT-Lizenz</a> ·
-        <a href="https://github.com/Gr33ndev/OpenAmpere/blob/main/SECURITY.md">Sicherheit</a></p>
+        <a href="https://github.com/dominiquehartmann/myampere">Quellcode</a> ·
+        <a href="https://github.com/dominiquehartmann/myampere/blob/main/LICENSE">MIT-Lizenz</a> ·
+        <a href="https://github.com/dominiquehartmann/myampere/blob/main/SECURITY.md">Sicherheit</a></p>
       <p class="small">Die meisten Wallboxen steuert <a href="https://evcc.io">evcc</a>, ein eigenständiges Open-Source-Projekt. Danke an die evcc-Community!</p>
       <p class="small">Diese Seite setzt keine Cookies und nutzt kein Tracking.
         Schrift: DM Sans (<a href="fonts/OFL.txt">SIL Open Font License</a>).</p>
